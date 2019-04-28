@@ -1,7 +1,47 @@
 import React, { Component } from 'react';
 import { Link} from 'react-router';
+import swal from 'sweetalert';
 
 class Approve extends Component {
+
+    constructor(props){
+        super(props);
+        this.state = {
+            approveStatus: ""
+        }
+    }
+
+    handleApprove = (e) => {
+        if(e.target.value == 'terima'){
+            swal({
+              title: "Approve Pembayaran ?",
+              icon: "warning",
+              buttons: true,
+              dangerMode: true,
+            })
+            .then((willDelete) => {
+              if (willDelete) {
+                swal("Pembayaran telah di approve!", {
+                  icon: "success",
+                });
+              }
+            });
+        }else{
+            swal({
+              title: "Tolak Pembayaran ?",
+              icon: "warning",
+              buttons: true,
+              dangerMode: true,
+            })
+            .then((willDelete) => {
+              if (willDelete) {
+                swal("Pembayaran telah di Tolak!", {
+                  icon: "warning",
+                });
+              }
+            });
+        }
+    }
 
     render() {
         return (
@@ -61,10 +101,12 @@ class Approve extends Component {
                                                 </td>
                                                 <td>
                                                     <select
+                                                        onChange={this.handleApprove}
+                                                        value={this.state.approveStatus}
                                                         className="form-control">
                                                         <option>Pilih</option>
-                                                        <option>Terima</option>
-                                                        <option>Tolak</option>
+                                                        <option value="terima">Terima</option>
+                                                        <option value="tolak">Tolak</option>
                                                     </select>
                                                 </td>
                                             </tr>

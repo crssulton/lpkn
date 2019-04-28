@@ -65,20 +65,18 @@ class Main extends Component {
                                                     <th>TANGGAL</th>
                                                     <th rowspan="2">MATA KULIAH</th>
                                                     <th>JML PERTEMUAN</th>
-                                                    <th>DOSEN</th>
                                                     <th>WAKTU</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
                                                 
                                                 {
-                                                    this.state.jadwals.filter(jadwal => jadwal.title == 'Perhotelan').map((jadwal, key) =>
+                                                    this.state.jadwals.map((jadwal, key) =>
                                                     <tr>
                                                         <th>Senin</th>
                                                         <td>{jadwal.start}</td>
                                                         <td>{jadwal.title}</td>
                                                         <td>12</td>
-                                                        <td>Ahmad Budiman S.Kom</td>
                                                         <td>{jadwal.jam}</td>
                                                     </tr>
                                                     )

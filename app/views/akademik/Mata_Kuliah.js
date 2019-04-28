@@ -9,7 +9,7 @@ class Mata_Kuliah extends Component {
         this.state = {
             matkuls: [],
             loading: true,
-            selectedJurusan: 'all',
+            selectedJurusan: 1,
             form: false,
             selected: null,
             matkulBaru: {},
@@ -132,11 +132,18 @@ class Mata_Kuliah extends Component {
         matkulBaru.jumlah_pertemuan = e.target.value
         this.setState({matkulBaru})	
     }
+    addMatkulJurusan = (e) => {
+    	let matkulBaru = {}
+        matkulBaru = this.state.matkulBaru
+        matkulBaru.jurusan = e.target.value
+        this.setState({matkulBaru})	
+    }
 
     addMataKuliah = ()=> {
     	const self = this
     	let addButton = document.getElementsByClassName("btn-add")
     	addButton[0].setAttribute("disabled", "disabled")
+    	console.log(JSON.stringify(this.state.matkulBaru))
     	fetch('http://lpkn.itec.my.id:9000/api/mata-kuliah/', {
 			method: 'post',
 			headers: {
@@ -150,12 +157,22 @@ class Mata_Kuliah extends Component {
 		}).then(function(data) {
 			addButton[0].removeAttribute("disabled")
 			let matkuls = []
+			let matkulBaru = {}
+			matkulBaru = self.state.matkulBaru
+
         	matkuls = self.state.matkuls
         	matkuls.push(data)
+
+    		matkulBaru.kode = null
+			matkulBaru.nama = null
+			matkulBaru.jumlah_jam = null
+			matkulBaru.jumlah_pertemuan = null
+
 			self.setState({
 				addForm: true,
 				matkuls,
-				matkulBaru: {}
+				matkulBaru
+				
 			})
 			toastr.success("Mata kuliah berhasil ditambahkan", "Sukses ! ")
 		});
@@ -224,6 +241,8 @@ class Mata_Kuliah extends Component {
 	                                    	<label className="col-sm-3 col-form-label">Filter :</label>
 	                                    	<div className="col-sm-9">
 			                                    <select
+			                                    	value={this.state.selectedJurusan}
+			                                    	onChange={(e) => this.setState({selectedJurusan: e.target.value}) }
 			                                        className="form-control">
 			                                        {
 			                                        	this.state.jurusans.map((jurusan) => 
@@ -269,12 +288,12 @@ class Mata_Kuliah extends Component {
 					                            </thead>
 					                            <tbody>
 					                            {
-					                            	this.state.matkuls.map((matkul, key) =>
+					                            	this.state.matkuls.filter(matkul => matkul.jurusan == this.state.selectedJurusan).map((matkul, key) =>
 					                            		<tr>
 							                                <td>{matkul.kode}</td>
 							                                <td>{matkul.nama}</td>
 							                                <td>{matkul.kategori}</td>
-							                                <td>Jurusan 1</td>
+							                                <td>{ this.state.jurusans.find((jurusan) => (jurusan.id == matkul.jurusan)).nama }</td>
 							                                <td>{matkul.jumlah_jam}</td>
 							                                <td>{matkul.jumlah_pertemuan}</td>
 							                                <td>
@@ -351,6 +370,8 @@ class Mata_Kuliah extends Component {
 			                            <div className="form-group row"><label className="col-lg-3 col-form-label">Jurusan</label>
 	                                        <div className="col-lg-9">
 	                                            <select
+	                                            	value={this.state.matkulBaru.jurusan}
+	                                            	onChange={this.addMatkulJurusan}
 			                                        className="form-control">
 			                                        <option value="">Pilih Jurusan</option>
 			                                        {

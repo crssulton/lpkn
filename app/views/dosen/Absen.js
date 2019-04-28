@@ -8,6 +8,7 @@ class Absen extends Component {
         $('#fullCalModal').modal('hide');
         this.state = {
             mahasiswas: [],
+            jurusans: []
         }
     }
 
@@ -27,6 +28,17 @@ class Absen extends Component {
                 mahasiswas: data.results,
             })
         });
+
+        fetch('http://lpkn.itec.my.id:9000/api/jurusan/', {
+            method: 'get'
+        }).then(function(response) {
+            return response.json();
+        }).then(function(data) {
+            self.setState({
+                jurusans: data.results
+            })
+        });
+
     }
 
     render() {
@@ -78,7 +90,7 @@ class Absen extends Component {
                                                             <td>{key+1}</td>
                                                             <td>{mahasiswa.nim}</td>
                                                             <td>{mahasiswa.nama}</td>
-                                                            <td>{mahasiswa.jurusan}</td>
+                                                            <td>{ this.state.jurusans.find((jurusan) => (jurusan.id == mahasiswa.jurusan)).nama }</td>
                                                             <td>
                                                                 <center>
                                                                     <select className="form-control m-b" name="account">

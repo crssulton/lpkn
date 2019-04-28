@@ -222,6 +222,7 @@ class Administrator extends Component {
     	let addButton = document.getElementsByClassName("btn-add")
     	addButton[0].setAttribute("disabled", "disabled")
         
+
     	fetch('http://lpkn.itec.my.id:9000/api/dosen/', {
 			method: 'post',
 			headers: {

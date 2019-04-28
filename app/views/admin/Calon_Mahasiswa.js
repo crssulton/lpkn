@@ -139,7 +139,7 @@ class Calon_Mahasiswa extends Component {
 		        </div>
 		        <div className="wrapper wrapper-content">
                     <div className="row animated fadeInRight">
-                        <div className="col-lg-8">
+                        <div className="col-lg-7">
                             <div className="ibox ">
                                 <div className="ibox-title" style={{'backgroundColor':'#1ab394', 'color':'white'}}>
                                     <h5> <i className="fa fa-list "></i> Daftar Calon mahasiswa</h5>
@@ -171,7 +171,7 @@ class Calon_Mahasiswa extends Component {
 										        		<tr>
 										        			<td>{key+1}</td>
 												            <td>{mahasiswa.nama}</td>
-												            <td>{mahasiswa.jurusan}</td>
+												            <td>Industri Maskapai</td>
 												            <td>
 												            	<center>
 						                                			<button 
@@ -196,7 +196,7 @@ class Calon_Mahasiswa extends Component {
                             </div>
                         </div>
 
-                        <div className="col-lg-4">
+                        <div className="col-lg-5">
                             <div className="ibox ">
                                 <div className="ibox-title" style={{'backgroundColor':'#1ab394', 'color':'white'}}>
                                     <h5> <i className="fa fa-user"></i> Profil Calon Mahasiswa</h5>
@@ -220,89 +220,155 @@ class Calon_Mahasiswa extends Component {
 				                             <div className="tabs-container">
 											    <ul className="nav nav-tabs" role="tablist">
 											        <li className="active"><a className="nav-link active" data-toggle="tab" href="#tab-1">Data Diri</a></li>
-											        <li><a className="nav-link" data-toggle="tab" href="#tab-2">Orang Tua/Wali</a></li>
+											        <li><a className="nav-link" data-toggle="tab" href="#tab-2">Orang Tua</a></li>
 											        <li><a className="nav-link" data-toggle="tab" href="#tab-3">Tambahan</a></li>
+											        <li><a className="nav-link" data-toggle="tab" href="#tab-4">Pembayaran</a></li>
 											    </ul>
 											    <div className="tab-content">
 											        <div role="tabpanel" id="tab-1" className="tab-pane active">
-											            <div className="panel-body" style={{'padding':'0px'}}>
-											            	<table className="table">
-															    <tr>
-															        <td><b>Alamat</b> </td> <td>: {this.state.mahasiswa.alamat}</td>
-															    </tr>
-															    <tr>
-															        <td><b>Tempat Lahir</b></td> <td>: {this.state.mahasiswa.tempat_lahir}</td>
-															    </tr>
-															    <tr>
-															        <td><b>Tgl Lahir</b></td> <td>: {this.state.mahasiswa.tgl_lahir}</td>
-															    </tr>
-															    <tr>
-															        <td><b>Jenis Kelamin</b></td> <td>: {this.state.mahasiswa.jenis_kelamin}</td>
-															    </tr>
-															    <tr>
-															        <td><b>Agama</b></td> <td>: {this.state.mahasiswa.agama}</td>
-															    </tr>
-															    <tr>
-															        <td><b>No Hp</b></td> <td>: {this.state.mahasiswa.no_hp}</td>
-															    </tr>
-															    <tr>
-															        <td><b>Email</b></td> <td>: {this.state.mahasiswa.email}</td>
-															    </tr>
-															    <tr>
-															        <td><b>Whatsapp</b></td> <td>: {this.state.mahasiswa.wa_or_line}</td>
-															    </tr>
-															    <tr>
-															        <td><b>Sekolah Asal</b></td> <td>: {this.state.mahasiswa.asal_sekolah}</td>
-															    </tr>
-															    <tr>
-															        <td><b>Tahun Tamat</b></td> <td>: {this.state.mahasiswa.tahun_tamat}</td>
-															    </tr>
-															</table>
+											            <div className="panel-body">
+											            	<div className="form-group row"><label className="col-lg-2 col-form-label">Alamat</label>
+						                                        <div className="col-lg-10">
+						                                            <input value={this.state.mahasiswa.alamat}  type="text" className="form-control m-b" name="account"/>
+						                                        </div>
+						                                    </div>
+						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Tmpt Lahir</label>
+						                                        <div className="col-lg-10">
+						                                            <input value={this.state.mahasiswa.tempat_lahir}  type="text" className="form-control m-b" name="account"/>
+						                                        </div>
+						                                    </div>
+						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Tgl Lahir</label>
+						                                        <div className="col-lg-10">
+						                                            <input value={this.state.mahasiswa.tgl_lahir}  type="text" className="form-control m-b" name="account"/>
+						                                        </div>
+						                                    </div>
+						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Jenis Kelamin</label>
+						                                        <div className="col-lg-10">
+						                                            <input value={this.state.mahasiswa.jenis_kelamin}  type="text" className="form-control m-b" name="account"/>
+						                                        </div>
+						                                    </div>
+						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Agama</label>
+						                                        <div className="col-lg-10">
+						                                            <input value={this.state.mahasiswa.agama}  type="text" className="form-control m-b" name="account"/>
+						                                        </div>
+						                                    </div>
+						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Hp</label>
+						                                        <div className="col-lg-10">
+						                                            <input value={this.state.mahasiswa.no_hp}  type="text" className="form-control m-b" name="account"/>
+						                                        </div>
+						                                    </div>
+						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Email</label>
+						                                        <div className="col-lg-10">
+						                                            <input value={this.state.mahasiswa.email} type="text" className="form-control m-b" name="account"/>
+						                                        </div>
+						                                    </div>
+						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">FB</label>
+						                                        <div className="col-lg-10">
+						                                            <input value={this.state.mahasiswa.id_facebook} type="text" className="form-control m-b" name="account"/>
+						                                        </div>
+						                                    </div>
+						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">WA/Line</label>
+						                                        <div className="col-lg-10">
+						                                            <input value={this.state.mahasiswa.wa_or_line} type="text" className="form-control m-b" name="account"/>
+						                                        </div>
+						                                    </div>
+						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Asal Sekolah</label>
+						                                        <div className="col-lg-10">
+						                                            <input value={this.state.mahasiswa.asal_sekolah} type="text" className="form-control m-b" name="account"/>
+						                                        </div>
+						                                    </div>
+						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Tahun Tamat</label>
+						                                        <div className="col-lg-10">
+						                                            <input value={this.state.mahasiswa.tahun_tamat} type="text" className="form-control m-b" name="account"/>
+						                                        </div>
+						                                    </div>
+						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Tinggi Badan</label>
+						                                        <div className="col-lg-10">
+						                                            <input value={this.state.mahasiswa.tinggi_badan} type="text" className="form-control m-b" name="account"/>
+						                                        </div>
+						                                    </div>
+						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Berat Badan</label>
+						                                        <div className="col-lg-10">
+						                                            <input value={this.state.mahasiswa.berat_badan} type="text" className="form-control m-b" name="account"/>
+						                                        </div>
+						                                    </div>
 											            </div>
 											        </div>
 											        <div role="tabpanel" id="tab-2" className="tab-pane">
 											            <div className="panel-body">
-											                <table className="table">
-															    <tr>
-															        <td><b>Nama Ayah</b> </td> <td>: {this.state.mahasiswa.nama_ayah}</td>
-															    </tr>
-															    <tr>
-															        <td><b>Pekerjaan Ayah</b></td> <td>: {this.state.mahasiswa.pekerjaan_ayah}</td>
-															    </tr>
-															    <tr>
-															        <td><b>Nama Ibu</b></td> <td>: {this.state.mahasiswa.nama_ibu}</td>
-															    </tr>
-															    <tr>
-															        <td><b>Pekerjaan Ibu</b></td> <td>: {this.state.mahasiswa.pekerjaan_ibu}</td>
-															    </tr>
-															    <tr>
-															        <td><b>Alamat Wali</b></td> <td>: {this.state.mahasiswa.alamat_wali}</td>
-															    </tr>
-															</table>
+											            	<div className="form-group row"><label className="col-lg-3 col-form-label">Nama Ayah</label>
+						                                        <div className="col-lg-9">
+						                                            <input value={this.state.mahasiswa.nama_ayah}  type="text" className="form-control m-b" name="account"/>
+						                                        </div>
+						                                    </div>
+						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Pekerjaan Ayah</label>
+						                                        <div className="col-lg-9">
+						                                            <input value={this.state.mahasiswa.pekerjaan_ayah}  type="text" className="form-control m-b" name="account"/>
+						                                        </div>
+						                                    </div>
+						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Nama Ibu</label>
+						                                        <div className="col-lg-9">
+						                                            <input value={this.state.mahasiswa.nama_ibu}  type="text" className="form-control m-b" name="account"/>
+						                                        </div>
+						                                    </div>
+						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Pekerjaan Ibu</label>
+						                                        <div className="col-lg-9">
+						                                            <input value={this.state.mahasiswa.pekerjaan_ibu}  type="text" className="form-control m-b" name="account"/>
+						                                        </div>
+						                                    </div>
+						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Alamat Wali</label>
+						                                        <div className="col-lg-9">
+						                                            <input value={this.state.mahasiswa.alamat_wali}  type="text" className="form-control m-b" name="account"/>
+						                                        </div>
+						                                    </div>
 											            </div>
 											        </div>
 											        <div role="tabpanel" id="tab-3" className="tab-pane">
 											            <div className="panel-body">
-											                <table className="table">
-															    <tr>
-															        <td><b>Rencana Kerja</b> </td> <td>: {this.state.mahasiswa.rencana_kerja}</td>
-															    </tr>
-															    <tr>
-															        <td><b>Rencana Kerja Lain</b></td> <td>: {this.state.mahasiswa.rencana_kerja_lainnya}</td>
-															    </tr>
-															    <tr>
-															        <td><b>Informasi LPKN dari</b></td> <td>: {this.state.mahasiswa.informasi_ttg_lpkn}</td>
-															    </tr>
-															    <tr>
-															        <td><b>Jurusan</b></td> <td>: {this.state.mahasiswa.jurusan}</td>
-															    </tr>
-															    <tr>
-															        <td><b>Kampus</b></td> <td>: {this.state.mahasiswa.kampus}</td>
-															    </tr>
-															    <tr>
-															        <td><b>Pesan</b></td> <td>: {this.state.mahasiswa.pesan}</td>
-															    </tr>
-															</table>
+											            	<div className="form-group row"><label className="col-lg-3 col-form-label">Rencana Kerja</label>
+						                                        <div className="col-lg-9">
+						                                            <input value={this.state.mahasiswa.rencana_kerja} type="text" className="form-control m-b" name="account"/>
+						                                        </div>
+						                                    </div>
+						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Rencana Kerja Lain</label>
+						                                        <div className="col-lg-9">
+						                                            <input value={this.state.mahasiswa.rencana_kerja_lainnya} type="text" className="form-control m-b" name="account"/>
+						                                        </div>
+						                                    </div>
+						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Info LPKN</label>
+						                                        <div className="col-lg-9">
+						                                            <input value={this.state.mahasiswa.informasi_ttg_lpkn} type="text" className="form-control m-b" name="account"/>
+						                                        </div>
+						                                    </div>
+						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Jurusan</label>
+						                                        <div className="col-lg-9">
+						                                            <input value={this.state.mahasiswa.jurusan} type="text" className="form-control m-b" name="account"/>
+						                                        </div>
+						                                    </div>
+						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Kampus</label>
+						                                        <div className="col-lg-9">
+						                                            <input value={this.state.mahasiswa.kampus} type="text" className="form-control m-b" name="account"/>
+						                                        </div>
+						                                    </div>
+						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Pesan</label>
+						                                        <div className="col-lg-9">
+						                                            <input value={this.state.mahasiswa.pesan} type="text" className="form-control m-b" name="account"/>
+						                                        </div>
+						                                    </div>
+						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Pembayaran</label>
+						                                        <div className="col-lg-9">
+						                                            <input value="" type="text" className="form-control m-b" name="account"/>
+						                                        </div>
+						                                    </div>
+											            </div>
+											        </div>
+											        <div role="tabpanel" id="tab-4" className="tab-pane">
+											            <div className="panel-body">
+											            	<div className="form-group row"><label className="col-lg-3 col-form-label">Jumlah (Rp.)</label>
+						                                        <div className="col-lg-9">
+						                                            <input type="number" className="form-control m-b" name="account"/>
+						                                        </div>
+						                                    </div>
 											            </div>
 											        </div>
 											    </div>

@@ -8,6 +8,7 @@ class Pengumuman extends Component {
 		this.state = {
 			tags: [],
 			khusus: false,
+			selectedMahasiswa: false,
 			selectedRecever: '',
 			jurusans: []
 		}
@@ -73,53 +74,56 @@ class Pengumuman extends Component {
 										<div className="col-lg-2">
 											<h5>Penerima : </h5>
 										</div>
-					                    {
-					                    	this.state.selectedRecever == 'Mahasiswa' ?
-					                    	<div className="col-lg-10">
-					                    		<div className="row">
-				                                    <div className="col-lg-6">
-				                                    	<label className="col-sm-2 col-form-label">Jurusan </label>
-				                                    	<div className="col-sm-8">
-						                                    <select
-						                                        className="form-control">
-						                                        <option>Semua Jurusan</option>
-						                                        {
-						                                        	this.state.jurusans.map((jurusan) => 
-						                                        		<option value={jurusan.id}>{jurusan.nama}</option>
-						                                        	)
-						                                        }
-						                                    </select>
-					                                    </div>
+										<div>
+				                    		<div className="pretty p-switch p-fill">
+											    <input type="checkbox" value="Mahasiswa" onChange={(e) => this.setState({selectedMahasiswa: !this.state.selectedMahasiswa}) } />
+											    <div className="state">
+											      <label>Mahasiswa</label>
+											    </div>
+											</div>
+											<div className="pretty p-switch p-fill">
+											    <input type="checkbox" value="Dosen" onChange={(e) => this.setState({selectedRecever: e.target.value}) }  />
+											    <div className="state">
+											      <label>Dosen</label>
+											    </div>
+											</div>
+
+				                    	</div>
+
+				                    	<br/>
+					                   	{
+					                   		this.state.selectedMahasiswa ?
+					                   		<div className="row">
+			                                    <div className="col-lg-6">
+			                                    	<label className="col-sm-2 col-form-label">Jurusan </label>
+			                                    	<div className="col-sm-8">
+					                                    <select
+					                                        className="form-control">
+					                                        <option>Semua Jurusan</option>
+					                                        {
+					                                        	this.state.jurusans.map((jurusan) => 
+					                                        		<option value={jurusan.id}>{jurusan.nama}</option>
+					                                        	)
+					                                        }
+					                                    </select>
 				                                    </div>
-				                                    <div className="col-lg-6">
-				                                    	<label className="col-sm-2 col-form-label">Jurusan </label>
-				                                    	<div className="col-sm-8">
-						                                    <select
-						                                        className="form-control">
-						                                        <option>Semua Kelas</option>
-						                                        <option>Kelas A</option>
-						                                        <option>Kelas B</option>
-						                                    </select>
-					                                    </div>
+			                                    </div>
+			                                    <div className="col-lg-6">
+			                                    	<label className="col-sm-2 col-form-label">Jurusan </label>
+			                                    	<div className="col-sm-8">
+					                                    <select
+					                                        className="form-control">
+					                                        <option>Semua Kelas</option>
+					                                        <option>Kelas A</option>
+					                                        <option>Kelas B</option>
+					                                    </select>
 				                                    </div>
-				                                </div>
-					                    	</div>
-					                    	:
-					                    	<div>
-					                    		<div className="pretty p-switch p-fill">
-												    <input type="checkbox" value="Mahasiswa" onChange={(e) => this.setState({selectedRecever: e.target.value}) } />
-												    <div className="state">
-												      <label>Mahasiswa</label>
-												    </div>
-												</div>
-												<div className="pretty p-switch p-fill">
-												    <input type="checkbox" value="Dosen" onChange={(e) => this.setState({selectedRecever: e.target.value}) }  />
-												    <div className="state">
-												      <label>Dosen</label>
-												    </div>
-												</div>
-					                    	</div>
-					                    }
+			                                    </div>
+			                                </div>
+			                                : null
+					                   	}
+
+					                    	
 					                </div>
 					                <div className="hr-line-dashed"></div>
 					                <div className="form-group row">
@@ -130,25 +134,30 @@ class Pengumuman extends Component {
                         </div>
                         <div role="tabpanel" id="tab-2" className="tab-pane">
                         	<div className="panel-body">
-                        		<table className="table table-hover issue-tracker">
-								    <tbody>
-								    <tr>
-								        <td>
-								            <a href="#">
-								                ADMINISTRATOR
-								            </a>
-								        </td>
-								        <td>
-								            This is issue with the coresponding note
-								        </td>
-								        <td>
-								            <span className="pie">0.52,1.041</span>
-								            2d
-								        </td>
-								    </tr>
-								    
-								    </tbody>
-								</table>
+                        		<table className="table">
+		                            <thead>
+			                            <tr>
+			                            	<th style={{'width': '4%'}}>No</th>
+			                                <th style={{'width': '50%'}}>Pengumuman</th>
+			                                <th style={{'width': '10%'}}>Tanggal</th>
+			                                <th style={{'width': '30%'}}>Penerima</th>
+			                            </tr>
+		                            </thead>
+		                            <tbody>
+		                            <tr>
+		                            	<td>1</td>
+		                                <td>Perubahan Jadwal Pengantar Manajemen</td>
+		                                <td>13-03-2019</td>
+		                                <td>Semua Mahasiswa</td>
+		                            </tr>
+		                            <tr>
+		                            	<td>2</td>
+		                                <td>Pergantian Dosen</td>
+		                                <td>14-03-2019</td>
+		                                <td>Perhotelan & Kapal Pesiar <b>Kelas A</b></td>
+		                            </tr>
+		                            </tbody>
+		                        </table>
                         	</div>
                         </div>
                     </div>

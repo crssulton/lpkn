@@ -433,11 +433,26 @@ class Dashboard extends Component {
 													            </a>
 													        </td>
 													        <td>
-													            This is issue with the coresponding note
+													            Silahkan lengkapi data masing - masing
 													        </td>
 													        <td>
-													            <span className="pie">0.52,1.041</span>
-													            2d
+													            <span className="pie">14-03-2019</span>
+													           
+													        </td>
+													    </tr>
+
+													    <tr>
+													        <td>
+													            <a href="#">
+													                AKADEMIK
+													            </a>
+													        </td>
+													        <td>
+													            Info perubahan jadwal mata kuliah Pengantar Manajemen
+													        </td>
+													        <td>
+													            <span className="pie">12-03-2019</span>
+													           
 													        </td>
 													    </tr>
 													    

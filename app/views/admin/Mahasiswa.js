@@ -173,7 +173,7 @@ class Calon_Mahasiswa extends Component {
 										        			<td>{key+1}</td>
 										        			<td>{mahasiswa.nim}</td>
 												            <td>{mahasiswa.nama}</td>
-												            <td>{mahasiswa.jurusan}</td>
+												            <td>Industri Maskapai</td>
 												            <td>
 												            	<center>
 						                                			<button 

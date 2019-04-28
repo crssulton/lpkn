@@ -27,7 +27,8 @@ class Jadwal extends Component {
             matkuls: [],
             dosens: [],
             eventSelected: {},
-            jurusans: []
+            jurusans: [],
+            listDay: []
         }
     }
 
@@ -190,10 +191,23 @@ class Jadwal extends Component {
         jadwalBaru.dosen = e.target.value
         this.setState({jadwalBaru}) 
     }
+    onChangeJurusan = (e) => {
+        let jadwalBaru = {}
+        jadwalBaru = this.state.jadwalBaru
+        jadwalBaru.jurusan = e.target.value
+        this.setState({jadwalBaru}) 
+    }
+
+    deleteListDay = (key) => {
+        let listDay = []
+        listDay = this.state.listDay
+        delete listDay[key]
+        this.setState({listDay})
+    }
 
     
     render() {
-        console.log(this.state.events)
+        console.log(this.state.listDay)
         return (
             <div>
                 <div className="row wrapper border-bottom white-bg page-heading">
@@ -226,6 +240,7 @@ class Jadwal extends Component {
                                     <div className="form-group row"><label className="col-lg-2 col-form-label">Jurusan</label>
                                         <div className="col-lg-10">
                                             <select
+                                                onChange={this.onChangeJurusan}
                                                 className="form-control">
                                                 <option value="">Pilih Jurusan</option>
                                                 {
@@ -238,7 +253,11 @@ class Jadwal extends Component {
                                     </div>
                                     <div className="form-group row"><label className="col-lg-2 col-form-label">Tanggal</label>
                                         <div className="col-lg-10">
-                                            <input type="text" disabled="disabled" value={moment(this.state.today).format('DD-MM-YYYY')} className="form-control m-b" name="account"/>
+                                            {
+                                                this.state.listDay.map((date, key) => 
+                                                    <span onClick={() =>this.deleteListDay(key)} style={{'margin': '2px 6px', 'cursor':'pointer'}}  className="badge badge-info">{date}</span>
+                                                )
+                                            }
                                         </div>
                                     </div>
                                     <div className="form-group row"><label className="col-lg-2 col-form-label">Waktu</label>
@@ -279,7 +298,10 @@ class Jadwal extends Component {
                                     }}
                                     dayClick={
                                             (event, jsEvent, view) => {
-                                            this.setState({tmpDate: event, today: moment(event._d).format('YYYY-MM-DD')})
+                                            let listDay = []
+                                            listDay = this.state.listDay
+                                            listDay.push(moment(event._d).format('DD-MM-YYYY'))
+                                            this.setState({tmpDate: event, today: moment(event._d).format('YYYY-MM-DD'), listDay})
                                             // $('#fullCalModal').modal('show');
                                     }}
                                     eventClick={

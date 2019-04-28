@@ -40,20 +40,19 @@ class Login extends Component {
                 return response.json();
               }).then(function(data) {
                 // Case login
-                console.log(data)
                 if(data.non_field_errors == null){
                     if (data.user.role_display == 'Akademik') {
                         cookie.save('user_id', data.user.profile.id)
                     }
 
-                    if (data.user.role_display == 'Mahasiswa') {
+                    // if (data.user.role_display == 'Mahasiswa') {
                         cookie.save('user_id', data.user.id)
-                    }
+                    // }
 
                     cookie.save('token', data.token)
                     cookie.save('access', data.token)
                     cookie.save('role', data.user.role)
-                    if (data.user.role_display == 'Akademik') {
+                    if (data.user.role_display != 'Mahasiswa') {
                         cookie.save('kampus', data.user.profile.kampus)
                     }
                     setTimeout(() => {

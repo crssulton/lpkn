@@ -8,14 +8,6 @@ class TopHeader extends React.Component {
         smoothlyMenu();
     }
 
-    forceUpdate = () => {
-        // Window.location('/#/registrasi')
-        // window.location.reload()
-        window.location.href = '/#/registrasi';
-                window.location.reload()
-
-    }
-
     render() {
         return (
             <div className="row border-bottom">
@@ -25,7 +17,7 @@ class TopHeader extends React.Component {
                     </div>
                     <ul className="nav navbar-top-links navbar-right">
                         <li><Link to="login"> Masuk </Link></li>
-                        <li><Link onClick={this.forceUpdate}> Registrasi </Link></li>
+                        <li><Link to="registrasi"> Registrasi </Link></li>
                     </ul>
                 </nav>
             </div>

@@ -18,7 +18,10 @@ class Dashboard extends Component {
         super(props);
         this.state = {
             matkuls: [],
-            date: thisDay + ', ' + day + ' ' + months[month] + ' ' + year
+            date: thisDay + ', ' + day + ' ' + months[month] + ' ' + year,
+            QRCode: "",
+            check: false,
+            loading: false
         }
     }
 
@@ -37,6 +40,19 @@ class Dashboard extends Component {
 				matkuls: data.results
 			})
 		});
+    }
+
+    generateQrCode = () => {
+    	this.setState({
+			loading: !this.state.loading
+		})
+		
+    	setTimeout(() => {
+    		this.setState({
+				QRCode: "https://www.qr-code-generator.com/wp-content/themes/qr/img-v4/guide/design/QR_Code_Plain.svg",
+				loading: !this.state.loading
+			})
+    	}, 1000)
     }
 
     render() {
@@ -60,7 +76,7 @@ class Dashboard extends Component {
                             </div>
                             <div className="ibox-content">
                             	<div className="table-responsive">
-									<table className="table table-striped" align="right">
+									<table className="table table-hover" align="right">
 			                            <thead>
 			                            <tr>
 			                                <th style={{'width':'5%'}}>MATA KULIAH</th>
@@ -72,7 +88,7 @@ class Dashboard extends Component {
 			                            <tbody>
 			                            {
 			                            	this.state.matkuls.map((matkul, key) =>
-			                            		<tr>
+			                            		<tr onClick={this.generateQrCode} style={{'cursor': 'pointer'}}>
 					                                <td>{matkul.nama}</td>
 					                                <td>16:00 - 18:00</td>
 					                                <td>{matkul.jumlah_jam} Jam</td>
@@ -94,7 +110,18 @@ class Dashboard extends Component {
                             </div>
                             <div className="ibox-content">
                             	<div className="table-responsive">
-									<img src="https://www.qr-code-generator.com/wp-content/themes/qr/img-v4/guide/design/QR_Code_Plain.svg"/>
+                            		{
+                            			this.state.loading ?
+                            			<div className="spiner-example">
+			                                <div className="sk-spinner sk-spinner-double-bounce">
+			                                    <div className="sk-double-bounce1"></div>
+			                                    <div className="sk-double-bounce2"></div>
+			                                </div>
+			                            </div>
+			                            :
+										<img src={this.state.QRCode}/>
+									}
+                            		
 		                        </div>
                            	</div>
                         </div>

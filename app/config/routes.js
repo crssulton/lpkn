@@ -6,6 +6,7 @@ import MainMhs from '../components/layouts/user/mahasiswa/MainMhs';
 import MainDosen from '../components/layouts/user/dosen/MainDosen';
 import MainAkademik from '../components/layouts/user/akademik/MainAkademik';
 import MainAdmin from '../components/layouts/user/admin/MainAdmin';
+import MainHRD from '../components/layouts/user/hrd/MainHRD';
 
 import HomeLP from '../views/landing/Home';
 import LoginLP from '../views/landing/Login';
@@ -45,7 +46,10 @@ import TagihanAdmin from '../views/admin/Tagihan';
 
 import { Route, Router, IndexRedirect, browserHistory} from 'react-router';
 let komponen= null;
+
 console.log(cookie.load('access')+" "+cookie.load('role')+" "+cookie.load('user_id'))
+console.log("hahaha")
+
 if((cookie.load('access') === 'undefined' && cookie.load('role') === 'undefined') || (cookie.load('access') === undefined && cookie.load('role') === undefined)){
     komponen = (
     <Router history={browserHistory}>
@@ -112,6 +116,16 @@ if(cookie.load('access') !== 'undefined' && cookie.load('role') === '3'){
             <Route path="calon-mahasiswa" component={CalonMahasiswa}> </Route>
             <Route path="mahasiswa" component={MahasiswaAdmin}> </Route>
             <Route path="tagihan" component={TagihanAdmin}> </Route>
+        </Route>
+    </Router> )
+}
+
+if(cookie.load('access') !== 'undefined' && cookie.load('role') === '7'){
+    komponen = (
+    <Router history={browserHistory}>
+        <Route path="/" component={MainHRD}>
+            <IndexRedirect to="/pendaftaran" />
+            <Route path="pendaftaran" component={Pendaftaran}> </Route>
         </Route>
     </Router> )
 }

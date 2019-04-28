@@ -171,7 +171,7 @@ class List_pendaftar extends Component {
 										        		<tr>
 										        			<td>{key+1}</td>
 												            <td>{pendaftar.nama}</td>
-												            <td>{pendaftar.jurusan}</td>
+												            <td>Hotel/Kapal Pesiar</td>
 												            <td>
 												            	<center>
 						                                			<button 
