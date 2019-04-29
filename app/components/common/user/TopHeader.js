@@ -10,9 +10,10 @@ class TopHeader extends React.Component {
         smoothlyMenu();
     }
     handleLogout= () =>{
-        cookie.save('user_id', undefined)
-        cookie.save('access', undefined)
-        cookie.save('role', undefined)
+        window.sessionStorage.removeItem('user_id')
+        window.sessionStorage.removeItem('access')
+        window.sessionStorage.removeItem('role')
+        window.sessionStorage.removeItem('token')
         setTimeout(() => {
             window.location = "/";
         },0);
