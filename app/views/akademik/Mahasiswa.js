@@ -25,7 +25,7 @@ class Mahasiswa extends Component {
 		fetch(BASE_URL + '/api/mahasiswa/', {
 			method: 'get',
 			headers: {
-				'Authorization': 'JWT ' + cookie.load('token')
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
 			}
 		}).then(function(response) {
 			return response.json();
@@ -39,7 +39,7 @@ class Mahasiswa extends Component {
 		fetch(BASE_URL + '//api/jurusan/', {
 			method: 'get',
 			headers: {
-				'Authorization': 'JWT ' + cookie.load('token')
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
 			}
 		}).then(function(response) {
 			return response.json();

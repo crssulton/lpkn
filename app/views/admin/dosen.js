@@ -25,7 +25,7 @@ class Administrator extends Component {
 		fetch('http://lpkn.itec.my.id:9000/api/dosen/', {
 			method: 'get',
 			headers: {
-				'Authorization': 'JWT ' + cookie.load('token')
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
 			}
 		}).then(function(response) {
 			return response.json();
@@ -40,7 +40,7 @@ class Administrator extends Component {
         fetch('http://lpkn.itec.my.id:9000/api/mata-kuliah/', {
             method: 'get',
             headers: {
-                'Authorization': 'JWT ' + cookie.load('token')
+                'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
             }
         }).then(function(response) {
             return response.json();
@@ -129,7 +129,7 @@ class Administrator extends Component {
     	fetch('http://lpkn.itec.my.id:9000/api/dosen/', {
 			method: 'put',
 			headers: {
-				'Authorization': 'JWT ' + cookie.load('token'),
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
 				'Content-Type': 'application/json',
                 'Accept': 'application/json'
 			},
@@ -226,7 +226,7 @@ class Administrator extends Component {
     	fetch('http://lpkn.itec.my.id:9000/api/dosen/', {
 			method: 'post',
 			headers: {
-				'Authorization': 'JWT ' + cookie.load('token'),
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
 				'Content-Type': 'application/json',
                 'Accept': 'application/json'
 			},
@@ -261,7 +261,7 @@ class Administrator extends Component {
 		  	fetch('http://lpkn.itec.my.id:9000/api/dosen/' + id, {
 				method: 'delete',
 				headers: {
-					'Authorization': 'JWT ' + cookie.load('token')
+					'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
 				}
 			}).then(function(response) {
 				let dosens = []

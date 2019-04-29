@@ -17,7 +17,7 @@ class Navigation extends Component {
         fetch('http://lpkn.itec.my.id:9000/api/akademik/' + cookie.load('user_id')+'/', {
             method: 'get',
             headers: {
-                'Authorization': 'JWT ' + cookie.load('token')
+                'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
             }
         }).then(function(response) {
             return response.json();

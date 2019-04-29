@@ -75,7 +75,7 @@ class Kampus extends Component {
 			method: 'put',
 			body: JSON.stringify(this.state.editKampus),
 			headers: {
-				'Authorization': 'JWT ' + cookie.load('token'),
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
 				'Content-Type': 'application/json',
                 'Accept': 'application/json'
 			}
@@ -124,7 +124,7 @@ class Kampus extends Component {
     	fetch(BASE_URL + '/api/kampus/', {
 			method: 'post',
 			headers: {
-				'Authorization': 'JWT ' + cookie.load('token'),
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
 				'Content-Type': 'application/json',
                 'Accept': 'application/json'
 			},
@@ -177,7 +177,7 @@ class Kampus extends Component {
 		  	fetch(BASE_URL + '/api/kampus/' + id, {
 				method: 'delete',
 				headers: {
-					'Authorization': 'JWT ' + cookie.load('token')
+					'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
 				}
 			}).then(function(response) {
 

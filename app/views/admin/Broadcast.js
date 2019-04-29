@@ -19,7 +19,7 @@ class Broadcast extends Component {
         fetch('http://lpkn.itec.my.id:9000/api/jurusan/', {
             method: 'get',
             headers: {
-                'Authorization': 'JWT ' + cookie.load('token')
+                'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
             }
         }).then(function(response) {
             return response.json();

@@ -37,7 +37,7 @@ class Jadwal extends Component {
         fetch('http://lpkn.itec.my.id:9000/api/jadwal/', {
             method: 'get',
             headers: {
-                'Authorization': 'JWT ' + cookie.load('token')
+                'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
             }
         }).then(function(response) {
             return response.json();
@@ -50,7 +50,7 @@ class Jadwal extends Component {
         fetch('http://lpkn.itec.my.id:9000/api/dosen/', {
             method: 'get',
             headers: {
-                'Authorization': 'JWT ' + cookie.load('token')
+                'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
             }
         }).then(function(response) {
             return response.json();
@@ -63,7 +63,7 @@ class Jadwal extends Component {
         fetch('http://lpkn.itec.my.id:9000/api/mata-kuliah/', {
             method: 'get',
             headers: {
-                'Authorization': 'JWT ' + cookie.load('token')
+                'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
             }
         }).then(function(response) {
             return response.json();
@@ -76,7 +76,7 @@ class Jadwal extends Component {
         fetch('http://lpkn.itec.my.id:9000/api/jurusan/', {
             method: 'get',
             headers: {
-                'Authorization': 'JWT ' + cookie.load('token')
+                'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
             }
         }).then(function(response) {
             return response.json();
@@ -104,7 +104,7 @@ class Jadwal extends Component {
         fetch('http://lpkn.itec.my.id:9000/api/jadwal/', {
             method: 'post',
             headers: {
-                'Authorization': 'JWT ' + cookie.load('token'),
+                'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
             },
@@ -140,7 +140,7 @@ class Jadwal extends Component {
         //     fetch('http://lpkn.itec.my.id:9000/api/jadwal/' + self.state.idJadwalSelected, {
         //         method: 'delete',
         //         headers: {
-        //             'Authorization': 'JWT ' + cookie.load('token')
+        //             'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
         //         }
         //     }).then(function(response) {
         //         self.setState({

@@ -38,7 +38,7 @@ class Dashboard extends Component {
 		fetch('http://lpkn.itec.my.id:9000/api/mahasiswa/1/', {
 			method: 'put',
 			headers: {
-				'Authorization': 'JWT ' + cookie.load('token')
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
 			},
 			body: JSON.stringify(self.state.mahasiswa)
 		}).then(function(response) {

@@ -75,7 +75,7 @@ class Kepala_Cabang extends Component {
 			method: 'put',
 			body: JSON.stringify(this.state.editkepalaCabangs),
 			headers: {
-				'Authorization': 'JWT ' + cookie.load('token'),
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
 				'Content-Type': 'application/json',
                 'Accept': 'application/json'
 			}
@@ -124,7 +124,7 @@ class Kepala_Cabang extends Component {
     	fetch(BASE_URL + '/api/kepalaCabangs/', {
 			method: 'post',
 			headers: {
-				'Authorization': 'JWT ' + cookie.load('token'),
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
 				'Content-Type': 'application/json',
                 'Accept': 'application/json'
 			},
@@ -177,7 +177,7 @@ class Kepala_Cabang extends Component {
 		  	fetch(BASE_URL + '/api/kepalaCabangs/' + id, {
 				method: 'delete',
 				headers: {
-					'Authorization': 'JWT ' + cookie.load('token')
+					'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
 				}
 			}).then(function(response) {
 

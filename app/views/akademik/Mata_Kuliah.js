@@ -27,7 +27,7 @@ class Mata_Kuliah extends Component {
 		fetch(BASE_URL + '/api/mata-kuliah/', {
 			method: 'get',
 			headers: {
-				'Authorization': 'JWT ' + cookie.load('token')
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
 			}
 		}).then(function(response) {
 			return response.json();
@@ -42,7 +42,7 @@ class Mata_Kuliah extends Component {
 		fetch(BASE_URL + '/api/jurusan/', {
 			method: 'get',
 			headers: {
-				'Authorization': 'JWT ' + cookie.load('token')
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
 			}
 		}).then(function(response) {
 			return response.json();
@@ -108,7 +108,7 @@ class Mata_Kuliah extends Component {
 			method: 'put',
 			body: JSON.stringify(this.state.editMatkul),
 			headers: {
-				'Authorization': 'JWT ' + cookie.load('token'),
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
 				'Content-Type': 'application/json',
                 'Accept': 'application/json'
 			}
@@ -174,7 +174,7 @@ class Mata_Kuliah extends Component {
     	fetch(BASE_URL + '/api/mata-kuliah/', {
 			method: 'post',
 			headers: {
-				'Authorization': 'JWT ' + cookie.load('token'),
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
 				'Content-Type': 'application/json',
                 'Accept': 'application/json'
 			},
@@ -228,7 +228,7 @@ class Mata_Kuliah extends Component {
 		  	fetch(BASE_URL + '/api/mata-kuliah/' + id, {
 				method: 'delete',
 				headers: {
-					'Authorization': 'JWT ' + cookie.load('token')
+					'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
 				}
 			}).then(function(response) {
 

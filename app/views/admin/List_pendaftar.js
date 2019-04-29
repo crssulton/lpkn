@@ -22,7 +22,7 @@ class List_pendaftar extends Component {
 		fetch('http://lpkn.itec.my.id:9000/api/pendaftaran/', {
 			method: 'get',
 			headers: {
-				'Authorization': 'JWT ' + cookie.load('token')
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
 			}
 		}).then(function(response) {
 			return response.json();
@@ -66,7 +66,7 @@ class List_pendaftar extends Component {
     	fetch('http://lpkn.itec.my.id:9000/api/pendaftaran/' + this.state.pendaftar.id +'/approve/', {
 			method: 'post',
 			headers: {
-				'Authorization': 'JWT ' + cookie.load('token')
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
 			}
 		}).then(function(response) {
 			return response.json();
@@ -96,7 +96,7 @@ class List_pendaftar extends Component {
 		  	fetch('http://lpkn.itec.my.id:9000/api/pendaftaran/' + this.state.pendaftar.id, {
 				method: 'delete',
 				headers: {
-					'Authorization': 'JWT ' + cookie.load('token')
+					'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
 				}
 			}).then(function(response) {
 				let pendaftars = []

@@ -22,7 +22,7 @@ class Calon_Mahasiswa extends Component {
 		fetch('http://lpkn.itec.my.id:9000/api/mahasiswa/', {
 			method: 'get',
 			headers: {
-				'Authorization': 'JWT ' + cookie.load('token')
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
 			}
 		}).then(function(response) {
 			return response.json();
@@ -66,7 +66,7 @@ class Calon_Mahasiswa extends Component {
     	fetch('http://lpkn.itec.my.id:9000/api/mahasiswa/' + this.state.mahasiswa.id +'/approve/', {
 			method: 'post',
 			headers: {
-				'Authorization': 'JWT ' + cookie.load('token')
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
 			}
 		}).then(function(response) {
 			return response.json();
@@ -96,7 +96,7 @@ class Calon_Mahasiswa extends Component {
 		  	fetch('http://lpkn.itec.my.id:9000/api/mahasiswa/' + this.state.mahasiswa.id, {
 				method: 'delete',
 				headers: {
-					'Authorization': 'JWT ' + cookie.load('token')
+					'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
 				}
 			}).then(function(response) {
 				let mahasiswas = []
