@@ -1,0 +1,1 @@
+export const BASE_URL = 'http://lpkn.itec.my.id:9000'

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';	
 import cookie from 'react-cookies';	
+import {BASE_URL} from '../../config/config.js'
 
 class Mahasiswa extends Component {
 
@@ -21,7 +22,7 @@ class Mahasiswa extends Component {
     componentDidMount(){
     	const self = this
 
-		fetch('http://lpkn.itec.my.id:9000/api/mahasiswa/', {
+		fetch(BASE_URL + '/api/mahasiswa/', {
 			method: 'get',
 			headers: {
 				'Authorization': 'JWT ' + cookie.load('token')
@@ -35,7 +36,7 @@ class Mahasiswa extends Component {
 			})
 		});
 
-		fetch('http://lpkn.itec.my.id:9000/api/jurusan/', {
+		fetch(BASE_URL + '//api/jurusan/', {
 			method: 'get',
 			headers: {
 				'Authorization': 'JWT ' + cookie.load('token')

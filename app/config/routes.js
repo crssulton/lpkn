@@ -1,5 +1,4 @@
 import React from 'react';
-import cookie from 'react-cookies';
 
 import MainLanding from '../components/layouts/landing/MainLanding';
 import MainMhs from '../components/layouts/user/mahasiswa/MainMhs';
@@ -7,6 +6,7 @@ import MainDosen from '../components/layouts/user/dosen/MainDosen';
 import MainAkademik from '../components/layouts/user/akademik/MainAkademik';
 import MainAdmin from '../components/layouts/user/admin/MainAdmin';
 import MainHRD from '../components/layouts/user/hrd/MainHRD';
+import MainOwner from '../components/layouts/user/owner/MainOwner';
 
 import HomeLP from '../views/landing/Home';
 import LoginLP from '../views/landing/Login';
@@ -43,14 +43,20 @@ import CalonMahasiswa from '../views/admin/Calon_Mahasiswa';
 import MahasiswaAdmin from '../views/admin/Mahasiswa';
 import TagihanAdmin from '../views/admin/Tagihan';
 
+import DashboardOwner from '../views/owner/Dashboard';
+import KampusOwner from '../views/owner/Kampus';
+import HRDOwner from '../views/owner/HRD';
+import AnggaranOwner from '../views/owner/Anggaran';
+import KepalaCabangOwner from '../views/owner/Kepala_cabang';
+
 
 import { Route, Router, IndexRedirect, browserHistory} from 'react-router';
 let komponen= null;
 
-console.log(cookie.load('access')+" "+cookie.load('role')+" "+cookie.load('user_id'))
-console.log("hahaha")
+console.log(window.sessionStorage.getItem('access'))
+console.log(window.sessionStorage.getItem('role'))
 
-if((cookie.load('access') === 'undefined' && cookie.load('role') === 'undefined') || (cookie.load('access') === undefined && cookie.load('role') === undefined)){
+if(window.sessionStorage.getItem('access') === null || window.sessionStorage.getItem('role') === null) {
     komponen = (
     <Router history={browserHistory}>
         <Route path="/" component={MainLanding}>
@@ -61,7 +67,7 @@ if((cookie.load('access') === 'undefined' && cookie.load('role') === 'undefined'
         </Route>
     </Router> )
 }
-if(cookie.load('access') !== 'undefined' && cookie.load('role') == "1"){
+if(window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStorage.getItem('role') == "1"){
     komponen = (
     <Router history={browserHistory}>
         <Route path="/" component={MainMhs}>
@@ -73,7 +79,7 @@ if(cookie.load('access') !== 'undefined' && cookie.load('role') == "1"){
         </Route>
     </Router> )
 }
-if(cookie.load('access') !== 'undefined' && cookie.load('role') === 'dosen'){
+if(window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStorage.getItem('role') === 'dosen'){
     komponen = (
     <Router history={browserHistory}>
         <Route path="/" component={MainDosen}>
@@ -85,7 +91,7 @@ if(cookie.load('access') !== 'undefined' && cookie.load('role') === 'dosen'){
         </Route>
     </Router> )
 }
-if(cookie.load('access') !== 'undefined' && cookie.load('role') === '5'){
+if(window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStorage.getItem('role') === '5'){
     komponen = (
     <Router history={browserHistory}>
         <Route path="/" component={MainAkademik}>
@@ -98,7 +104,7 @@ if(cookie.load('access') !== 'undefined' && cookie.load('role') === '5'){
         </Route>
     </Router> )
 }
-if(cookie.load('access') !== 'undefined' && cookie.load('role') === '3'){
+if(window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStorage.getItem('role') === '3'){
     komponen = (
     <Router history={browserHistory}>
         <Route path="/" component={MainAdmin}>
@@ -120,12 +126,26 @@ if(cookie.load('access') !== 'undefined' && cookie.load('role') === '3'){
     </Router> )
 }
 
-if(cookie.load('access') !== 'undefined' && cookie.load('role') === '7'){
+if(window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStorage.getItem('role') === '7'){
     komponen = (
     <Router history={browserHistory}>
         <Route path="/" component={MainHRD}>
             <IndexRedirect to="/pendaftaran" />
             <Route path="pendaftaran" component={Pendaftaran}> </Route>
+        </Route>
+    </Router> )
+}
+
+if(window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStorage.getItem('role') === '8'){
+    komponen = (
+    <Router history={browserHistory}>
+        <Route path="/" component={MainOwner}>
+            <IndexRedirect to="/dashboard" />
+            <Route path="dashboard" component={DashboardOwner}> </Route>
+            <Route path="kampus" component={KampusOwner}> </Route>
+            <Route path="kepala" component={KepalaCabangOwner}> </Route>
+            <Route path="hrd" component={HRDOwner}> </Route>
+            <Route path="anggaran" component={AnggaranOwner}> </Route>
         </Route>
     </Router> )
 }

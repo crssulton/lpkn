@@ -3,6 +3,7 @@ import logo from '../../../public/assets/assets 1/img/laptop4.png'
 import cookie from 'react-cookies';
 import swal from 'sweetalert';
 import { Link } from 'react-router';
+import {BASE_URL} from '../../config/config.js'
 
 class Login extends Component {
     constructor(props){
@@ -27,53 +28,39 @@ class Login extends Component {
             username: this.state.username,
             password: this.state.password
         }
-        
-        if (this.state.username !== "dosen1") {
-            fetch('http://lpkn.itec.my.id:9000/api/auth/', {
-                method: 'post',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',                  
-                },
-                body: JSON.stringify(user)
-              }).then(function(response) {
-                return response.json();
-              }).then(function(data) {
-                // Case login
-                if(data.non_field_errors == null){
-                    if (data.user.role_display == 'Akademik') {
-                        cookie.save('user_id', data.user.profile.id)
-                    }
 
-                    // if (data.user.role_display == 'Mahasiswa') {
-                        cookie.save('user_id', data.user.id)
-                    // }
+        fetch(BASE_URL + '/api/auth/', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',                  
+            },
+            body: JSON.stringify(user)
+          }).then(function(response) {
+            return response.json();
+          }).then(function(data) {
 
-                    cookie.save('token', data.token)
-                    cookie.save('access', data.token)
-                    cookie.save('role', data.user.role)
-                    if (data.user.role_display != 'Mahasiswa') {
-                        cookie.save('kampus', data.user.profile.kampus)
-                    }
-                    setTimeout(() => {
-                        window.location = "/";
-                    },500);
-                }else{
-                    swal("Oops!", "Username atau Password salah!", "error");
-                    setTimeout(() => {
-                        self.setState({loading : false})
-                    },500);
+            if(data.non_field_errors == null){
+                if (data.user.role_display == 'Akademik') {
+                    window.sessionStorage.setItem("user_id",  data.user.profile.id);
                 }
-              });
-          }else{
-            cookie.save('user_id', "dosen")
-            cookie.save('token', "dosen")
-            cookie.save('access', "dosen")
-            cookie.save('role', "dosen")
-            setTimeout(() => {
-                window.location = "/";
-            },500);
-          }
+
+                window.sessionStorage.setItem("token", data.token);
+                window.sessionStorage.setItem("access", data.token);
+                window.sessionStorage.setItem("role", data.user.role);
+                window.sessionStorage.setItem("user_id",  data.user.id);
+                
+                setTimeout(() => {
+                    window.location = "/";
+                },500);
+            }else{
+                swal("Oops!", "Username atau Password salah!", "error");
+                setTimeout(() => {
+                    self.setState({loading : false})
+                },500);
+            }
+        });
+
     }
     render() {
         return (

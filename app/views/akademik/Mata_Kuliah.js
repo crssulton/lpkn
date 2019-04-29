@@ -1,6 +1,7 @@
 import React, { Component } from 'react';	
 import cookie from 'react-cookies';	
 import swal from 'sweetalert';
+import {BASE_URL} from '../../config/config.js'
 
 class Mata_Kuliah extends Component {
 
@@ -15,14 +16,15 @@ class Mata_Kuliah extends Component {
             matkulBaru: {},
             add: true,
             addForm: true,
-            jurusans: []
+            jurusans: [],
+            editMatkul : {}
         }
     }
 
     componentDidMount(){
     	const self = this
 		
-		fetch('http://lpkn.itec.my.id:9000/api/mata-kuliah/', {
+		fetch(BASE_URL + '/api/mata-kuliah/', {
 			method: 'get',
 			headers: {
 				'Authorization': 'JWT ' + cookie.load('token')
@@ -37,7 +39,7 @@ class Mata_Kuliah extends Component {
 			})
 		});
 
-		fetch('http://lpkn.itec.my.id:9000/api/jurusan/', {
+		fetch(BASE_URL + '/api/jurusan/', {
 			method: 'get',
 			headers: {
 				'Authorization': 'JWT ' + cookie.load('token')
@@ -55,50 +57,75 @@ class Mata_Kuliah extends Component {
     handleChangeKode = e => {
         let matkuls = []
         matkuls = this.state.matkuls
-        matkuls[this.state.selected].kode = e.target.value
-        this.setState({matkuls})
+        matkuls.filter(data => data.id == this.state.selected)[0].kode = e.target.value
+        this.setState({
+        	matkuls,
+        	editMatkul: matkuls.filter(data => data.id == this.state.selected)[0]
+        })
     }
     handleChangeNama = e => {
         let matkuls = []
         matkuls = this.state.matkuls
-        matkuls[this.state.selected].nama = e.target.value
-        this.setState({matkuls})
+        matkuls.filter(data => data.id == this.state.selected)[0].nama = e.target.value
+        this.setState({
+        	matkuls,
+        	editMatkul: matkuls.filter(data => data.id == this.state.selected)[0]
+        })
     }
     handleChangeKategori = e => {
         let matkuls = []
         matkuls = this.state.matkuls
-        matkuls[this.state.selected].kategori = e.target.value
-        this.setState({matkuls})
+        matkuls.filter(data => data.id == this.state.selected)[0].kategori = e.target.value
+        this.setState({
+        	matkuls,
+        	editMatkul: matkuls.filter(data => data.id == this.state.selected)[0]
+        })
     }
     handleChangeJam = e => {
         let matkuls = []
         matkuls = this.state.matkuls
-        matkuls[this.state.selected].jumlah_jam = e.target.value
-        this.setState({matkuls})
+        matkuls.filter(data => data.id == this.state.selected)[0].jumlah_jam = e.target.value
+        this.setState({
+        	matkuls,
+        	editMatkul: matkuls.filter(data => data.id == this.state.selected)[0]
+        })
     }
     handleChangePertemuan = e => {
         let matkuls = []
         matkuls = this.state.matkuls
-        matkuls[this.state.selected].jumlah_pertemuan = e.target.value
-        this.setState({matkuls})
+        matkuls.filter(data => data.id == this.state.selected)[0].jumlah_pertemuan = e.target.value
+        this.setState({
+        	matkuls,
+        	editMatkul: matkuls.filter(data => data.id == this.state.selected)[0]
+        })
     }
 
 
 
     editMataKuliah = () => {
-    	fetch('http://lpkn.itec.my.id:9000/api/mata-kuliah/', {
-			method: 'get',
+    	const self = this
+    	fetch(BASE_URL + '/api/mata-kuliah/'+ this.state.selected+'/', {
+			method: 'put',
+			body: JSON.stringify(this.state.editMatkul),
 			headers: {
-				'Authorization': 'JWT ' + cookie.load('token')
+				'Authorization': 'JWT ' + cookie.load('token'),
+				'Content-Type': 'application/json',
+                'Accept': 'application/json'
 			}
 		}).then(function(response) {
 			return response.json();
+			toastr.warning("Gagal mengubah mata kuliah", "Gagal ! ")
 		}).then(function(data) {
-			console.log(data)
-			self.setState({
-				matkuls: data.results,
-				loading: !self.state.loading
-			})
+			if (data.id == self.state.editMatkul.id) {
+				toastr.success("Mata kuliah berhasil diubah", "Sukses ! ")
+				self.setState({
+					addForm: !self.state.addForm
+				})
+			}
+			else{
+				toastr.warning("Gagal mengubah mata kuliah", "Gagal ! ")
+			}
+			
 		});
     }
 
@@ -143,8 +170,8 @@ class Mata_Kuliah extends Component {
     	const self = this
     	let addButton = document.getElementsByClassName("btn-add")
     	addButton[0].setAttribute("disabled", "disabled")
-    	console.log(JSON.stringify(this.state.matkulBaru))
-    	fetch('http://lpkn.itec.my.id:9000/api/mata-kuliah/', {
+
+    	fetch(BASE_URL + '/api/mata-kuliah/', {
 			method: 'post',
 			headers: {
 				'Authorization': 'JWT ' + cookie.load('token'),
@@ -155,30 +182,40 @@ class Mata_Kuliah extends Component {
 		}).then(function(response) {
 			return response.json();
 		}).then(function(data) {
-			addButton[0].removeAttribute("disabled")
-			let matkuls = []
-			let matkulBaru = {}
-			matkulBaru = self.state.matkulBaru
+			console.log(data)
+			if(data.id != null || data.id != undefined){
+				addButton[0].removeAttribute("disabled")
+				let matkuls = []
+				let matkulBaru = {}
+				matkulBaru = self.state.matkulBaru
 
-        	matkuls = self.state.matkuls
-        	matkuls.push(data)
+	        	matkuls = self.state.matkuls
+	        	matkuls.push(data)
 
-    		matkulBaru.kode = null
-			matkulBaru.nama = null
-			matkulBaru.jumlah_jam = null
-			matkulBaru.jumlah_pertemuan = null
+	    		matkulBaru.kode = null
+				matkulBaru.nama = null
+				matkulBaru.jumlah_jam = null
+				matkulBaru.jumlah_pertemuan = null
 
-			self.setState({
-				addForm: true,
-				matkuls,
-				matkulBaru
-				
-			})
-			toastr.success("Mata kuliah berhasil ditambahkan", "Sukses ! ")
+				self.setState({
+					addForm: true,
+					matkuls,
+					matkulBaru
+					
+				})
+				toastr.success("Mata kuliah berhasil ditambahkan", "Sukses ! ")
+			}else{
+				addButton[0].removeAttribute("disabled")
+				self.setState({
+					addForm: true
+				})
+				toastr.warning("Gagal menambahkan mata kuliah", "Gagal ! ")
+			}
 		});
     }
 
     handleDeleteMatkul = (id, key)=> {
+    	console.log(id)
     	const self = this
     	swal({
 		  title: "Hapus Mata Kuliah ?",
@@ -188,27 +225,22 @@ class Mata_Kuliah extends Component {
 		})
 		.then((willDelete) => {
 		  if (willDelete) {
-		  	fetch('http://lpkn.itec.my.id:9000/api/mata-kuliah/' + id, {
+		  	fetch(BASE_URL + '/api/mata-kuliah/' + id, {
 				method: 'delete',
 				headers: {
 					'Authorization': 'JWT ' + cookie.load('token')
 				}
 			}).then(function(response) {
-				let matkuls = []
-	        	matkuls = self.state.matkuls
-	        	delete matkuls[key]
+
 				self.setState({
-					matkuls
+					matkuls: self.state.matkuls.filter(data => data.id !== id)
 				})
 				swal("Sukses! Mata Kuliah telah dihapus!", {
 			      icon: "success",
 			    });
 			}).then(function(data) {
-				let matkuls = []
-	        	matkuls = self.state.matkuls
-	        	delete matkuls[key]
 				self.setState({
-					matkuls
+					matkuls: self.state.matkuls.filter(data => data.id !== id)
 				})
 				swal("Sukses! Mata Kuliah telah dihapus!", {
 			      icon: "success",
@@ -302,7 +334,7 @@ class Mata_Kuliah extends Component {
 						                                				style={{'margin' : '0 5px'}} 
 						                                				className="btn btn-info btn-sm" 
 						                                				type="button"
-						                                				onClick={ () => {this.setState({ selected: key, addForm: false})} }
+						                                				onClick={ () => {this.setState({ selected: matkul.id, addForm: false})} }
 						                                				>
 						                                				<i className="fa fa-edit"></i></button>
 
@@ -326,9 +358,16 @@ class Mata_Kuliah extends Component {
                         </div>
                         <div className="col-lg-4">
                             <div className="ibox ">
-                                <div className="ibox-title" style={{'backgroundColor':'#1ab394', 'color':'white'}}>
-                                    <h5> <i className="fa fa-plus"></i> Tambah Mata Kuliah</h5>
-                                </div>
+                                {
+                                	this.state.addForm ?
+                                	<div className="ibox-title" style={{'backgroundColor':'#1ab394', 'color':'white'}}>
+	                                    <h5> <i className="fa fa-plus"></i> Tambah Mata Kuliah</h5>
+	                                </div>
+	                                :
+	                                <div className="ibox-title" style={{'backgroundColor':'#fad284', 'color':'white'}}>
+	                                    <h5> <i className="fa fa-pencil"></i> Ubah Mata Kuliah</h5>
+	                                </div>
+                                }
                                 
                                 {
                                 	this.state.addForm?
@@ -422,7 +461,7 @@ class Mata_Kuliah extends Component {
 	                                            	type="text" 
 	                                            	className="form-control m-b" 
 	                                            	name="account"
-	                                            	value={this.state.matkuls[this.state.selected].kode}
+	                                            	value={this.state.matkuls.filter(data => data.id === this.state.selected)[0].kode}
 					                                onChange={this.handleChangeKode}
 	                                            	/>
 	                                        </div>
@@ -434,7 +473,7 @@ class Mata_Kuliah extends Component {
 	                                            	type="text" 
 	                                            	className="form-control m-b" 
 	                                            	name="account"
-	                                            	value={this.state.matkuls[this.state.selected].nama}
+	                                            	value={this.state.matkuls.filter(data => data.id === this.state.selected)[0].nama}
 					                                onChange={this.handleChangeNama}
 						                            />
 	                                        </div>
@@ -442,7 +481,7 @@ class Mata_Kuliah extends Component {
 
 	                               		<div className="form-group row"><label className="col-lg-3 col-form-label">Kategori</label>
 	                                        <div className="col-lg-9">
-	                                            <select className="form-control m-b" name="account" value={this.state.matkuls[this.state.selected].kategori}  onChange={this.handleChangeKategori}>
+	                                            <select className="form-control m-b" name="account" value={this.state.matkuls.filter(data => data.id === this.state.selected)[0].kategori}  onChange={this.handleChangeKategori}>
 	                                                <option >Pilih</option>
 	                                                <option value="wajib">Wajib</option>
 	                                                <option value="pilihan">Pilihan</option>
@@ -456,7 +495,7 @@ class Mata_Kuliah extends Component {
 	                                            	type="number" 
 	                                            	className="form-control m-b" 
 	                                            	name="account"
-	                                            	value={this.state.matkuls[this.state.selected].jumlah_jam}
+	                                            	value={this.state.matkuls.filter(data => data.id === this.state.selected)[0].jumlah_jam}
 					                                onChange={this.handleChangeJam}
 
 	                                            	/>
@@ -469,7 +508,7 @@ class Mata_Kuliah extends Component {
 	                                            	type="number" 
 	                                            	className="form-control m-b" 
 	                                            	name="account"
-	                                            	value={this.state.matkuls[this.state.selected].jumlah_pertemuan}
+	                                            	value={this.state.matkuls.filter(data => data.id === this.state.selected)[0].jumlah_pertemuan}
 					                                onChange={this.handleChangePertemuan}
 
 						                            />
@@ -477,6 +516,7 @@ class Mata_Kuliah extends Component {
 	                                    </div>
 
 	                                    <button
+	                                    	style={{'marginRight': '10px'}}
 	                                		className="btn btn-info btn-add" 
 	                                		type="button"
 	                                		onClick={this.editMataKuliah}>

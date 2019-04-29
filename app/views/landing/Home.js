@@ -4,6 +4,7 @@ import SlideLP from '../../../app/components/common/landing/Slide';
 class Home extends Component {
 
     render() {
+        console.log(window.sessionStorage.getItem("key"))
         return (
             <div>
                 <SlideLP/>

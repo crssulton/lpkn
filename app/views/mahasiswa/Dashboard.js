@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import cookie from 'react-cookies';
+import {BASE_URL} from '../../config/config.js'
 
 class Dashboard extends Component {
 
@@ -13,8 +14,8 @@ class Dashboard extends Component {
 
     componentDidMount(){
     	const self = this
-		fetch('http://lpkn.itec.my.id:9000/api/mahasiswa/1/', {
-			method: 'get',
+		fetch(BASE_URL + '/api/mahasiswa/1/', {
+			method: 'GET',
 			headers: {
 				'Authorization': 'JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMywidXNlcm5hbWUiOiJha2FkZW1pazEiLCJleHAiOjE1NTQwNzg0MjAsImVtYWlsIjoiIn0.lSNi_8XtzTP_jeldmMUic27TuHlYMCCNN47tyZgOLy0'
 			}
