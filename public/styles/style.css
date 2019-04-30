@@ -3666,12 +3666,6 @@ video {
 .ibox-title h5 {
   margin-top: 5px;
 }
-
-.box-colored {
-  background-color: #1ab394;
-  color: white
-}
-
 ul.unstyled,
 ol.unstyled {
   list-style: none outside none;
