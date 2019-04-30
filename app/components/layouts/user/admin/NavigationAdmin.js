@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Dropdown } from 'react-bootstrap';
 import { Link, Location } from 'react-router';
 
 class Navigation extends Component {
@@ -26,13 +25,13 @@ class Navigation extends Component {
                             </span>
                             <a data-toggle="dropdown" className="dropdown-toggle" href="#">
                         <span className="clear"> <span className="block m-t-xs"> <strong className="font-bold">Example user</strong>
-                            </span> <span className="text-muted text-xs block">Example position<b className="caret"></b></span> </span> </a>
+                            </span> </span> </a>
                             <ul className="dropdown-menu animated fadeInRight m-t-xs">
                                 <li><a href="#"> Logout</a></li>
                             </ul>
                         </div>
                         <div className="logo-element">
-                            IN+
+                            LPKN
                         </div>
                     </li>
                     <li className={this.activeRoute("/pendaftaran")}>

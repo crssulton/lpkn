@@ -1,5 +1,4 @@
 import React from 'react';
-import cookie from 'react-cookies';
 import { smoothlyMenu } from '../../layouts/user/Helpers';
 
 class TopHeader extends React.Component {
@@ -10,9 +9,9 @@ class TopHeader extends React.Component {
         smoothlyMenu();
     }
     handleLogout= () =>{
-        cookie.save('user_id', undefined)
-        cookie.save('access', undefined)
-        cookie.save('role', undefined)
+        window.sessionStorage.removeItem('role')
+        window.sessionStorage.removeItem('user_id')
+        window.sessionStorage.removeItem('access')
         setTimeout(() => {
             window.location = "/";
         },0);
