@@ -8,7 +8,9 @@ class Calon_Mahasiswa extends Component {
         super(props);
         this.state = {
             mahasiswas: [],
-            mahasiswa: [],
+			mahasiswa: [],
+			jurusans: [{'nama' : ''}],
+            kampus: [],
             loading: true,
             selectedJurusan: 'all',
             key: null,
@@ -32,6 +34,32 @@ class Calon_Mahasiswa extends Component {
 				loading: !self.state.loading,
 			})
 		});
+
+		fetch(BASE_URL + '/api/jurusan/', {
+            method: 'get',
+            headers: {
+                'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+            }
+        }).then(function(response) {
+            return response.json();
+        }).then(function(data) {
+            self.setState({
+                jurusans: data.results
+            })
+        });
+    
+        fetch(BASE_URL + '/api/kampus/', {
+            method: 'get',
+            headers: {
+                'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+            }
+        }).then(function(response) {
+            return response.json();
+        }).then(function(data) {
+            self.setState({
+                kampus: data.results
+            })
+        });
     }
 
     handleSelectedJurusan = (e) => {
@@ -165,14 +193,17 @@ class Calon_Mahasiswa extends Component {
 										        </tr>
 										        </thead>
 										        <tbody>
-										        {
+										        { 
 										        	this.state.mahasiswas.filter(mahasiswa => mahasiswa.calon == false).map((mahasiswa, key) => 
 
 										        		<tr key={key}>
 										        			<td>{key+1}</td>
 										        			<td>{mahasiswa.nim}</td>
 												            <td>{mahasiswa.nama}</td>
-												            <td>Industri Maskapai</td>
+															<td>{
+																(this.state.jurusans.find((jurusan) => (jurusan.id == mahasiswa.jurusan)) === undefined)?
+																null: this.state.jurusans.find((jurusan) => (jurusan.id == mahasiswa.jurusan)).nama
+															}</td>
 												            <td>
 												            	<center>
 						                                			<button 
@@ -217,7 +248,12 @@ class Calon_Mahasiswa extends Component {
 				                            <div className="ibox-content profile-content">
 				                                <h3 style={{'textAlign': 'center'}}><strong>{this.state.mahasiswa.nama}</strong></h3>
 				                                <h5 style={{'textAlign': 'center'}}><strong>{this.state.mahasiswa.nim}</strong></h5>
-				                                <p style={{'textAlign': 'center'}}><span className="badge badge-warning">{this.state.mahasiswa.status.toUpperCase()}</span></p>
+												
+												{
+													(this.state.mahasiswa.aktif !== true)? 
+													<p style={{'textAlign': 'center'}}><span className="badge badge-danger">TIDAK AKTIF</span></p> : 
+													<p style={{'textAlign': 'center'}}><span className="badge badge-warning">AKTIF</span></p>
+												}
 				                             </div>
 				                             <div className="tabs-container">
 											    <ul className="nav nav-tabs" role="tablist">
@@ -320,11 +356,11 @@ class Calon_Mahasiswa extends Component {
 															    </tr>
 															    <tr>
 															        <td><b>Jurusan</b></td>
-																	<td>: {this.state.mahasiswa.jurusan}</td>
+																	<td>: {this.state.jurusans.find((jurusan) => (jurusan.id == this.state.mahasiswa.jurusan)).nama}</td>
 															    </tr>
 															    <tr>
 															        <td><b>Kampus</b></td>
-																	<td>: {this.state.mahasiswa.kampus}</td>
+																	<td>: {this.state.kampus.find((kamp) => (kamp.id == this.state.mahasiswa.kampus)).nama}</td>
 															    </tr>
 															    <tr>
 															        <td><b>Pesan</b></td>

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import logo from '../../../public/assets/assets 1/img/laptop4.png'
 import { Link } from 'react-router';
+import {BASE_URL} from '../../config/config.js'
 
 class Registrasi extends Component {
   constructor(props){
@@ -15,7 +16,7 @@ class Registrasi extends Component {
 
   componentDidMount = () => {
     const self = this
-    fetch('http://lpkn.itec.my.id:9000/api/jurusan/', {
+    fetch(BASE_URL + '/api/jurusan/', {
         method: 'get'
     }).then(function(response) {
         return response.json();
@@ -25,7 +26,7 @@ class Registrasi extends Component {
         })
     });
 
-    fetch('http://lpkn.itec.my.id:9000/api/kampus/', {
+    fetch(BASE_URL + '/api/kampus/', {
         method: 'get'
     }).then(function(response) {
         return response.json();
@@ -40,8 +41,7 @@ class Registrasi extends Component {
     const self = this
     self.setState({loading : true})
     event.preventDefault()
-    console.log("babi " + JSON.stringify(self.state.pendaftar))
-    fetch('http://lpkn.itec.my.id:9000/api/pendaftaran/', {
+    fetch(BASE_URL + '/api/pendaftaran/', {
         method: 'post',
         headers: {
             'Content-Type': 'application/json',
@@ -51,7 +51,6 @@ class Registrasi extends Component {
       }).then(function(response) {
         return response.json();
       }).then(function(data) {
-        console.log(data)
         if (data.non_field_errors == null) {
             self.setState({
                 loading: !self.state.loading,
@@ -133,26 +132,20 @@ class Registrasi extends Component {
                                               />
                                       </div>
                                       <div className="form-group">
-                                          <label>Agama *</label>
-                                            <select 
-                                              value={this.state.pendaftar.agama}
-                                              onChange={(e) => {
-                                                  let pendaftar = []
-                                                  pendaftar = this.state.pendaftar
-                                                  pendaftar.agama = e.target.value
-                                                  this.setState({pendaftar})
-                                              }}
-                                              id="agama" 
-                                              name="agama" 
-                                              className="form-control required">
-                                              <option value="">Pilih Agama</option>
-                                              <option value="islam">Islam</option>
-                                              <option value="hindu">Hindu</option>
-                                              <option value="budha">Budha</option>
-                                              <option value="protestan">Protestan</option>
-                                              <option value="katolik">Katolik</option>
-                                              <option value="konghucu">Konghucu</option>
-                                          </select>
+                                            <label>Asal Sekolah *</label>
+                                            <input 
+                                                value={this.state.pendaftar.asal_sekolah}
+                                                onChange={(e) => {
+                                                    let pendaftar = []
+                                                    pendaftar = this.state.pendaftar
+                                                    pendaftar.asal_sekolah = e.target.value
+                                                    this.setState({pendaftar})
+                                                }}
+                                                id="asal_sekolah" 
+                                                name="asal_sekolah" 
+                                                type="date" 
+                                                className="form-control required"
+                                                />
                                       </div>
                                       <div className="form-group">
                                           <label>Jurusan *</label>

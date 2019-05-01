@@ -8,7 +8,10 @@ class Calon_Mahasiswa extends Component {
         super(props);
         this.state = {
             mahasiswas: [],
-            mahasiswa: [],
+			mahasiswa: [],
+			jurusans: [],
+            kampus: [],
+			calon: {},
             loading: true,
             selectedJurusan: 'all',
             key: null,
@@ -32,6 +35,32 @@ class Calon_Mahasiswa extends Component {
 				loading: !self.state.loading,
 			})
 		});
+
+		fetch(BASE_URL + '/api/jurusan/', {
+            method: 'get',
+            headers: {
+                'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+            }
+        }).then(function(response) {
+            return response.json();
+        }).then(function(data) {
+            self.setState({
+                jurusans: data.results
+            })
+        });
+    
+        fetch(BASE_URL + '/api/kampus/', {
+            method: 'get',
+            headers: {
+                'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+            }
+        }).then(function(response) {
+            return response.json();
+        }).then(function(data) {
+            self.setState({
+                kampus: data.results
+            })
+        });
     }
 
     handleSelectedJurusan = (e) => {
@@ -58,41 +87,90 @@ class Calon_Mahasiswa extends Component {
     		profil: true,
     		key: index
     	})
+	}
+	
+	handleUpdatemahasiswa = (key) => {
+		const self = this
+		swal({
+			title: "Update " + key.nama + " ?",
+			icon: "warning",
+			buttons: true,
+			dangerMode: true,
+		})
+		.then((willTerima) => {
+			if (willTerima) {
+				fetch(BASE_URL + '/api/mahasiswa/' + key.id +'/', {
+					method: 'put',
+					headers: {
+						'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+						'Content-Type': 'application/json',
+            			'Accept': 'application/json'
+					},
+					body: JSON.stringify(key)
+				}).then(function(response) {
+					return response.json();
+				}).then(function(data) {
+					fetch(BASE_URL + '/api/mahasiswa/', {
+						method: 'get',
+						headers: {
+							'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+						}
+					}).then(function(response) {
+						return response.json();
+					}).then(function(data) {
+						self.setState({
+							mahasiswas: data.results
+						})
+					});
+					toastr.success("Mahasiswa berhasil di update", "Sukses ! ")
+				});
+			}	
+		});
     }
 
     handleTerimaCalon = (key) => {
-    	const self = this
-    	fetch(BASE_URL + '/api/mahasiswa/' + this.state.mahasiswa.id +'/approve/', {
-			method: 'post',
-			headers: {
-				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
-			}
-		}).then(function(response) {
-			return response.json();
-		}).then(function(data) {
-			let mahasiswas = []
-        	mahasiswas = self.state.mahasiswas
-        	delete mahasiswas[self.state.key]
-			self.setState({
-	    		profil: false,
-	    		mahasiswas
-
-	    	})
-			toastr.success("Mahasiswa berhasil ditambahkan", "Sukses ! ")
+		const self = this
+		swal({
+			title: "Approve " + key.nama + " ?",
+			icon: "warning",
+			buttons: true,
+			dangerMode: true,
+		})
+		.then((willTerima) => {
+			if (willTerima) {
+				fetch(BASE_URL + '/api/mahasiswa/' + key.id +'/approve/', {
+					method: 'post',
+					headers: {
+						'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+					}
+				}).then(function(response) {
+					return response.json();
+				}).then(function(data) {
+					let mahasiswas = []
+					mahasiswas = self.state.mahasiswas
+					delete mahasiswas[self.state.key]
+					self.setState({
+						profil: false,
+						mahasiswas
+		
+					})
+					toastr.success("Mahasiswa berhasil ditambahkan", "Sukses ! ")
+				});
+			}	
 		});
     }
 
     handleDeletemahasiswa = (key) => {
     	const self = this
     	swal({
-		  title: "Hapus " + this.state.mahasiswa.nama + " ?",
+		  title: "Hapus " + key.nama + " ?",
 		  icon: "warning",
 		  buttons: true,
 		  dangerMode: true,
 		})
 		.then((willDelete) => {
 		  if (willDelete) {
-		  	fetch(BASE_URL + '/api/mahasiswa/' + this.state.mahasiswa.id, {
+		  	fetch(BASE_URL + '/api/mahasiswa/' + key.id, {
 				method: 'delete',
 				headers: {
 					'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
@@ -228,67 +306,213 @@ class Calon_Mahasiswa extends Component {
 											            <div className="panel-body">
 											            	<div className="form-group row"><label className="col-lg-2 col-form-label">Alamat</label>
 						                                        <div className="col-lg-10">
-						                                            <input defaultValue={this.state.mahasiswa.alamat}  type="text" className="form-control m-b" name="account"/>
+																	<input 
+																		onChange={(e) => {
+																			let mahasiswa = []
+																			mahasiswa = this.state.mahasiswa
+																			mahasiswa.alamat = e.target.value
+																			this.setState({mahasiswa})
+																		}}
+																		defaultValue={this.state.mahasiswa.alamat} 
+																		type="text" className="form-control m-b" 
+																		name="account"
+																	/>
 						                                        </div>
 						                                    </div>
 						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Tmpt Lahir</label>
 						                                        <div className="col-lg-10">
-						                                            <input defaultValue={this.state.mahasiswa.tempat_lahir}  type="text" className="form-control m-b" name="account"/>
+																	<input 
+																	onChange={(e) => {
+																		let mahasiswa = []
+																		mahasiswa = this.state.mahasiswa
+																		mahasiswa.tempat_lahir = e.target.value
+																		this.setState({mahasiswa})
+																	}}
+																	defaultValue={this.state.mahasiswa.tempat_lahir}  
+																	type="text" className="form-control m-b" 
+																	name="account"/>
 						                                        </div>
 						                                    </div>
 						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Tgl Lahir</label>
 						                                        <div className="col-lg-10">
-						                                            <input defaultValue={this.state.mahasiswa.tgl_lahir}  type="text" className="form-control m-b" name="account"/>
+																	<input 
+																	onChange={(e) => {
+																		let mahasiswa = []
+																		mahasiswa = this.state.mahasiswa
+																		mahasiswa.tgl_lahir = e.target.value
+																		this.setState({mahasiswa})
+																	}}
+																	defaultValue={this.state.mahasiswa.tgl_lahir}  
+																	type="text" className="form-control m-b" 
+																	name="account"/>
 						                                        </div>
 						                                    </div>
 						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Jenis Kelamin</label>
 						                                        <div className="col-lg-10">
-						                                            <input defaultValue={this.state.mahasiswa.jenis_kelamin}  type="text" className="form-control m-b" name="account"/>
+																	<input 
+																	onChange={(e) => {
+																		let mahasiswa = []
+																		mahasiswa = this.state.mahasiswa
+																		mahasiswa.jenis_kelamin = e.target.value
+																		this.setState({mahasiswa})
+																	}}
+																	defaultValue={this.state.mahasiswa.jenis_kelamin}  
+																	type="text" className="form-control m-b" 
+																	name="account"/>
 						                                        </div>
 						                                    </div>
 						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Agama</label>
 						                                        <div className="col-lg-10">
-						                                            <input defaultValue={this.state.mahasiswa.agama}  type="text" className="form-control m-b" name="account"/>
+																	<input 
+																	onChange={(e) => {
+																		let mahasiswa = []
+																		mahasiswa = this.state.mahasiswa
+																		mahasiswa.agama = e.target.value
+																		this.setState({mahasiswa})
+																	}}
+																	defaultValue={this.state.mahasiswa.agama}  
+																	type="text" className="form-control m-b" 
+																	name="account"/>
 						                                        </div>
 						                                    </div>
 						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Hp</label>
 						                                        <div className="col-lg-10">
-						                                            <input defaultValue={this.state.mahasiswa.no_hp}  type="text" className="form-control m-b" name="account"/>
+																	<input 
+																	onChange={(e) => {
+																		let mahasiswa = []
+																		mahasiswa = this.state.mahasiswa
+																		mahasiswa.no_hp = e.target.value
+																		this.setState({mahasiswa})
+																	}}
+																	defaultValue={this.state.mahasiswa.no_hp}  
+																	type="text" className="form-control m-b" 
+																	name="account"/>
 						                                        </div>
 						                                    </div>
 						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Email</label>
 						                                        <div className="col-lg-10">
-						                                            <input defaultValue={this.state.mahasiswa.email} type="text" className="form-control m-b" name="account"/>
+																	<input 
+																	onChange={(e) => {
+																		let mahasiswa = []
+																		mahasiswa = this.state.mahasiswa
+																		mahasiswa.email = e.target.value
+																		this.setState({mahasiswa})
+																	}}
+																	defaultValue={this.state.mahasiswa.email} 
+																	type="text" className="form-control m-b" 
+																	name="account"/>
+						                                        </div>
+						                                    </div>
+															<div className="form-group row"><label className="col-lg-2 col-form-label">Tahun Angkatan</label>
+						                                        <div className="col-lg-10">
+																	<input 
+																	onChange={(e) => {
+																		let mahasiswa = []
+																		mahasiswa = this.state.mahasiswa
+																		mahasiswa.tahun_angkatan = e.target.value
+																		this.setState({mahasiswa})
+																	}}
+																	defaultValue={this.state.mahasiswa.tahun_angkatan}  
+																	type="text" className="form-control m-b" 
+																	name="account"/>
+						                                        </div>
+						                                    </div>
+						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Angkatan Ke-</label>
+						                                        <div className="col-lg-10">
+																	<input 
+																	onChange={(e) => {
+																		let mahasiswa = []
+																		mahasiswa = this.state.mahasiswa
+																		mahasiswa.angkatan = e.target.value
+																		this.setState({mahasiswa})
+																	}}
+																	defaultValue={this.state.mahasiswa.angkatan} 
+																	type="text" className="form-control m-b" 
+																	name="account"/>
 						                                        </div>
 						                                    </div>
 						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">FB</label>
 						                                        <div className="col-lg-10">
-						                                            <input defaultValue={this.state.mahasiswa.id_facebook} type="text" className="form-control m-b" name="account"/>
+																	<input 
+																	onChange={(e) => {
+																		let mahasiswa = []
+																		mahasiswa = this.state.mahasiswa
+																		mahasiswa.id_facebook = e.target.value
+																		this.setState({mahasiswa})
+																	}}
+																	defaultValue={this.state.mahasiswa.id_facebook} 
+																	type="text" className="form-control m-b" 
+																	name="account"/>
 						                                        </div>
 						                                    </div>
 						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">WA/Line</label>
 						                                        <div className="col-lg-10">
-						                                            <input defaultValue={this.state.mahasiswa.wa_or_line} type="text" className="form-control m-b" name="account"/>
+																	<input 
+																	onChange={(e) => {
+																		let mahasiswa = []
+																		mahasiswa = this.state.mahasiswa
+																		mahasiswa.wa_or_line = e.target.value
+																		this.setState({mahasiswa})
+																	}}
+																	defaultValue={this.state.mahasiswa.wa_or_line} 
+																	type="text" className="form-control m-b" 
+																	name="account"/>
 						                                        </div>
 						                                    </div>
 						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Asal Sekolah</label>
 						                                        <div className="col-lg-10">
-						                                            <input defaultValue={this.state.mahasiswa.asal_sekolah} type="text" className="form-control m-b" name="account"/>
+																	<input 
+																	onChange={(e) => {
+																		let mahasiswa = []
+																		mahasiswa = this.state.mahasiswa
+																		mahasiswa.asal_sekolah = e.target.value
+																		this.setState({mahasiswa})
+																	}}
+																	defaultValue={this.state.mahasiswa.asal_sekolah} 
+																	type="text" className="form-control m-b" 
+																	name="account"/>
 						                                        </div>
 						                                    </div>
 						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Tahun Tamat</label>
 						                                        <div className="col-lg-10">
-						                                            <input defaultValue={this.state.mahasiswa.tahun_tamat} type="text" className="form-control m-b" name="account"/>
+																	<input 
+																	onChange={(e) => {
+																		let mahasiswa = []
+																		mahasiswa = this.state.mahasiswa
+																		mahasiswa.tahun_tamat = e.target.value
+																		this.setState({mahasiswa})
+																	}}
+																	defaultValue={this.state.mahasiswa.tahun_tamat} 
+																	type="text" className="form-control m-b" 
+																	name="account"/>
 						                                        </div>
 						                                    </div>
 						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Tinggi Badan</label>
 						                                        <div className="col-lg-10">
-						                                            <input defaultValue={this.state.mahasiswa.tinggi_badan} type="text" className="form-control m-b" name="account"/>
+																	<input 
+																	onChange={(e) => {
+																		let mahasiswa = []
+																		mahasiswa = this.state.mahasiswa
+																		mahasiswa.tinggi_badan = e.target.value
+																		this.setState({mahasiswa})
+																	}}
+																	defaultValue={this.state.mahasiswa.tinggi_badan} 
+																	type="text" className="form-control m-b" 
+																	name="account"/>
 						                                        </div>
 						                                    </div>
 						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Berat Badan</label>
 						                                        <div className="col-lg-10">
-						                                            <input defaultValue={this.state.mahasiswa.berat_badan} type="text" className="form-control m-b" name="account"/>
+																	<input 
+																	onChange={(e) => {
+																		let mahasiswa = []
+																		mahasiswa = this.state.mahasiswa
+																		mahasiswa.berat_badan = e.target.value
+																		this.setState({mahasiswa})
+																	}}
+																	defaultValue={this.state.mahasiswa.berat_badan} 
+																	type="text" className="form-control m-b" 
+																	name="account"/>
 						                                        </div>
 						                                    </div>
 											            </div>
@@ -297,27 +521,72 @@ class Calon_Mahasiswa extends Component {
 											            <div className="panel-body">
 											            	<div className="form-group row"><label className="col-lg-3 col-form-label">Nama Ayah</label>
 						                                        <div className="col-lg-9">
-						                                            <input defaultValue={this.state.mahasiswa.nama_ayah}  type="text" className="form-control m-b" name="account"/>
+																	<input 
+																	onChange={(e) => {
+																		let mahasiswa = []
+																		mahasiswa = this.state.mahasiswa
+																		mahasiswa.nama_ayah = e.target.value
+																		this.setState({mahasiswa})
+																	}}
+																	defaultValue={this.state.mahasiswa.nama_ayah}  
+																	type="text" className="form-control m-b" 
+																	name="account"/>
 						                                        </div>
 						                                    </div>
 						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Pekerjaan Ayah</label>
 						                                        <div className="col-lg-9">
-						                                            <input defaultValue={this.state.mahasiswa.pekerjaan_ayah}  type="text" className="form-control m-b" name="account"/>
+																	<input 
+																	onChange={(e) => {
+																		let mahasiswa = []
+																		mahasiswa = this.state.mahasiswa
+																		mahasiswa.pekerjaan_ayah = e.target.value
+																		this.setState({mahasiswa})
+																	}}
+																	defaultValue={this.state.mahasiswa.pekerjaan_ayah}  
+																	type="text" className="form-control m-b" 
+																	name="account"/>
 						                                        </div>
 						                                    </div>
 						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Nama Ibu</label>
 						                                        <div className="col-lg-9">
-						                                            <input defaultValue={this.state.mahasiswa.nama_ibu}  type="text" className="form-control m-b" name="account"/>
+																	<input 
+																	onChange={(e) => {
+																		let mahasiswa = []
+																		mahasiswa = this.state.mahasiswa
+																		mahasiswa.nama_ibu = e.target.value
+																		this.setState({mahasiswa})
+																	}}
+																	defaultValue={this.state.mahasiswa.nama_ibu}  
+																	type="text" className="form-control m-b" 
+																	name="account"/>
 						                                        </div>
 						                                    </div>
 						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Pekerjaan Ibu</label>
 						                                        <div className="col-lg-9">
-						                                            <input defaultValue={this.state.mahasiswa.pekerjaan_ibu}  type="text" className="form-control m-b" name="account"/>
+																	<input 
+																	onChange={(e) => {
+																		let mahasiswa = []
+																		mahasiswa = this.state.mahasiswa
+																		mahasiswa.pekerjaan_ibu = e.target.value
+																		this.setState({mahasiswa})
+																	}}
+																	defaultValue={this.state.mahasiswa.pekerjaan_ibu}  
+																	type="text" className="form-control m-b" 
+																	name="account"/>
 						                                        </div>
 						                                    </div>
 						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Alamat Wali</label>
 						                                        <div className="col-lg-9">
-						                                            <input defaultValue={this.state.mahasiswa.alamat_wali}  type="text" className="form-control m-b" name="account"/>
+																	<input 
+																	onChange={(e) => {
+																		let mahasiswa = []
+																		mahasiswa = this.state.mahasiswa
+																		mahasiswa.alamat_wali = e.target.value
+																		this.setState({mahasiswa})
+																	}}
+																	defaultValue={this.state.mahasiswa.alamat_wali}  
+																	type="text" className="form-control m-b" 
+																	name="account"/>
 						                                        </div>
 						                                    </div>
 											            </div>
@@ -326,37 +595,86 @@ class Calon_Mahasiswa extends Component {
 											            <div className="panel-body">
 											            	<div className="form-group row"><label className="col-lg-3 col-form-label">Rencana Kerja</label>
 						                                        <div className="col-lg-9">
-						                                            <input defaultValue={this.state.mahasiswa.rencana_kerja} type="text" className="form-control m-b" name="account"/>
+																	<input 
+																	onChange={(e) => {
+																		let mahasiswa = []
+																		mahasiswa = this.state.mahasiswa
+																		mahasiswa.rencana_kerja = e.target.value
+																		this.setState({mahasiswa})
+																	}}
+																	defaultValue={this.state.mahasiswa.rencana_kerja} 
+																	type="text" className="form-control m-b" 
+																	name="account"/>
 						                                        </div>
 						                                    </div>
 						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Rencana Kerja Lain</label>
 						                                        <div className="col-lg-9">
-						                                            <input defaultValue={this.state.mahasiswa.rencana_kerja_lainnya} type="text" className="form-control m-b" name="account"/>
+																	<input 
+																	onChange={(e) => {
+																		let mahasiswa = []
+																		mahasiswa = this.state.mahasiswa
+																		mahasiswa.rencana_kerja_lainnya = e.target.value
+																		this.setState({mahasiswa})
+																	}}
+																	defaultValue={this.state.mahasiswa.rencana_kerja_lainnya} 
+																	type="text" className="form-control m-b" 
+																	name="account"/>
 						                                        </div>
 						                                    </div>
 						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Info LPKN</label>
 						                                        <div className="col-lg-9">
-						                                            <input defaultValue={this.state.mahasiswa.informasi_ttg_lpkn} type="text" className="form-control m-b" name="account"/>
+																	<input 
+																	onChange={(e) => {
+																		let mahasiswa = []
+																		mahasiswa = this.state.mahasiswa
+																		mahasiswa.informasi_ttg_lpkn = e.target.value
+																		this.setState({mahasiswa})
+																	}}
+																	defaultValue={this.state.mahasiswa.informasi_ttg_lpkn} 
+																	type="text" className="form-control m-b" 
+																	name="account"/>
 						                                        </div>
 						                                    </div>
 						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Jurusan</label>
 						                                        <div className="col-lg-9">
-						                                            <input defaultValue={this.state.mahasiswa.jurusan} type="text" className="form-control m-b" name="account"/>
+																	<input 
+																	onChange={(e) => {
+																		let mahasiswa = []
+																		mahasiswa = this.state.mahasiswa
+																		mahasiswa.jurusan = e.target.value
+																		this.setState({mahasiswa})
+																	}}
+																	defaultValue={this.state.jurusans.find((jurusan) => (jurusan.id == this.state.mahasiswa.jurusan)).nama} 
+																	type="text" className="form-control m-b" 
+																	name="account"/>
 						                                        </div>
 						                                    </div>
 						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Kampus</label>
 						                                        <div className="col-lg-9">
-						                                            <input defaultValue={this.state.mahasiswa.kampus} type="text" className="form-control m-b" name="account"/>
+																	<input 
+																	onChange={(e) => {
+																		let mahasiswa = []
+																		mahasiswa = this.state.mahasiswa
+																		mahasiswa.kampus = e.target.value
+																		this.setState({mahasiswa})
+																	}}
+																	defaultValue={this.state.kampus.find((kamp) => (kamp.id == this.state.mahasiswa.kampus)).nama} 
+																	type="text" className="form-control m-b" 
+																	name="account"/>
 						                                        </div>
 						                                    </div>
 						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Pesan</label>
 						                                        <div className="col-lg-9">
-						                                            <input defaultValue={this.state.mahasiswa.pesan} type="text" className="form-control m-b" name="account"/>
-						                                        </div>
-						                                    </div>
-						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Pembayaran</label>
-						                                        <div className="col-lg-9">
-						                                            <input defaultValue="" type="text" className="form-control m-b" name="account"/>
+																	<input 
+																	onChange={(e) => {
+																		let mahasiswa = []
+																		mahasiswa = this.state.mahasiswa
+																		mahasiswa.pesan = e.target.value
+																		this.setState({mahasiswa})
+																	}}
+																	defaultValue={this.state.mahasiswa.pesan} 
+																	type="text" className="form-control m-b" 
+																	name="account"/>
 						                                        </div>
 						                                    </div>
 											            </div>
@@ -365,7 +683,15 @@ class Calon_Mahasiswa extends Component {
 											            <div className="panel-body">
 											            	<div className="form-group row"><label className="col-lg-3 col-form-label">Jumlah (Rp.)</label>
 						                                        <div className="col-lg-9">
-						                                            <input type="number" className="form-control m-b" name="account"/>
+																	<input 
+																		onChange={(e) => {
+																			let mahasiswa = []
+																			mahasiswa = this.state.mahasiswa
+																			mahasiswa.total_bayar = e.target.value
+																			this.setState({mahasiswa})
+																		}}
+																		defaultValue={this.state.mahasiswa.total_bayar} type="number" 
+																		className="form-control m-b" name="account"/>
 						                                        </div>
 						                                    </div>
 											            </div>
@@ -377,18 +703,24 @@ class Calon_Mahasiswa extends Component {
 	                                     	
 
 											<center style={{'margin':'3% 0'}}>
+												<button 
+		                            				onClick={() => this.handleUpdatemahasiswa(this.state.mahasiswa)}
+		                            				className="btn btn-primary" 
+		                            				type="button"
+		                            				>Update
+		                            			</button>
 												<button
 													style={{'margin':'0 3%'}}
-													onClick={() => this.handleTerimaCalon()}
+													onClick={() => this.handleTerimaCalon(this.state.mahasiswa)}
 			                                		className="btn btn-info" 
 			                                		type="button">
-			                                		Terima
+			                                		Approve
 			                                	</button>
 			                                	<button 
-		                            				onClick={() => this.handleDeletemahasiswa()}
+		                            				onClick={() => this.handleDeletemahasiswa(this.state.mahasiswa)}
 		                            				className="btn btn-danger" 
 		                            				type="button"
-		                            				>Hapus
+		                            				>Tolak
 		                            			</button>
 											</center>
 

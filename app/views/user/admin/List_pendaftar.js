@@ -8,7 +8,9 @@ class List_pendaftar extends Component {
         super(props);
         this.state = {
             pendaftars: [],
-            pendaftar: [],
+			pendaftar: [],
+			jurusans: [],
+            kampus: [],
             loading: true,
             selectedJurusan: 'all',
             key: null,
@@ -18,21 +20,46 @@ class List_pendaftar extends Component {
     }
 
     componentDidMount(){
-    	const self = this
+		const self = this
 		fetch(BASE_URL + '/api/pendaftaran/', {
 			method: 'get',
-			headers: {
-				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
-			}
+            headers: {
+                'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+            }
 		}).then(function(response) {
 			return response.json();
-		}).then(({results}) => 
-			// console.log('data '+results)
+		}).then(function(data) {
 			self.setState({
-				pendaftars: results,
+				pendaftars: data.results,
 				loading: !self.state.loading,
 			})
-		);
+		});
+		
+        fetch(BASE_URL + '/api/jurusan/', {
+            method: 'get',
+            headers: {
+                'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+            }
+        }).then(function(response) {
+            return response.json();
+        }).then(function(data) {
+            self.setState({
+                jurusans: data.results
+            })
+        });
+    
+        fetch(BASE_URL + '/api/kampus/', {
+            method: 'get',
+            headers: {
+                'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+            }
+        }).then(function(response) {
+            return response.json();
+        }).then(function(data) {
+            self.setState({
+                kampus: data.results
+            })
+        });
     }
 
     handleSelectedJurusan = (e) => {
@@ -62,38 +89,48 @@ class List_pendaftar extends Component {
     }
 
     handleTerimaCalon = (key) => {
-    	const self = this
-    	fetch(BASE_URL + '/api/pendaftaran/' + this.state.pendaftar.id +'/approve/', {
-			method: 'post',
-			headers: {
-				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
-			}
-		}).then(function(response) {
-			return response.json();
-		}).then(function(data) {
-			let pendaftars = []
-        	pendaftars = self.state.pendaftars
-        	delete pendaftars[self.state.key]
-			self.setState({
-	    		profil: false,
-	    		pendaftars
-
-	    	})
-			toastr.success("Calon mahasiswa berhasil ditambahkan", "Sukses ! ")
+		const self = this
+		swal({
+			title: "Approve " + key.nama + " ?",
+			icon: "warning",
+			buttons: true,
+			dangerMode: true,
+		})
+		.then((willTerima) => {
+			if (willTerima) {
+				fetch(BASE_URL + '/api/pendaftaran/' + key.id +'/approve/', {
+					method: 'post',
+					headers: {
+						'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+					}
+				}).then(function(response) {
+					return response.json();
+				}).then(function(data) {
+					let pendaftars = []
+					pendaftars = self.state.pendaftars
+					delete pendaftars[self.state.key]
+					self.setState({
+						profil: false,
+						pendaftars
+		
+					})
+					toastr.success("Calon mahasiswa berhasil ditambahkan", "Sukses ! ")
+				});
+			}	
 		});
     }
 
     handleDeletePendaftar = (key) => {
     	const self = this
     	swal({
-		  title: "Hapus " + this.state.pendaftar.nama + " ?",
+		  title: "Hapus " + key.nama + " ?",
 		  icon: "warning",
 		  buttons: true,
 		  dangerMode: true,
 		})
 		.then((willDelete) => {
 		  if (willDelete) {
-		  	fetch(BASE_URL + '/api/pendaftaran/' + this.state.pendaftar.id, {
+		  	fetch(BASE_URL + '/api/pendaftaran/' + key.id, {
 				method: 'delete',
 				headers: {
 					'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
@@ -132,7 +169,7 @@ class List_pendaftar extends Component {
             <div >
                 <div className="row wrapper border-bottom white-bg page-heading">
 		            <div className="col-lg-8">
-		                <h2>Pendaftaran</h2>
+		                <h2>List Pendaftaran</h2>
 		            </div>
 		            <div className="col-lg-4">
 		            </div>
@@ -165,6 +202,13 @@ class List_pendaftar extends Component {
 										        </tr>
 										        </thead>
 										        <tbody>
+												{
+													(this.state.pendaftars.length !== 0)? null : 
+													<tr>
+														<td style={{'textAlign': 'center'}} colSpan="4">
+														Data Kosong</td>
+													</tr>
+												}
 										        {
 										        	this.state.pendaftars.filter(pendaftar => pendaftar.approved == false).map((pendaftar, key) => 
 
@@ -227,103 +271,127 @@ class List_pendaftar extends Component {
 											        <div role="tabpanel" id="tab-1" className="tab-pane active">
 											            <div className="panel-body" style={{'padding':'0px'}}>
 											            	<table className="table">
+															<tbody>
 															    <tr>
-															        <td><b>Alamat</b> </td> <td>: {this.state.pendaftar.alamat}</td>
+															        <td><b>Alamat</b> </td>
+																	<td>: {this.state.pendaftar.alamat}</td>
 															    </tr>
 															    <tr>
-															        <td><b>Tempat Lahir</b></td> <td>: {this.state.pendaftar.tempat_lahir}</td>
+															        <td><b>Tempat Lahir</b></td>
+																	<td>: {this.state.pendaftar.tempat_lahir}</td>
 															    </tr>
 															    <tr>
-															        <td><b>Tgl Lahir</b></td> <td>: {this.state.pendaftar.tgl_lahir}</td>
+															        <td><b>Tgl Lahir</b></td>
+																	<td>: {this.state.pendaftar.tgl_lahir}</td>
 															    </tr>
 															    <tr>
-															        <td><b>Jenis Kelamin</b></td> <td>: {this.state.pendaftar.jenis_kelamin}</td>
+															        <td><b>Jenis Kelamin</b></td>
+																	<td>: {this.state.pendaftar.jenis_kelamin}</td>
 															    </tr>
 															    <tr>
-															        <td><b>Agama</b></td> <td>: {this.state.pendaftar.agama}</td>
+															        <td><b>Agama</b></td>
+																	<td>: {this.state.pendaftar.agama}</td>
 															    </tr>
 															    <tr>
-															        <td><b>No Hp</b></td> <td>: {this.state.pendaftar.no_hp}</td>
+															        <td><b>No Hp</b></td>
+																	<td>: {this.state.pendaftar.no_hp}</td>
 															    </tr>
 															    <tr>
-															        <td><b>Email</b></td> <td>: {this.state.pendaftar.email}</td>
+															        <td><b>Email</b></td>
+																	<td>: {this.state.pendaftar.email}</td>
 															    </tr>
 															    <tr>
-															        <td><b>Whatsapp</b></td> <td>: {this.state.pendaftar.wa_or_line}</td>
+															        <td><b>Whatsapp</b></td>
+																	<td>: {this.state.pendaftar.wa_or_line}</td>
 															    </tr>
 															    <tr>
-															        <td><b>Sekolah Asal</b></td> <td>: {this.state.pendaftar.asal_sekolah}</td>
+															        <td><b>Sekolah Asal</b></td>
+																	<td>: {this.state.pendaftar.asal_sekolah}</td>
 															    </tr>
 															    <tr>
-															        <td><b>Tahun Tamat</b></td> <td>: {this.state.pendaftar.tahun_tamat}</td>
+															        <td><b>Tahun Tamat</b></td>
+																	<td>: {this.state.pendaftar.tahun_tamat}</td>
 															    </tr>
+															</tbody>
 															</table>
 											            </div>
 											        </div>
 											        <div role="tabpanel" id="tab-2" className="tab-pane">
 											            <div className="panel-body">
 											                <table className="table">
+															<tbody>
 															    <tr>
-															        <td><b>Nama Ayah</b> </td> <td>: {this.state.pendaftar.nama_ayah}</td>
+															        <td><b>Nama Ayah</b> </td>
+																	<td>: {this.state.pendaftar.nama_ayah}</td>
 															    </tr>
 															    <tr>
-															        <td><b>Pekerjaan Ayah</b></td> <td>: {this.state.pendaftar.pekerjaan_ayah}</td>
+															        <td><b>Pekerjaan Ayah</b></td>
+																	<td>: {this.state.pendaftar.pekerjaan_ayah}</td>
 															    </tr>
 															    <tr>
-															        <td><b>Nama Ibu</b></td> <td>: {this.state.pendaftar.nama_ibu}</td>
+															        <td><b>Nama Ibu</b></td>
+																	<td>: {this.state.pendaftar.nama_ibu}</td>
 															    </tr>
 															    <tr>
-															        <td><b>Pekerjaan Ibu</b></td> <td>: {this.state.pendaftar.pekerjaan_ibu}</td>
+															        <td><b>Pekerjaan Ibu</b></td>
+																	<td>: {this.state.pendaftar.pekerjaan_ibu}</td>
 															    </tr>
 															    <tr>
-															        <td><b>Alamat Wali</b></td> <td>: {this.state.pendaftar.alamat_wali}</td>
+															        <td><b>Alamat Wali</b></td>
+																	<td>: {this.state.pendaftar.alamat_wali}</td>
 															    </tr>
+															</tbody>
 															</table>
 											            </div>
 											        </div>
 											        <div role="tabpanel" id="tab-3" className="tab-pane">
 											            <div className="panel-body">
 											                <table className="table">
+															<tbody>
 															    <tr>
-															        <td><b>Rencana Kerja</b> </td> <td>: {this.state.pendaftar.rencana_kerja}</td>
+															        <td><b>Rencana Kerja</b> </td>
+																	<td>: {this.state.pendaftar.rencana_kerja}</td>
 															    </tr>
 															    <tr>
-															        <td><b>Rencana Kerja Lain</b></td> <td>: {this.state.pendaftar.rencana_kerja_lainnya}</td>
+															        <td><b>Rencana Kerja Lain</b></td>
+																	<td>: {this.state.pendaftar.rencana_kerja_lainnya}</td>
 															    </tr>
 															    <tr>
-															        <td><b>Informasi LPKN dari</b></td> <td>: {this.state.pendaftar.informasi_ttg_lpkn}</td>
+															        <td><b>Informasi LPKN dari</b></td>
+																	<td>: {this.state.pendaftar.informasi_ttg_lpkn}</td>
 															    </tr>
 															    <tr>
-															        <td><b>Jurusan</b></td> <td>: {this.state.pendaftar.jurusan}</td>
+															        <td><b>Jurusan</b></td>
+																	<td>: {this.state.jurusans.find((jurusan) => (jurusan.id == this.state.pendaftar.jurusan)).nama}</td>
 															    </tr>
 															    <tr>
-															        <td><b>Kampus</b></td> <td>: {this.state.pendaftar.kampus}</td>
+															        <td><b>Kampus</b></td>
+																	<td>: {this.state.kampus.find((kamp) => (kamp.id == this.state.pendaftar.kampus)).nama}</td>
 															    </tr>
 															    <tr>
-															        <td><b>Pesan</b></td> <td>: {this.state.pendaftar.pesan}</td>
+															        <td><b>Pesan</b></td>
+																	<td>: {this.state.pendaftar.pesan}</td>
 															    </tr>
+															</tbody>
 															</table>
 											            </div>
 											        </div>
 											    </div>
-
-
 											</div>
-	                                     	
 
 											<center style={{'margin':'3% 0'}}>
 												<button
 													style={{'margin':'0 3%'}}
-													onClick={this.handleTerimaCalon}
+													onClick={() => this.handleTerimaCalon(this.state.pendaftar)}
 			                                		className="btn btn-info" 
 			                                		type="button">
-			                                		Terima Pendaftar
+			                                		Approve
 			                                	</button>
 			                                	<button 
-		                            				onClick={() => this.handleDeletePendaftar()}
+		                            				onClick={() => this.handleDeletePendaftar(this.state.pendaftar)}
 		                            				className="btn btn-danger" 
 		                            				type="button"
-		                            				>Hapus Pendaftar
+		                            				>Tolak
 		                            			</button>
 											</center>
 

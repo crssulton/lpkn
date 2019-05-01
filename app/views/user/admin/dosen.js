@@ -14,8 +14,9 @@ class Administrator extends Component {
             selected: null,
             dosenBaru: {},
             add: true,
-            matkuls: [],
-            addForm: true
+			addForm: true,
+			kampus: [],
+			jurusans: [],
         }
     }
 
@@ -25,7 +26,9 @@ class Administrator extends Component {
 		fetch(BASE_URL + '/api/dosen/', {
 			method: 'get',
 			headers: {
-				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+				'Content-Type': 'application/json',
+				'Accept': 'application/json'
 			}
 		}).then(function(response) {
 			return response.json();
@@ -36,7 +39,7 @@ class Administrator extends Component {
 			})
 		});
 
-        fetch(BASE_URL + '/api/mata-kuliah/', {
+		fetch(BASE_URL + '/api/jurusan/', {
             method: 'get',
             headers: {
                 'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
@@ -45,7 +48,20 @@ class Administrator extends Component {
             return response.json();
         }).then(function(data) {
             self.setState({
-                matkuls: data.results
+                jurusans: data.results
+            })
+        });
+		
+		fetch(BASE_URL + '/api/kampus/', {
+            method: 'get',
+            headers: {
+                'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+            }
+        }).then(function(response) {
+            return response.json();
+        }).then(function(data) {
+            self.setState({
+                kampus: data.results
             })
         });
 
@@ -55,6 +71,12 @@ class Administrator extends Component {
         let dosens = []
         dosens = this.state.dosens
         dosens[this.state.selected].nama = e.target.value
+        this.setState({dosens})
+	}
+	handleChangeEmail = e => {
+        let dosens = []
+        dosens = this.state.dosens
+        dosens[this.state.selected].email = e.target.value
         this.setState({dosens})
     }
     handleChangeAlamat = e => {
@@ -104,6 +126,12 @@ class Administrator extends Component {
         dosens = this.state.dosens
         dosens[this.state.selected].status_menikah = e.target.value
         this.setState({dosens})
+	}
+	handleChangeJurusan = e => {
+        let dosens = []
+        dosens = this.state.dosens
+        dosens[this.state.selected].jurusan = e.target.value
+        this.setState({dosens})
     }
     handleChangeKampus = e => {
         let dosens = []
@@ -111,44 +139,59 @@ class Administrator extends Component {
         dosens[this.state.selected].kampus = e.target.value
         this.setState({dosens})
     }
-    handleChangeMatkul = e => {
-        let dosens = []
-        dosens = this.state.dosens
-        dosens[this.state.selected].mata_kuliah = e.target.value
-        this.setState({dosens})
-    }
-
-
 
     editDosen = () => {
-    	const self = this
-    	let addButton = document.getElementsByClassName("btn-add")
-    	addButton[0].setAttribute("disabled", "disabled")
-    	console.log(JSON.stringify(this.state.dosens[this.state.selected]))
-    	fetch(BASE_URL + '/api/dosen/', {
-			method: 'put',
-			headers: {
-				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
-				'Content-Type': 'application/json',
-                'Accept': 'application/json'
-			},
-			body: JSON.stringify(this.state.dosens[this.state.selected])
-		}).then(function(response) {
-			return response.json();
-		}).then(function(data) {
-			addButton[0].removeAttribute("disabled")
-			let dosens = []
-        	dosens = self.state.dosens
-        	dosens.push(data)
-			self.setState({
-				addForm: true,
-				dosens,
-				dosenBaru: {}
-			})
-			toastr.success("Data dosen berhasil diubah", "Sukses ! ")
+		const self = this
+		swal({
+			title: "Lanjut mengubah data dosen ?",
+			icon: "warning",
+			buttons: true,
+			dangerMode: true,
+		})
+		.then((willTerima) => {
+			if (willTerima) {
+				let addButton = document.getElementsByClassName("btn-add")
+				addButton[0].setAttribute("disabled", "disabled")
+				fetch(BASE_URL + '/api/dosen/' + this.state.dosens[this.state.selected].id + '/', {
+					method: 'put',
+					headers: {
+						'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+						'Content-Type': 'application/json',
+						'Accept': 'application/json'
+					},
+					body: JSON.stringify(this.state.dosens[this.state.selected])
+				}).then(function(response) {
+					return response.json();
+				}).then(function(data) {
+					addButton[0].removeAttribute("disabled")
+					fetch(BASE_URL + '/api/dosen/', {
+						method: 'get',
+						headers: {
+							'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+							'Content-Type': 'application/json',
+							'Accept': 'application/json'
+						}
+					}).then(function(response) {
+						return response.json();
+					}).then(function(data) {
+						self.setState({
+							addForm: true,
+							dosens: data.results,
+							dosenBaru: {}
+						})
+					});
+					toastr.success("Data dosen berhasil diubah", "Sukses ! ")
+				});
+			}	
 		});
+	}
+	
+	adddosenEmail = (e) => {
+    	let dosenBaru = {}
+        dosenBaru = this.state.dosenBaru
+        dosenBaru.email = e.target.value
+        this.setState({dosenBaru})	
     }
-
     adddosenAlamat = (e) => {
     	let dosenBaru = {}
         dosenBaru = this.state.dosenBaru
@@ -166,17 +209,17 @@ class Administrator extends Component {
         dosenBaru = this.state.dosenBaru
         dosenBaru.agama = e.target.value
         this.setState({dosenBaru})	
+	}
+	addDosenJurusan = (e) => {
+    	let dosenBaru = {}
+        dosenBaru = this.state.dosenBaru
+        dosenBaru.jurusan = e.target.value
+        this.setState({dosenBaru})	
     }
     addDosenKampus = (e) => {
     	let dosenBaru = {}
         dosenBaru = this.state.dosenBaru
         dosenBaru.kampus = e.target.value
-        this.setState({dosenBaru})	
-    }
-    addDosenMatkul = (e) => {
-    	let dosenBaru = {}
-        dosenBaru = this.state.dosenBaru
-        dosenBaru.mata_kuliah = e.target.value
         this.setState({dosenBaru})	
     }
     adddosenJK = (e) => {
@@ -217,34 +260,50 @@ class Administrator extends Component {
     }
 
     addDosen = ()=> {
-    	const self = this
-    	let addButton = document.getElementsByClassName("btn-add")
-    	addButton[0].setAttribute("disabled", "disabled")
-        
-
-    	fetch(BASE_URL + '/api/dosen/', {
-			method: 'post',
-			headers: {
-				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
-				'Content-Type': 'application/json',
-                'Accept': 'application/json'
-			},
-			body: JSON.stringify(this.state.dosenBaru)
-		}).then(function(response) {
-			toastr.warning("Gagal menambahkan dosen", "Error ! ")
-            addButton[0].removeAttribute("disabled")
-		}).then(function(data) {
-			addButton[0].removeAttribute("disabled")
-            let dosens = []
-            dosens = self.state.dosens
-            dosens.push(data)
-            self.setState({
-                addForm: true,
-                dosens,
-                dosenBaru: {}
-            })
-            toastr.success("Dosen berhasil ditambahkan", "Sukses ! ")
+		const self = this
+		swal({
+			title: "Lanjut menambah dosen ?",
+			icon: "warning",
+			buttons: true,
+			dangerMode: true,
 		})
+		.then((willTerima) => {
+			if (willTerima) {
+				let addButton = document.getElementsByClassName("btn-add")
+				addButton[0].setAttribute("disabled", "disabled")
+				
+
+				fetch(BASE_URL + '/api/dosen/', {
+					method: 'post',
+					headers: {
+						'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+						'Content-Type': 'application/json',
+						'Accept': 'application/json'
+					},
+					body: JSON.stringify(self.state.dosenBaru)
+				}).then(function(response) {
+					addButton[0].removeAttribute("disabled")
+				}).then(function(data) {
+					addButton[0].removeAttribute("disabled")
+					fetch(BASE_URL + '/api/dosen/', {
+						method: 'get',
+						headers: {
+							'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+							'Content-Type': 'application/json',
+							'Accept': 'application/json'
+						}
+					}).then(function(response) {
+						return response.json();
+					}).then(function(data) {
+						self.setState({
+							dosens: data.results,
+							dosenBaru: {}
+						})
+					});
+					toastr.success("Dosen berhasil ditambahkan", "Sukses ! ")
+				})
+			}	
+		});
     }
 
     handleDeletedosen = (id, key)=> {
@@ -331,8 +390,13 @@ class Administrator extends Component {
 					                            		<tr key={key}>
 							                                <td>{key+1}</td>
 							                                <td>{dosen.nama}</td>
-							                                <td>{dosen.jenis_kelamin}</td>
-							                                <td>{dosen.pendidikan_terakhir}</td>
+							                                <td>{
+																(dosen.jenis_kelamin === 'L')? "Laki-Laki": "Perempuan"
+															}</td>
+							                                <td>{
+																(dosen.pendidikan_terakhir === 's1')? "S1":
+																(dosen.pendidikan_terakhir === 's2')? "S2": "S3"
+															}</td>
 							                                <td>
 						                                		<center>
 						                                			<button 
@@ -374,7 +438,7 @@ class Administrator extends Component {
 	                                        <div className="col-lg-9">
 	                                            <input 
 	                                            	type="text" 
-	                                            	className="form-control m-b" 
+	                                            	className="form-control required" 
 	                                            	name="account"
 	                                            	value={this.state.dosenBaru.nama}
 						                            onChange={this.adddosenNama}
@@ -382,11 +446,23 @@ class Administrator extends Component {
 	                                        </div>
 	                                    </div>
 
+										<div className="form-group row"><label className="col-lg-3 col-form-label">Email</label>
+	                                        <div className="col-lg-9">
+	                                            <input 
+	                                            	type="text" 
+	                                            	className="form-control required" 
+	                                            	name="account"
+	                                            	value={this.state.dosenBaru.email}
+						                            onChange={this.adddosenEmail}
+						                            />
+	                                        </div>
+	                                    </div>
+
 	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Alamat</label>
 	                                        <div className="col-lg-9">
 	                                            <input 
 	                                            	type="text" 
-	                                            	className="form-control m-b" 
+	                                            	className="form-control required" 
 	                                            	name="account"
 	                                            	value={this.state.dosenBaru.alamat}
 						                            onChange={this.adddosenAlamat}
@@ -398,7 +474,7 @@ class Administrator extends Component {
 	                                        <div className="col-lg-9">
 	                                            <input 
 	                                            	type="text" 
-	                                            	className="form-control m-b" 
+	                                            	className="form-control required" 
 	                                            	name="account"
 	                                            	value={this.state.dosenBaru.tempat_lahir}
 						                            onChange={this.adddosenTempatLahir}
@@ -410,7 +486,7 @@ class Administrator extends Component {
 	                                        <div className="col-lg-9">
 	                                            <input 
 	                                            	type="date" 
-	                                            	className="form-control m-b" 
+	                                            	className="form-control required" 
 	                                            	name="account"
 	                                            	value={this.state.dosenBaru.tgl_lahir}
 						                            onChange={this.adddosenTglLahir}
@@ -418,9 +494,9 @@ class Administrator extends Component {
 	                                        </div>
 	                                    </div>
 
-	                               		<div className="form-group row"><label className="col-lg-3 col-form-label">Kategori</label>
+	                               		<div className="form-group row"><label className="col-lg-3 col-form-label">Jenis Kelamin</label>
 	                                        <div className="col-lg-9">
-	                                            <select className="form-control m-b" name="account" value={this.state.dosenBaru.jenis_kelamin} onChange={this.adddosenJK}>
+	                                            <select className="form-control required" name="account" value={this.state.dosenBaru.jenis_kelamin} onChange={this.adddosenJK}>
 	                                                <option >Pilih</option>
 	                                                <option value="L">Laki - Laki</option>
 	                                                <option value="P">Perempuan</option>
@@ -452,7 +528,7 @@ class Administrator extends Component {
 	                                        <div className="col-lg-9">
 	                                            <input 
 	                                            	type="number" 
-	                                            	className="form-control m-b" 
+	                                            	className="form-control required" 
 	                                            	name="account"
 	                                            	value={this.state.dosenBaru.no_hp}
 						                            onChange={this.adddosenNoHp}
@@ -462,67 +538,75 @@ class Administrator extends Component {
 
 	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Pendidikan Terakhir</label>
 	                                        <div className="col-lg-9">
-	                                            <input 
-	                                            	type="text" 
-	                                            	className="form-control m-b" 
-	                                            	name="account"
-	                                            	value={this.state.dosenBaru.pendidikan_terakhir}
-						                            onChange={this.adddosenPendidikan}
-						                            />
+												<select 
+                                                   value={this.state.dosenBaru.pendidikan_terakhir}
+												   onChange={this.adddosenPendidikan}
+                                                    id="pendidikan" 
+                                                    name="pendidikan" 
+                                                    className="form-control required">
+                                                    <option >Pilih</option>
+	                                                <option value="s1">S1</option>
+	                                                <option value="s2">S2</option>
+													<option value="s3">S3</option>
+                                                </select>
 	                                        </div>
 	                                    </div>
 
 	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Status Menikah</label>
 	                                        <div className="col-lg-9">
-	                                            <select className="form-control m-b" name="account" value={this.state.dosenBaru.status_menikah} onChange={this.adddosenStatus}>
+	                                            <select className="form-control required" name="account" value={this.state.dosenBaru.status_menikah} onChange={this.adddosenStatus}>
 	                                                <option >Pilih</option>
-	                                                <option value="Sudah">Sudah Menikah</option>
-	                                                <option value="Belum">Belum Menikah</option>
+	                                                <option value="sudah_menikah">Sudah Menikah</option>
+	                                                <option value="belum_menikah">Belum Menikah</option>
 	                                            </select>
 	                                        </div>
 	                                    </div>
 
-	                                    <div className="form-group  row">
-                                            <label className="col-sm-3 col-form-label">Kampus</label>
+										<div className="form-group  row">
+                                            <label className="col-sm-3 col-form-label">Jurusan</label>
                                             <div className="col-sm-9">
-                                                <select 
-                                                    value={this.state.dosenBaru.kampus}
-                                                    onChange={this.addDosenKampus}
-                                                    id="kampus" 
-                                                    name="kampus" 
+												<select 
+                                                    value={this.state.dosenBaru.jurusan}
+                                                    onChange={this.addDosenJurusan}
+                                                    id="jurusan" 
+                                                    name="jurusan" 
                                                     className="form-control required">
-                                                    <option value="">Pilih Kampus</option>
-                                                    <option value="1">Kampus 1</option>
-                                                    <option value="2">Kampus 2</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div className="form-group  row">
-                                            <label className="col-sm-3 col-form-label">Mata Kuliah</label>
-                                            <div className="col-sm-9">
-                                                <select 
-                                                    value={this.state.dosenBaru.matkul}
-                                                    onChange={this.addDosenMatkul}
-                                                    id="kampus" 
-                                                    name="kampus" 
-                                                    className="form-control required">
-                                                    <option value="">Pilih Mata Kuliah</option>
+                                                    <option value="">Pilih Jurusan</option>
                                                     {
-                                                        this.state.matkuls.map((matkul, key) => 
-                                                            <option key={key} value={matkul.id}>{matkul.nama}</option>
+                                                        this.state.jurusans.map((jurusan, i) => 
+                                                            <option key={i} value={jurusan.id}>{jurusan.nama}</option>
                                                         )
                                                     }
                                                 </select>
                                             </div>
                                         </div>
 
-	                                    <button
-	                                		className="btn btn-primary btn-sm btn-add" 
-	                                		type="button"
-	                                		onClick={this.addDosen}>
-	                                		Tambah
-	                                	</button>
+	                                    <div className="form-group  row">
+                                            <label className="col-sm-3 col-form-label">Kampus</label>
+                                            <div className="col-sm-9">
+												<select 
+                                                    value={this.state.dosenBaru.kampus}
+                                                    onChange={this.addDosenKampus}
+                                                    id="kampus" 
+                                                    name="kampus" 
+                                                    className="form-control required">
+                                                    <option value="">Pilih Kampus</option>
+                                                    {
+                                                        this.state.kampus.map((kampus,i) => 
+                                                            <option key={i} value={kampus.id}>{kampus.nama}</option>
+                                                        )
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+
+										<button
+											style={{'margin':'0 3%'}}
+											className="btn btn-primary btn-sm btn-add" 
+											type="button"
+											onClick={this.addDosen}>
+											Tambah
+										</button>
 	                                </div>
 	                                :
 	                                <div className="ibox-content">
@@ -531,7 +615,7 @@ class Administrator extends Component {
 	                                        <div className="col-lg-9">
 	                                            <input 
 	                                            	type="text" 
-	                                            	className="form-control m-b" 
+	                                            	className="form-control required" 
 	                                            	name="account"
 	                                            	value={this.state.dosens[this.state.selected].nama}
 						                            onChange={this.handleChangeNama}
@@ -539,11 +623,23 @@ class Administrator extends Component {
 	                                        </div>
 	                                    </div>
 
+										<div className="form-group row"><label className="col-lg-3 col-form-label">Email</label>
+	                                        <div className="col-lg-9">
+	                                            <input 
+	                                            	type="text" 
+	                                            	className="form-control required" 
+	                                            	name="account"
+	                                            	value={this.state.dosens[this.state.selected].email}
+						                            onChange={this.handleChangeEmail}
+						                            />
+	                                        </div>
+	                                    </div>
+
 	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Alamat</label>
 	                                        <div className="col-lg-9">
 	                                            <input 
 	                                            	type="text" 
-	                                            	className="form-control m-b" 
+	                                            	className="form-control required" 
 	                                            	name="account"
 	                                            	value={this.state.dosens[this.state.selected].alamat}
 						                            onChange={this.handleChangeAlamat}
@@ -555,7 +651,7 @@ class Administrator extends Component {
 	                                        <div className="col-lg-9">
 	                                            <input 
 	                                            	type="text" 
-	                                            	className="form-control m-b" 
+	                                            	className="form-control required" 
 	                                            	name="account"
 	                                            	value={this.state.dosens[this.state.selected].tempat_lahir}
 						                            onChange={this.handleChangeTmptLahir}
@@ -567,7 +663,7 @@ class Administrator extends Component {
 	                                        <div className="col-lg-9">
 	                                            <input 
 	                                            	type="date" 
-	                                            	className="form-control m-b" 
+	                                            	className="form-control required" 
 	                                            	name="account"
 	                                            	value={this.state.dosens[this.state.selected].tgl_lahir}
 						                            onChange={this.handleChangeTglLahir}
@@ -577,7 +673,7 @@ class Administrator extends Component {
 
 	                               		<div className="form-group row"><label className="col-lg-3 col-form-label">Jenis Kelamin</label>
 	                                        <div className="col-lg-9">
-	                                            <select className="form-control m-b" name="account" value={this.state.dosens[this.state.selected].jenis_kelamin} onChange={this.handleChangeJK}>
+	                                            <select className="form-control required" name="account" value={this.state.dosens[this.state.selected].jenis_kelamin} onChange={this.handleChangeJK}>
 	                                                <option >Pilih</option>
 	                                                <option value="L">Laki - Laki</option>
 	                                                <option value="P">Perempuan</option>
@@ -609,7 +705,7 @@ class Administrator extends Component {
 	                                        <div className="col-lg-9">
 	                                            <input 
 	                                            	type="number" 
-	                                            	className="form-control m-b" 
+	                                            	className="form-control required" 
 	                                            	name="account"
 	                                            	value={this.state.dosens[this.state.selected].no_hp}
 						                            onChange={this.handleChangeNoHp}
@@ -619,70 +715,82 @@ class Administrator extends Component {
 
 	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Pendidikan Terakhir</label>
 	                                        <div className="col-lg-9">
-	                                            <input 
-	                                            	type="text" 
-	                                            	className="form-control m-b" 
-	                                            	name="account"
-	                                            	value={this.state.dosens[this.state.selected].pendidikan_terakhir}
-						                            onChange={this.handleChangePendidikan}
-						                            />
+												<select 
+                                                   value={this.state.dosens[this.state.selected].pendidikan_terakhir}
+												   onChange={this.handleChangePendidikan}
+                                                    id="pendidikan" 
+                                                    name="pendidikan" 
+                                                    className="form-control required">
+                                                    <option >Pilih</option>
+	                                                <option value="s1">S1</option>
+	                                                <option value="s2">S2</option>
+													<option value="s3">S3</option>
+                                                </select>
 	                                        </div>
 	                                    </div>
 
 	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Status Menikah</label>
 	                                        <div className="col-lg-9">
-	                                            <select className="form-control m-b" name="account" value={this.state.dosens[this.state.selected].status_menikah} onChange={this.handleChangeStatus}>
+	                                            <select className="form-control required" name="account" value={this.state.dosens[this.state.selected].status_menikah} onChange={this.handleChangeStatus}>
 	                                                <option >Pilih</option>
-	                                                <option value="Sudah">Sudah Menikah</option>
-	                                                <option value="Belum">Belum Menikah</option>
+	                                                <option value="sudah_menikah">Sudah Menikah</option>
+	                                                <option value="belum_menikah">Belum Menikah</option>
 	                                            </select>
 	                                        </div>
 	                                    </div>
 
+										<div className="form-group  row">
+                                            <label className="col-sm-3 col-form-label">Jurusan</label>
+                                            <div className="col-sm-9">
+												<select 
+                                                    value={this.state.dosens[this.state.selected].jurusan}
+                                                    onChange={this.handleChangeKampus}
+                                                    id="jurusan" 
+                                                    name="jurusan" 
+                                                    className="form-control required">
+                                                    <option value="">Pilih Jurusan</option>
+                                                    {
+                                                        this.state.jurusans.map((jurusan, i) => 
+                                                            <option key={i} value={jurusan.id}>{jurusan.nama}</option>
+                                                        )
+                                                    }
+                                                </select>
+                                            </div>
+                                        </div>
+
 	                                    <div className="form-group  row">
                                             <label className="col-sm-3 col-form-label">Kampus</label>
                                             <div className="col-sm-9">
-                                                <select 
+												<select 
                                                     value={this.state.dosens[this.state.selected].kampus}
                                                     onChange={this.handleChangeKampus}
                                                     id="kampus" 
                                                     name="kampus" 
                                                     className="form-control required">
                                                     <option value="">Pilih Kampus</option>
-                                                    <option value="1">Kampus 1</option>
-                                                    <option value="2">Kampus 2</option>
+                                                    {
+                                                        this.state.kampus.map((kampus,i) => 
+                                                            <option key={i} value={kampus.id}>{kampus.nama}</option>
+                                                        )
+                                                    }
                                                 </select>
                                             </div>
                                         </div>
 
-                                        <div className="form-group  row">
-                                            <label className="col-sm-3 col-form-label">Mata Kuliah</label>
-                                            <div className="col-sm-9">
-                                                <select 
-                                                    value={this.state.dosens[this.state.selected].mata_kuliah}
-                                                    onChange={this.handleChangeMatkul}
-                                                    id="kampus" 
-                                                    name="kampus" 
-                                                    className="form-control required">
-                                                    <option value="">Pilih Mata Kuliah</option>
-                                                    <option value="4">Mata Kuliah 1</option>
-                                                    <option value="2">Mata Kuliah 2</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-	                                    <button
-	                                		className="btn btn-info btn-add" 
-	                                		type="button"
-	                                		onClick={this.editDosen}>
-	                                		Edit
-	                                	</button>
-	                                	<button 
-	                        				className="btn btn-danger " 
-	                        				type="button"
-	                        				onClick={ () => {this.setState({ addForm: !this.state.addForm})} }>
-	                        				Batal
-	                        			</button>
+										<button
+											style={{'margin':'0 3%'}}
+											className="btn btn-info btn-add" 
+											type="button"
+											onClick={this.editDosen}>
+											Edit
+										</button>
+										<button 
+											style={{'margin':'0 3%'}}
+											className="btn btn-danger " 
+											type="button"
+											onClick={ () => {this.setState({ addForm: !this.state.addForm})} }>
+											Batal
+										</button>
 	                                </div>
                                 }
 
