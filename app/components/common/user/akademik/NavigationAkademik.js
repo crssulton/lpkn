@@ -14,7 +14,7 @@ class Navigation extends Component {
 
     componentWillMount(){
         const self = this
-        fetch('http://lpkn.itec.my.id:9000/api/akademik/' + cookie.load('user_id')+'/', {
+        fetch('http://lpkn.itec.my.id:9000/api/akademik/' +  window.sessionStorage.getItem('user_id')+'/', {
             method: 'get',
             headers: {
                 'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
@@ -67,6 +67,12 @@ class Navigation extends Component {
                         </li>
                         <li className={this.activeRoute("/matkul")}>
                             <Link to="/matkul"><i className="fa fa-book"></i> <span className="nav-label">Mata Kuliah</span></Link>
+                        </li>
+                        <li className={this.activeRoute("/kelas")}>
+                            <Link to="/kelas"><i className="fa fa-home"></i> <span className="nav-label">Kelas</span></Link>
+                        </li>
+                        <li className={this.activeRoute("/ruangan")}>
+                            <Link to="/ruangan"><i className="fa fa-home"></i> <span className="nav-label">Ruang Kuliah</span></Link>
                         </li>
                         <li className={this.activeRoute("/jadwal")}>
                             <Link to="/jadwal"><i className="fa fa-calendar"></i> <span className="nav-label">Jadwal Perkuliahan</span></Link>

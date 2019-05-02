@@ -4,7 +4,7 @@ import swal from 'sweetalert';
 import {BASE_URL} from '../../config/config.js'
 import { Link, Location } from 'react-router';
 
-class Kepala_Cabang extends Component {
+class Akademik extends Component {
 
 	constructor(props){
         super(props);
@@ -60,7 +60,7 @@ class Kepala_Cabang extends Component {
     handleDeleteStaff = (id, key)=> {
     	const self = this
     	swal({
-		  title: "Hapus Kepala Cabang ?",
+		  title: "Hapus Akademik ?",
 		  icon: "warning",
 		  buttons: true,
 		  dangerMode: true,
@@ -165,7 +165,7 @@ class Kepala_Cabang extends Component {
             <div >
                 <div className="row wrapper border-bottom white-bg page-heading">
 		            <div className="col-lg-8">
-		                <h2>Daftar Kepala Cabang</h2>
+		                <h2>Data Akademik</h2>
 		            </div>
 		            <div className="col-lg-4">
 		            </div>
@@ -175,7 +175,7 @@ class Kepala_Cabang extends Component {
                         <div className="col-lg-8">
                             <div className="ibox ">
                                 <div className="ibox-title" style={{'backgroundColor':'#1ab394', 'color':'white'}}>
-                                    <h5> <i className="fa fa-list "></i> Daftar Kepala Cabang</h5>
+                                    <h5> <i className="fa fa-list "></i> Daftar Akademik</h5>
                                 </div>
                                 <div className="ibox-content">
                                 	<div className="row">
@@ -185,15 +185,15 @@ class Kepala_Cabang extends Component {
 			                                    <input 
 		                                    		type="text" 
 		                                    		disabled="" 
-		                                    		placeholder="Nama Kepala Cabang"
+		                                    		placeholder="Nama Akademik"
 		                                    		className="form-control"/>
 		                                    </div>
 	                                    </div>
 	                                    <div className="col-lg-5">
 	                                    	<div className="col-sm-12">
-	                                    		<Link to={{ pathname: 'add-staff', state: { title: 'Kepala Cabang'} }}>
+	                                    		<Link to={{ pathname: 'add-staff', state: { title: 'Akademik'} }}>
 				                                    <button className="btn btn-info">
-				                                    	<i className="fa fa-plus"></i> Tambah Kepala Cabang
+				                                    	<i className="fa fa-plus"></i> Tambah Akademik
 				                                    	 
 				                                    </button>
 			                                    </Link>
@@ -223,7 +223,7 @@ class Kepala_Cabang extends Component {
 					                            </thead>
 					                            <tbody>
 					                            {
-					                            	this.state.staffs.filter(data => data.role == 6).map((data, key) =>
+					                            	this.state.staffs.filter(data => data.role == 5).map((data, key) =>
 					                            		<tr>
 							                                <td>{data.nama.toUpperCase()}</td>
 							                                <td>{data.jenis_kelamin}</td>
@@ -231,7 +231,7 @@ class Kepala_Cabang extends Component {
 							                                 <td>{this.state.kampus.find((kampus) => (kampus.id == data.kampus)).nama}</td>
 							                                <td style={{'width': '30%'}}>
 						                                		<center>
-						                                			<Link to={{ pathname: 'edit-staff', state: { staf: data} }}>
+						                                			<Link to={{ pathname: 'edit-staff', state: { staf: data, title : "Akademik"} }}>
 							                                			<button 
 							                                				style={{'margin' : '0 5px'}} 
 							                                				className="btn btn-info btn-sm" 
@@ -270,7 +270,7 @@ class Kepala_Cabang extends Component {
                         <div className="col-lg-4">
                             <div className="ibox ">
                                 <div className="ibox-title" style={{'backgroundColor':'#1ab394', 'color':'white'}}>
-                                    <h5> <i className="fa fa-user"></i> Profil Kepala Cabang</h5>
+                                    <h5> <i className="fa fa-user"></i> Profil Akademik</h5>
                                 </div>
                                 
                                 {
@@ -347,4 +347,4 @@ class Kepala_Cabang extends Component {
 
 }
 
-export default Kepala_Cabang
+export default Akademik

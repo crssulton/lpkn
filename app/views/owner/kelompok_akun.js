@@ -3,34 +3,38 @@ import cookie from 'react-cookies';
 import swal from 'sweetalert';
 import {BASE_URL} from '../../config/config.js'
 
-class Kampus extends Component {
+class Kelompok_akun extends Component {
 
 	constructor(props){
         super(props);
         this.state = {
-            kampus: [],
+            kelompok_account: [],
             loading: true,
             form: false,
             selected: null,
-            kampusBaru: {},
+            kelompok_accountBaru: {},
             add: true,
             addForm: true,
             jurusans: [],
-            editKampus : {}
+            editkelompok_account : {}
         }
     }
 
     componentDidMount(){
     	const self = this
 		
-		fetch(BASE_URL + '/api/kampus/', {
+		fetch(BASE_URL + '/api/kelompok-account/', {
 			method: 'get',
+			headers: {
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+				'Content-Type': 'application/json',
+                'Accept': 'application/json'
+			}
 		}).then(function(response) {
 			return response.json();
 		}).then(function(data) {
-			console.log(data)
 			self.setState({
-				kampus: data.results,
+				kelompok_account: data.results,
 				loading: !self.state.loading
 			})
 		});
@@ -38,42 +42,42 @@ class Kampus extends Component {
     }
 
     handleChangeKode = e => {
-        let kampus = []
-        kampus = this.state.kampus
-        kampus.filter(data => data.id == this.state.selected)[0].kode = e.target.value
+        let kelompok_account = []
+        kelompok_account = this.state.kelompok_account
+        kelompok_account.filter(data => data.id == this.state.selected)[0].kode = e.target.value
         this.setState({
-        	kampus,
-        	editKampus: kampus.filter(data => data.id == this.state.selected)[0]
+        	kelompok_account,
+        	editkelompok_account: kelompok_account.filter(data => data.id == this.state.selected)[0]
         })
     }
     handleChangeNama = e => {
-        let kampus = []
-        kampus = this.state.kampus
-        kampus.filter(data => data.id == this.state.selected)[0].nama = e.target.value
+        let kelompok_account = []
+        kelompok_account = this.state.kelompok_account
+        kelompok_account.filter(data => data.id == this.state.selected)[0].nama = e.target.value
         this.setState({
-        	kampus,
-        	editKampus: kampus.filter(data => data.id == this.state.selected)[0]
+        	kelompok_account,
+        	editkelompok_account: kelompok_account.filter(data => data.id == this.state.selected)[0]
         })
     }
     handleChangeAlamat = e => {
-        let kampus = []
-        kampus = this.state.kampus
-        kampus.filter(data => data.id == this.state.selected)[0].alamat = e.target.value
+        let kelompok_account = []
+        kelompok_account = this.state.kelompok_account
+        kelompok_account.filter(data => data.id == this.state.selected)[0].alamat = e.target.value
         this.setState({
-        	kampus,
-        	editKampus: kampus.filter(data => data.id == this.state.selected)[0]
+        	kelompok_account,
+        	editkelompok_account: kelompok_account.filter(data => data.id == this.state.selected)[0]
         })
     }
 
-    editKampus = () => {
+    editkelompok_account = () => {
     	const self = this
-    	let editKampus = this.state.editKampus
-    	delete editKampus.id
-    	self.setState({editKampus})
-    	console.log(JSON.stringify(this.state.editKampus))
-    	fetch(BASE_URL + '/api/kampus/'+ this.state.selected+'/', {
+    	let editkelompok_account = this.state.editkelompok_account
+    	delete editkelompok_account.id
+    	self.setState({editkelompok_account})
+    	console.log(JSON.stringify(this.state.editkelompok_account))
+    	fetch(BASE_URL + '/api/kelompok-account/'+ this.state.selected+'/', {
 			method: 'put',
-			body: JSON.stringify(this.state.editKampus),
+			body: JSON.stringify(this.state.editkelompok_account),
 			headers: {
 				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
 				'Content-Type': 'application/json',
@@ -81,97 +85,96 @@ class Kampus extends Component {
 			}
 		}).then(function(response) {
 			if (response.status == 200) {
-				toastr.success("Kampus berhasil diubah", "Sukses ! ")
+				toastr.success("kelompok_account berhasil diubah", "Sukses ! ")
 				self.setState({
 					addForm: !self.state.addForm
 				})
 			}else{
-				toastr.warning("Gagal mengubah kampus", "Gagal ! ")
+				toastr.warning("Gagal mengubah kelompok_account", "Gagal ! ")
 			}
 		}).then(function(data) {
 			
 		});
     }
 
-    addKampusKode = (e) => {
-    	let kampusBaru = {}
-        kampusBaru = this.state.kampusBaru
-        kampusBaru.kode = e.target.value
-        this.setState({kampusBaru})	
+    addkelompok_accountKode = (e) => {
+    	let kelompok_accountBaru = {}
+        kelompok_accountBaru = this.state.kelompok_accountBaru
+        kelompok_accountBaru.kode = e.target.value
+        this.setState({kelompok_accountBaru})	
     }
-    addKampusNama = (e) => {
-    	let kampusBaru = {}
-        kampusBaru = this.state.kampusBaru
-        kampusBaru.nama = e.target.value
-        this.setState({kampusBaru})	
+    addkelompok_accountNama = (e) => {
+    	let kelompok_accountBaru = {}
+        kelompok_accountBaru = this.state.kelompok_accountBaru
+        kelompok_accountBaru.nama = e.target.value
+        this.setState({kelompok_accountBaru})	
     }
-    addKampusAlamat = (e) => {
-    	let kampusBaru = {}
-        kampusBaru = this.state.kampusBaru
-        kampusBaru.alamat = e.target.value
-        this.setState({kampusBaru})	
+    addkelompok_accountRole = (e) => {
+    	let kelompok_accountBaru = {}
+        kelompok_accountBaru = this.state.kelompok_accountBaru
+        kelompok_accountBaru.role = e.target.value
+        this.setState({kelompok_accountBaru})	
     }
 
-    addKampus = ()=> {
+    addkelompok_account = ()=> {
     	const self = this
     	let addButton = document.getElementsByClassName("btn-add")
-    	console.log(JSON.stringify(this.state.kampusBaru))
+    	console.log(JSON.stringify(this.state.kelompok_accountBaru))
     	addButton[0].setAttribute("disabled", "disabled")
 
-    	fetch(BASE_URL + '/api/kampus/', {
+    	fetch(BASE_URL + '/api/kelompok-account/', {
 			method: 'post',
 			headers: {
 				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
-				'Content-Type': 'application/json',
-                'Accept': 'application/json'
+				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify(this.state.kampusBaru)
+			body: JSON.stringify(this.state.kelompok_accountBaru)
 		}).then(function(response) {
+			console.log(response)
 			return response.json();
 		}).then(function(data) {
-			console.log(data)
 			if(data.id != null || data.id != undefined){
 				addButton[0].removeAttribute("disabled")
-				let kampus = []
-				let kampusBaru = {}
-				kampusBaru = self.state.kampusBaru
+				let kelompok_account = []
+				let kelompok_accountBaru = {}
+				kelompok_accountBaru = self.state.kelompok_accountBaru
 
-	        	kampus = self.state.kampus
-	        	kampus.push(data)
+	        	kelompok_account = self.state.kelompok_account
+	        	kelompok_account.push(data)
 
-	    		kampusBaru.kode = null
-				kampusBaru.nama = null
-				kampusBaru.alamat = null
+	    		kelompok_accountBaru.kode = null
+				kelompok_accountBaru.nama = null
+				kelompok_accountBaru.alamat = null
 
 				self.setState({
 					addForm: true,
-					kampus,
-					kampusBaru
+					kelompok_account,
+					kelompok_accountBaru
 					
 				})
-				toastr.success("Kampus berhasil ditambahkan", "Sukses ! ")
+				toastr.success("Kelompok Akun berhasil ditambahkan", "Sukses ! ")
 			}else{
 				addButton[0].removeAttribute("disabled")
 				self.setState({
 					addForm: true
 				})
-				toastr.warning("Gagal menambahkan Kampus", "Gagal ! ")
+				toastr.warning("Gagal menambahkan Kelompok Akun", "Gagal ! ")
 			}
 		});
     }
 
-    handleDeleteMatkul = (id, key)=> {
+    handleDeleteKelompokAkun = (id, key)=> {
     	console.log(id)
     	const self = this
     	swal({
-		  title: "Hapus Mata Kuliah ?",
+		  title: "Hapus Kelompok Akun ?",
 		  icon: "warning",
 		  buttons: true,
 		  dangerMode: true,
 		})
 		.then((willDelete) => {
 		  if (willDelete) {
-		  	fetch(BASE_URL + '/api/kampus/' + id, {
+		  	fetch(BASE_URL + '/api/kelompok-account/' + id, {
 				method: 'delete',
 				headers: {
 					'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
@@ -179,16 +182,16 @@ class Kampus extends Component {
 			}).then(function(response) {
 
 				self.setState({
-					kampus: self.state.kampus.filter(data => data.id !== id)
+					kelompok_account: self.state.kelompok_account.filter(data => data.id !== id)
 				})
-				swal("Sukses! Kampus telah dihapus!", {
+				swal("Sukses! kelompok_account telah dihapus!", {
 			      icon: "success",
 			    });
 			}).then(function(data) {
 				self.setState({
-					kampus: self.state.kampus.filter(data => data.id !== id)
+					kelompok_account: self.state.kelompok_account.filter(data => data.id !== id)
 				})
-				swal("Sukses! Kampus telah dihapus!", {
+				swal("Sukses! kelompok_account telah dihapus!", {
 			      icon: "success",
 			    });
 			});
@@ -201,7 +204,7 @@ class Kampus extends Component {
             <div >
                 <div className="row wrapper border-bottom white-bg page-heading">
 		            <div className="col-lg-8">
-		                <h2>Daftar Kampus</h2>
+		                <h2>Kelompok Akun</h2>
 		            </div>
 		            <div className="col-lg-4">
 		            </div>
@@ -211,7 +214,7 @@ class Kampus extends Component {
                         <div className="col-lg-8">
                             <div className="ibox ">
                                 <div className="ibox-title" style={{'backgroundColor':'#1ab394', 'color':'white'}}>
-                                    <h5> <i className="fa fa-list "></i> Daftar Kampus</h5>
+                                    <h5> <i className="fa fa-list "></i> Daftar Kelompok Akun</h5>
                                 </div>
                                 <div className="ibox-content">
                                 	<div className="row">
@@ -221,7 +224,7 @@ class Kampus extends Component {
 			                                    <input 
 		                                    		type="text" 
 		                                    		disabled="" 
-		                                    		placeholder="Nama Kampus"
+		                                    		placeholder="Nama Kelompok Akun"
 		                                    		className="form-control"/>
 		                                    </div>
 	                                    </div>
@@ -240,19 +243,19 @@ class Kampus extends Component {
 											<table className="table table-striped" align="right">
 					                            <thead>
 					                            <tr>
+					                            	<th style={{'width':'5%'}}>NO. </th>
 					                                <th style={{'width':'5%'}}>KODE</th>
 					                                <th style={{'width':'15%'}}>NAMA</th>
-					                                <th style={{'width':'5%'}}>ALAMAT</th>
 					                                <th style={{'width':'13%', 'textAlign':'center'}}>AKSI</th>
 					                            </tr>
 					                            </thead>
 					                            <tbody>
 					                            {
-					                            	this.state.kampus.map((data, key) =>
+					                            	this.state.kelompok_account.map((data, key) =>
 					                            		<tr>
+					                            			<td>{key+1}</td>
 							                                <td>{data.kode}</td>
 							                                <td>{data.nama}</td>
-							                                <td>{data.alamat}</td>
 							                                <td>
 						                                		<center>
 						                                			<button 
@@ -264,7 +267,7 @@ class Kampus extends Component {
 						                                				<i className="fa fa-edit"></i></button>
 
 						                                			<button 
-						                                				onClick={() => this.handleDeleteMatkul( data.id, key )}
+						                                				onClick={() => this.handleDeleteKelompokAkun( data.id, key )}
 						                                				className="btn btn-danger btn-sm" 
 						                                				type="button"
 						                                				><i className="fa fa-trash"></i></button>
@@ -286,11 +289,11 @@ class Kampus extends Component {
                                 {
                                 	this.state.addForm ?
                                 	<div className="ibox-title" style={{'backgroundColor':'#1ab394', 'color':'white'}}>
-	                                    <h5> <i className="fa fa-plus"></i> Tambah Kampus</h5>
+	                                    <h5> <i className="fa fa-plus"></i> Tambah Kelompok Akun</h5>
 	                                </div>
 	                                :
 	                                <div className="ibox-title" style={{'backgroundColor':'#fad284', 'color':'white'}}>
-	                                    <h5> <i className="fa fa-pencil"></i> Ubah Kampus</h5>
+	                                    <h5> <i className="fa fa-pencil"></i> Ubah Kelompok Akun</h5>
 	                                </div>
                                 }
                                 
@@ -303,8 +306,8 @@ class Kampus extends Component {
 	                                            	type="text" 
 	                                            	className="form-control m-b" 
 	                                            	name="account"
-	                                            	value={this.state.kampusBaru.kode}
-						                            onChange={this.addKampusKode}
+	                                            	value={this.state.kelompok_accountBaru.kode}
+						                            onChange={this.addkelompok_accountKode}
 	                                            	/>
 	                                        </div>
 	                                    </div>
@@ -315,20 +318,20 @@ class Kampus extends Component {
 	                                            	type="text" 
 	                                            	className="form-control m-b" 
 	                                            	name="account"
-	                                            	value={this.state.kampusBaru.nama}
-						                            onChange={this.addKampusNama}
+	                                            	value={this.state.kelompok_accountBaru.nama}
+						                            onChange={this.addkelompok_accountNama}
 						                            />
 	                                        </div>
 	                                    </div>
 	                                    
-	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Alamat</label>
+	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Role</label>
 	                                        <div className="col-lg-9">
 	                                            <input 
 	                                            	type="text" 
 	                                            	className="form-control m-b" 
 	                                            	name="account"
-	                                            	value={this.state.kampusBaru.alamat}
-						                            onChange={this.addKampusAlamat}
+	                                            	value={this.state.kelompok_accountBaru.role}
+						                            onChange={this.addkelompok_accountRole}
 	                                            	/>
 	                                        </div>
 	                                    </div>
@@ -336,7 +339,7 @@ class Kampus extends Component {
 	                                    <button
 	                                		className="btn btn-primary btn-sm btn-add" 
 	                                		type="button"
-	                                		onClick={this.addKampus}>
+	                                		onClick={this.addkelompok_account}>
 	                                		Tambah
 	                                	</button>
 	                                </div>
@@ -348,7 +351,7 @@ class Kampus extends Component {
 	                                            	type="text" 
 	                                            	className="form-control m-b" 
 	                                            	name="account"
-	                                            	value={this.state.kampus.filter(data => data.id === this.state.selected)[0].kode}
+	                                            	value={this.state.kelompok_account.filter(data => data.id === this.state.selected)[0].kode}
 					                                onChange={this.handleChangeKode}
 	                                            	/>
 	                                        </div>
@@ -360,20 +363,20 @@ class Kampus extends Component {
 	                                            	type="text" 
 	                                            	className="form-control m-b" 
 	                                            	name="account"
-	                                            	value={this.state.kampus.filter(data => data.id === this.state.selected)[0].nama}
+	                                            	value={this.state.kelompok_account.filter(data => data.id === this.state.selected)[0].nama}
 					                                onChange={this.handleChangeNama}
 						                            />
 	                                        </div>
 	                                    </div>
 
-	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Alamat</label>
+	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Role</label>
 	                                        <div className="col-lg-9">
 	                                            <input 
 	                                            	type="text" 
 	                                            	className="form-control m-b" 
 	                                            	name="account"
-	                                            	value={this.state.kampus.filter(data => data.id === this.state.selected)[0].alamat}
-					                                onChange={this.handleChangeAlamat}
+	                                            	value={this.state.kelompok_account.filter(data => data.id === this.state.selected)[0].role}
+					                                onChange={this.handleChangeRole}
 						                            />
 	                                        </div>
 	                                    </div>
@@ -383,7 +386,7 @@ class Kampus extends Component {
 	                                    	style={{'marginRight': '10px'}}
 	                                		className="btn btn-info btn-add" 
 	                                		type="button"
-	                                		onClick={this.editKampus}>
+	                                		onClick={this.editkelompok_account}>
 	                                		Edit
 	                                	</button>
 	                                	<button 
@@ -411,4 +414,4 @@ class Kampus extends Component {
 
 }
 
-export default Kampus
+export default Kelompok_akun

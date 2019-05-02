@@ -1,30 +1,30 @@
 import React, { Component } from 'react';	
-import cookie from 'react-cookies';	
 import swal from 'sweetalert';
 import {BASE_URL} from '../../config/config.js'
-import { Link, Location } from 'react-router';
+import $ from 'jquery'
 
-class Kepala_Cabang extends Component {
+class Pengajuan extends Component {
 
 	constructor(props){
         super(props);
         this.state = {
-            staffs: [],
+            pegawai: [],
             loading: true,
             form: false,
             selected: null,
-            staffsBaru: {},
+            pegawaiBaru: {},
             add: true,
             addForm: true,
             jurusans: [],
-            kampus: []
+            kampus: [],
+            tempPegawai: {}
         }
     }
 
     componentDidMount(){
     	const self = this
 		
-		fetch(BASE_URL + '/api/staff/', {
+		fetch(BASE_URL + '/api/pegawai/', {
 			method: 'get',
 			headers: {
 				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
@@ -33,9 +33,8 @@ class Kepala_Cabang extends Component {
 		}).then(function(response) {
 			return response.json();
 		}).then(function(data) {
-			console.log(data)
 			self.setState({
-				staffs: data.results,
+				pegawai: data.results,
 				loading: !self.state.loading
 			})
 		});
@@ -49,7 +48,6 @@ class Kepala_Cabang extends Component {
 		}).then(function(response) {
 			return response.json();
 		}).then(function(data) {
-			console.log(data)
 			self.setState({
 				kampus: data.results
 			})
@@ -57,39 +55,34 @@ class Kepala_Cabang extends Component {
 
     }
 
-    handleDeleteStaff = (id, key)=> {
+    simpanGaji = () => {
     	const self = this
-    	swal({
-		  title: "Hapus Kepala Cabang ?",
-		  icon: "warning",
-		  buttons: true,
-		  dangerMode: true,
-		})
-		.then((willDelete) => {
-		  if (willDelete) {
-		  	fetch(BASE_URL + '/api/staff/' + id + '/', {
-				method: 'delete',
-				headers: {
-					'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
-				}
-			}).then(function(response) {
-				if (response.status == 204) {
-					self.setState({
-						staffs: self.state.staffs.filter(data => data.id !== id)
-					})
-					swal("Sukses! staffs telah dihapus!", {
-				      icon: "success",
-				    });
-				}
-			}).then(function(data) {
-
-			});
-		  }
+    	let spv = this.state.tempPegawai
+    	spv.pegawai = this.state.tempPegawai.id
+    	spv.gaji  	= this.state.tempPegawai.gaji 
+    	fetch(BASE_URL + '/api/pengajuan-sgv/', {
+			method: 'post',
+			body: JSON.stringify(spv),
+			headers: {
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response) {
+			if(response.status == 201){
+				toastr.success("Data berhasil ditambahkan", "Sukses ! ")
+				self.setState({
+					tempPegawai: {},
+				})
+			}else{
+				toastr.warning("Gagal menambahkan Data", "Gagal ! ")
+			}
+		}).then(function(data) {
+			
 		});
     }
 
     Profil_staff = () =>   {
-    	let data = this.state.staffs.filter(data => data.id == this.state.selected)[0]
+    	let data = this.state.pegawai.filter(data => data.id == this.state.selected)[0]
     	return	(
 			<div className="ibox-content">
 		    	{
@@ -165,7 +158,7 @@ class Kepala_Cabang extends Component {
             <div >
                 <div className="row wrapper border-bottom white-bg page-heading">
 		            <div className="col-lg-8">
-		                <h2>Daftar Kepala Cabang</h2>
+		                <h2>Pengajuan Gaji SPV HRD</h2>
 		            </div>
 		            <div className="col-lg-4">
 		            </div>
@@ -175,7 +168,7 @@ class Kepala_Cabang extends Component {
                         <div className="col-lg-8">
                             <div className="ibox ">
                                 <div className="ibox-title" style={{'backgroundColor':'#1ab394', 'color':'white'}}>
-                                    <h5> <i className="fa fa-list "></i> Daftar Kepala Cabang</h5>
+                                    <h5> <i className="fa fa-list "></i> Daftar Pegawai</h5>
                                 </div>
                                 <div className="ibox-content">
                                 	<div className="row">
@@ -185,18 +178,8 @@ class Kepala_Cabang extends Component {
 			                                    <input 
 		                                    		type="text" 
 		                                    		disabled="" 
-		                                    		placeholder="Nama Kepala Cabang"
+		                                    		placeholder="Nama Pegawai"
 		                                    		className="form-control"/>
-		                                    </div>
-	                                    </div>
-	                                    <div className="col-lg-5">
-	                                    	<div className="col-sm-12">
-	                                    		<Link to={{ pathname: 'add-staff', state: { title: 'Kepala Cabang'} }}>
-				                                    <button className="btn btn-info">
-				                                    	<i className="fa fa-plus"></i> Tambah Kepala Cabang
-				                                    	 
-				                                    </button>
-			                                    </Link>
 		                                    </div>
 	                                    </div>
 	                                </div>
@@ -214,6 +197,7 @@ class Kepala_Cabang extends Component {
 											<table className="table table-striped" align="right">
 					                            <thead>
 					                            <tr>
+					                            	<th>NO.</th>
 					                                <th>NAMA</th>
 					                                <th>JK</th>
 					                                <th>PENDIDIKAN</th>
@@ -223,28 +207,26 @@ class Kepala_Cabang extends Component {
 					                            </thead>
 					                            <tbody>
 					                            {
-					                            	this.state.staffs.filter(data => data.role == 6).map((data, key) =>
+					                            	this.state.pegawai.map((data, key) =>
 					                            		<tr>
+					                            			<td>{key+1}</td>
 							                                <td>{data.nama.toUpperCase()}</td>
 							                                <td>{data.jenis_kelamin}</td>
 							                                <td>{data.pendidikan_terakhir.toUpperCase()}</td>
 							                                 <td>{this.state.kampus.find((kampus) => (kampus.id == data.kampus)).nama}</td>
 							                                <td style={{'width': '30%'}}>
 						                                		<center>
-						                                			<Link to={{ pathname: 'edit-staff', state: { staf: data} }}>
-							                                			<button 
-							                                				style={{'margin' : '0 5px'}} 
-							                                				className="btn btn-info btn-sm" 
-							                                				type="button"
-							                                				>
-							                                				<i className="fa fa-pencil"></i></button>
-						                                			</Link>
-
 						                                			<button 
-						                                				onClick={() => this.handleDeleteStaff( data.id, key )}
-						                                				className="btn btn-danger btn-sm" 
+						                                				style={{'margin' : '0 5px'}} 
+						                                				className="btn btn-info btn-sm" 
 						                                				type="button"
-						                                				><i className="fa fa-trash"></i></button>
+						                                				onClick={ () => {
+						                                					this.setState({ tempPegawai: data}) 
+						                                					$('#ModalInputPegawai').modal('show')
+						                                				}}
+						                                				>
+						                                				<i className="fa fa-external-link"></i></button>
+					                                			
 
 						                                			<button 
 						                                				style={{'margin' : '0 5px'}} 
@@ -267,10 +249,62 @@ class Kepala_Cabang extends Component {
                                 </div>
                             </div>
                         </div>
+                        <div id="ModalInputPegawai" className="modal fade">
+	                        <div className="modal-dialog">
+	                            <div className="modal-content">
+	                                <div className="modal-header">
+	                                    <button type="button" className="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span className="sr-only">close</span></button>
+	                                    <h4 id="modalTitle" className="modal-title">Input Gaji Pegawai</h4>
+	                                </div>
+	                                <div className="modal-body">
+	                                	{
+	                                    	this.state.tempPegawai != null ?
+	                                    	<div>
+	                                    		<div className="form-group row"><label className="col-lg-3 col-form-label">Nama</label>
+			                                        <div className="col-lg-9">
+			                                            <input 
+			                                            	type="text" 
+			                                            	className="form-control m-b" 
+			                                            	name="account"
+			                                            	disabled
+			                                            	value={this.state.tempPegawai.nama}
+			                                            	/>
+			                                        </div>
+			                                    </div>
+
+			                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Gaji</label>
+			                                        <div className="col-lg-9">
+			                                            <input 
+			                                            	type="number" 
+			                                            	className="form-control m-b" 
+			                                            	name="account"
+			                                            	value={this.state.tempPegawai.gaji}
+			                                            	onChange={(e) => {
+			                                            		let tempPegawai = this.state.tempPegawai
+			                                            		tempPegawai.gaji = e.target.value
+			                                            		this.setState({tempPegawai})
+			                                            	}}
+								                            />
+			                                        </div>
+			                                    </div>
+	                                    	</div>
+	                                    	:
+	                                    	null
+	                                    }
+	                                    
+	                                    
+	                                </div>
+	                                <div className="modal-footer">
+	                                    <button type="button" className="btn btn-default" data-dismiss="modal">Tutup</button>
+	                                    <button type="button" className="btn btn-info" data-dismiss="modal" onClick={this.simpanGaji}>Simpan</button>
+	                                </div>
+	                            </div>
+	                        </div>
+	                    </div>
                         <div className="col-lg-4">
                             <div className="ibox ">
                                 <div className="ibox-title" style={{'backgroundColor':'#1ab394', 'color':'white'}}>
-                                    <h5> <i className="fa fa-user"></i> Profil Kepala Cabang</h5>
+                                    <h5> <i className="fa fa-user"></i> Profil Pegawai</h5>
                                 </div>
                                 
                                 {
@@ -284,7 +318,7 @@ class Kepala_Cabang extends Component {
 	                                            	type="text" 
 	                                            	className="form-control m-b" 
 	                                            	name="account"
-	                                            	value={this.state.staffs.filter(data => data.id === this.state.selected)[0].kode}
+	                                            	value={this.state.pegawai.filter(data => data.id === this.state.selected)[0].kode}
 					                                onChange={this.handleChangeKode}
 	                                            	/>
 	                                        </div>
@@ -296,7 +330,7 @@ class Kepala_Cabang extends Component {
 	                                            	type="text" 
 	                                            	className="form-control m-b" 
 	                                            	name="account"
-	                                            	value={this.state.staffs.filter(data => data.id === this.state.selected)[0].nama}
+	                                            	value={this.state.pegawai.filter(data => data.id === this.state.selected)[0].nama}
 					                                onChange={this.handleChangeNama}
 						                            />
 	                                        </div>
@@ -308,7 +342,7 @@ class Kepala_Cabang extends Component {
 	                                            	type="text" 
 	                                            	className="form-control m-b" 
 	                                            	name="account"
-	                                            	value={this.state.staffs.filter(data => data.id === this.state.selected)[0].alamat}
+	                                            	value={this.state.pegawai.filter(data => data.id === this.state.selected)[0].alamat}
 					                                onChange={this.handleChangeAlamat}
 						                            />
 	                                        </div>
@@ -319,7 +353,7 @@ class Kepala_Cabang extends Component {
 	                                    	style={{'marginRight': '10px'}}
 	                                		className="btn btn-info btn-add" 
 	                                		type="button"
-	                                		onClick={this.editstaffs}>
+	                                		onClick={this.editpegawai}>
 	                                		Edit
 	                                	</button>
 	                                	<button 
@@ -347,4 +381,4 @@ class Kepala_Cabang extends Component {
 
 }
 
-export default Kepala_Cabang
+export default Pengajuan

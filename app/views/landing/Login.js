@@ -48,7 +48,7 @@ class Login extends Component {
                 window.sessionStorage.setItem("token", data.token);
                 window.sessionStorage.setItem("access", data.token);
                 window.sessionStorage.setItem("role", data.user.role);
-                window.sessionStorage.setItem("user_id",  data.user.id);
+                window.sessionStorage.setItem("user_id",  data.user.profile.id);
                 
                 setTimeout(() => {
                     window.location = "/";

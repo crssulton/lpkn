@@ -51,6 +51,9 @@ class Navigation extends Component {
                         <li className={this.activeRoute("/hrd")}>
                             <Link to="/hrd"><i className="fa fa-user-plus"></i> <span className="nav-label">HRD</span></Link>
                         </li>
+                        <li className={this.activeRoute("/kelompok-account")}>
+                            <Link to="/kelompok-account"><i className="fa fa-book"></i> <span className="nav-label">Kelompok Akun</span></Link>
+                        </li>
                         <li className={this.activeRoute("/anggaran")}>
                             <Link to="/anggaran"><i className="fa fa-book"></i> <span className="nav-label">Approve Anggaran</span></Link>
                         </li>

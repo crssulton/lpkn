@@ -3,7 +3,7 @@ import $ from 'jquery'
 import FullCalendar from 'fullcalendar-reactwrapper';
 import { Link } from 'react-router';
 import moment from 'moment'
-import cookie from 'react-cookies'; 
+import {BASE_URL} from '../../config/config.js'
 
 class Jadwal extends Component {
     constructor(props) {
@@ -25,6 +25,7 @@ class Jadwal extends Component {
             title: '',
             idJadwalSelected: null,
             matkuls: [],
+            ruangan: [],
             dosens: [],
             eventSelected: {},
             jurusans: [],
@@ -34,7 +35,7 @@ class Jadwal extends Component {
 
     componentDidMount(){
         const self = this
-        fetch('http://lpkn.itec.my.id:9000/api/jadwal/', {
+        fetch(BASE_URL + '/api/jadwal/', {
             method: 'get',
             headers: {
                 'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
@@ -47,7 +48,7 @@ class Jadwal extends Component {
             })
         });
 
-        fetch('http://lpkn.itec.my.id:9000/api/dosen/', {
+        fetch(BASE_URL + '/api/dosen/', {
             method: 'get',
             headers: {
                 'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
@@ -60,7 +61,20 @@ class Jadwal extends Component {
             })
         });
 
-        fetch('http://lpkn.itec.my.id:9000/api/mata-kuliah/', {
+        fetch(BASE_URL + '/api/ruangan/', {
+            method: 'get',
+            headers: {
+                'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+            }
+        }).then(function(response) {
+            return response.json();
+        }).then(function(data) {
+            self.setState({
+                ruangan: data.results
+            })
+        });
+
+        fetch(BASE_URL + '/api/mata-kuliah/', {
             method: 'get',
             headers: {
                 'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
@@ -73,7 +87,7 @@ class Jadwal extends Component {
             })
         });
 
-        fetch('http://lpkn.itec.my.id:9000/api/jurusan/', {
+        fetch(BASE_URL + '/api/jurusan/', {
             method: 'get',
             headers: {
                 'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
@@ -97,11 +111,9 @@ class Jadwal extends Component {
         jadwalBaru = this.state.jadwalBaru
         jadwalBaru.title = $("#namaMatkul option:selected").text()
         jadwalBaru.start = this.state.today
-        jadwalBaru.kampus = cookie.load('kampus')
         this.setState({jadwalBaru}) 
 
-        console.log(this.state.jadwalBaru)
-        fetch('http://lpkn.itec.my.id:9000/api/jadwal/', {
+        fetch(BASE_URL + '/api/jadwal/', {
             method: 'post',
             headers: {
                 'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
@@ -110,58 +122,65 @@ class Jadwal extends Component {
             },
             body: JSON.stringify(self.state.jadwalBaru)
         }).then(function(response) {
-            return response.json();
+            if (response.status == 400 || response.status == 500) {
+                toastr.warning("Jadwal gagal ditambahkan", "Gagal ! ")
+                addButton[0].removeAttribute("disabled")
+            }else{
+                let events = {...self.state.events}
+                events = Object.assign([], events)
+
+                events.push(self.state.jadwalBaru)
+
+                self.setState({
+                    events,
+                    jadwalBaru: {},
+                    listDay: []
+                })
+
+                addButton[0].removeAttribute("disabled")
+                toastr.success("Jadwal berhasil ditambahkan", "Sukses ! ")
+            }
         }).then(function(data) {
-            let events = []
-            events = self.state.events
-            events.push(self.state.jadwalBaru)
-
-            self.setState({
-                events,
-                jadwalBaru: {}
-            })
-
-            addButton[0].removeAttribute("disabled")
-            toastr.success("Jadwal berhasil ditambahkan", "Sukses ! ")
+            
         });
     }
 
     deleteJadwal= () => {
         const self = this
-        let index = self.state.events.map(function (event) { return event.id; }).indexOf(self.state.idJadwalSelected);
-        // swal({
-        //   title: "Hapus Mata Kuliah ?",
-        //   icon: "warning",
-        //   buttons: true,
-        //   dangerMode: true,
-        // })
-        // .then((willDelete) => {
-        //   if (willDelete) {
-        //     fetch('http://lpkn.itec.my.id:9000/api/jadwal/' + self.state.idJadwalSelected, {
-        //         method: 'delete',
-        //         headers: {
-        //             'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
-        //         }
-        //     }).then(function(response) {
-        //         self.setState({
-        //             events: self.state.slice(index+1, self.state.events.length)
-        //         })
-        //         swal("Sukses! Jadwal telah dihapus!", {
-        //           icon: "success",
-        //         });
-        //     }).then(function(data) {
-        //         let eventsCopy = []
-        //         eventsCopy = self.state.events
-        //         let events = eventsCopy.slice(index+1, eventsCopy.length)
-        //         self.setState({
-        //             events
-        //         })
-        //         swal("Sukses! Jadwal telah dihapus!", {
-        //           icon: "success",
-        //         });
-        //     });
-        //   }
-        // });
+        // let index = self.state.events.map(function (event) { return event.id; }).indexOf(self.state.idJadwalSelected);
+        swal({
+          title: "Hapus Mata Kuliah ?",
+          icon: "warning",
+          buttons: true,
+          dangerMode: true,
+        })
+        .then((willDelete) => {
+          if (willDelete) {
+            fetch(BASE_URL + '/api/jadwal/' + self.state.idJadwalSelected, {
+                method: 'delete',
+                headers: {
+                    'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+                }
+            }).then(function(response) {
+                self.setState({
+                    events: self.state.slice(index+1, self.state.events.length)
+                })
+                swal("Sukses! Jadwal telah dihapus!", {
+                  icon: "success",
+                });
+            }).then(function(data) {
+                let eventsCopy = []
+                eventsCopy = self.state.events
+                let events = eventsCopy.slice(index+1, eventsCopy.length)
+                self.setState({
+                    events
+                })
+                swal("Sukses! Jadwal telah dihapus!", {
+                  icon: "success",
+                });
+            });
+          }
+        });
     }
 
     onChangeMatkul = (e) => {
@@ -171,10 +190,17 @@ class Jadwal extends Component {
         this.setState({jadwalBaru}) 
     }
 
-    onChangeJam = (e) => {
+    onChangeJamMulai = (e) => {
         let jadwalBaru = {}
         jadwalBaru = this.state.jadwalBaru
-        jadwalBaru.jam = e.target.value
+        jadwalBaru.jam_mulai = moment(e.target.value, "h:mm A").format("HH:mm")
+        this.setState({jadwalBaru}) 
+    }
+
+    onChangeJamSelesai = (e) => {
+        let jadwalBaru = {}
+        jadwalBaru = this.state.jadwalBaru
+        jadwalBaru.jam_selesai = moment(e.target.value, "h:mm A").format("HH:mm")
         this.setState({jadwalBaru}) 
     }
 
@@ -197,6 +223,22 @@ class Jadwal extends Component {
         jadwalBaru.jurusan = e.target.value
         this.setState({jadwalBaru}) 
     }
+    onChangeRuangan = (e) => {
+        let jadwalBaru = {}
+        jadwalBaru = this.state.jadwalBaru
+        jadwalBaru.ruangan = e.target.value
+        jadwalBaru.ujian = false
+        this.setState({jadwalBaru}) 
+    }
+    onChangeRuangan = (e) => {
+        let jadwalBaru = {}
+        jadwalBaru = this.state.jadwalBaru
+        jadwalBaru.ruangan = e.target.value
+        jadwalBaru.ujian = false
+        jadwalBaru.start = this.state.listDay
+        jadwalBaru.tahun_angkatan = 2019
+        this.setState({jadwalBaru}) 
+    }
 
     deleteListDay = (key) => {
         let listDay = []
@@ -207,7 +249,6 @@ class Jadwal extends Component {
 
     
     render() {
-        console.log(this.state.listDay)
         return (
             <div>
                 <div className="row wrapper border-bottom white-bg page-heading">
@@ -260,9 +301,26 @@ class Jadwal extends Component {
                                             }
                                         </div>
                                     </div>
-                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Waktu</label>
+                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Jam Mulai</label>
                                         <div className="col-lg-10">
-                                            <input onChange={this.onChangeJam} value={this.state.jadwalBaru.jam} type="text" className="form-control m-b" name="account"/>
+                                            <input onChange={this.onChangeJamMulai}value={this.state.jadwalBaru.jam_mulai} type="time" className="form-control m-b" name="account"/>
+                                        </div>
+                                    </div>
+                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Jam Selesai</label>
+                                        <div className="col-lg-10">
+                                            <input onChange={this.onChangeJamSelesai} value={this.state.jadwalBaru.jam_selesai} type="time" className="form-control m-b" name="account"/>
+                                        </div>
+                                    </div>
+                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Ruang</label>
+                                        <div className="col-lg-10">
+                                            <select value={this.state.jadwalBaru.ruangan} onChange={this.onChangeRuangan} className="form-control m-b" name="account">
+                                                <option>Pilih Ruangan</option>
+                                                {
+                                                    this.state.ruangan.map((ruangan, key) => 
+                                                        <option value={ruangan.id}>{ruangan.nama}</option>
+                                                    )
+                                                }
+                                            </select>
                                         </div>
                                     </div>
                                     <div className="form-group row"><label className="col-lg-2 col-form-label">Dosen</label>
@@ -308,13 +366,13 @@ class Jadwal extends Component {
                                             (event, jsEvent, view) => {
                                             let eventSelected = this.state.events.find(obj => obj.id == event.id);
                                             this.setState({tmpDate: event, idJadwalSelected: event.id, eventSelected})
-
+                        
                                             $('#ModalEditJadwal').modal('show');
                                     }}
                                     eventDrop={
                                         (event, jsEvent, view) => {
-                                            console.log("Start " + moment(event.start).format('YYYY-MM-DD'))
-                                            console.log("Jadi tgl " + event.end)
+                                            // console.log("Start " + moment(event.start).format('YYYY-MM-DD'))
+                                            // console.log("Jadi tgl " + event.end)
                                             toastr.success("Jadwal berhasil diubah", "Sukses ! ")
                                         }
                                     }
@@ -334,41 +392,39 @@ class Jadwal extends Component {
                             <div className="modal-content">
                                 <div className="modal-header">
                                     <button type="button" className="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span className="sr-only">close</span></button>
-                                    <h4 id="modalTitle" className="modal-title">Lihat Mata Kuliah</h4>
+                                    <h4 id="modalTitle" className="modal-title">Detail Mata Kuliah</h4>
                                 </div>
                                 <div className="modal-body">
-                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Mata Kuliah</label>
-                                        <div className="col-lg-10">
-                                            <select className="form-control m-b" name="account" value={this.state.eventSelected.mata_kuliah} onChange={this.onChangeTitle}>
-                                                <option >Pilih Mata Kuliah</option>
-                                                {
-                                                    this.state.matkuls.map((matkul, key) => 
-                                                        <option value={matkul.id}>{matkul.nama}</option>
-                                                    )
-                                                }
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Tanggal</label>
-                                        <div className="col-lg-10">
-                                            <input type="text" disabled="disabled" value={this.state.eventSelected.start} className="form-control m-b" name="account"/>
-                                        </div>
-                                    </div>
-                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Waktu</label>
-                                        <div className="col-lg-10">
-                                            <input type="text" className="form-control m-b" name="account" value={this.state.eventSelected.jam}/>
-                                        </div>
-                                    </div>
-                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Pilih Dosen</label>
-                                        <div className="col-lg-10">
-                                            <select className="form-control m-b" name="account" value={this.state.eventSelected.dosen}>
-                                            {
-                                                this.state.dosens.map((dosen, key) => 
-                                                    <option value={dosen.id}>{dosen.nama}</option>
-                                                )
-                                            }
-                                            </select>
-                                        </div>
+                                    <div className="table-responsive">
+                                    {
+                                        this.state.idJadwalSelected != null ?
+                                        <table className="table">
+                                            <tr>
+                                                <td><b>MATA KULIAH</b> </td> <td>: {this.state.eventSelected.title}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>JURUSAN</b></td> <td>: {this.state.eventSelected.jurusan_info.nama}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>TANGGAL</b></td> <td>: {this.state.eventSelected.start}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>JAM MULAI</b></td> <td>: {this.state.eventSelected.jam_mulai}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>JAM SELESAI</b></td> <td>: {this.state.eventSelected.jam_selesai}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>RUANGAN</b></td> <td>: {this.state.eventSelected.ruangan_info.nama}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>DOSEN</b></td> <td>: {this.state.eventSelected.dosen_info.nama}</td>
+                                            </tr>
+                                        </table>
+                                        :
+                                        null
+                                    }
+                                        
                                     </div>
                                 </div>
                                 <div className="modal-footer">

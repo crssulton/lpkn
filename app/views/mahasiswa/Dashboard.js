@@ -8,44 +8,97 @@ class Dashboard extends Component {
         super(props);
         this.state ={
             mahasiswa: [],
-            loading: true
+            loading: true,
+            kampus:[],
+            jurusan: []
         }
     }
 
     componentDidMount(){
+    	console.log(window.sessionStorage.getItem('user_id'))
     	const self = this
-		fetch(BASE_URL + '/api/mahasiswa/1/', {
+		fetch(BASE_URL + '/api/mahasiswa/'+ window.sessionStorage.getItem('user_id')+'/', {
 			method: 'GET',
 			headers: {
-				'Authorization': 'JWT eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxMywidXNlcm5hbWUiOiJha2FkZW1pazEiLCJleHAiOjE1NTQwNzg0MjAsImVtYWlsIjoiIn0.lSNi_8XtzTP_jeldmMUic27TuHlYMCCNN47tyZgOLy0'
-			}
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+				'Content-Type': 'application/json'
+			},
 		}).then(function(response) {
-			console.log(response)
 			return response.json();
 		}).then(function(data) {
-			console.log(data)
 			self.setState({
 				mahasiswa: data,
 				loading: !self.state.loading
 			})
 		});
+
+		fetch(BASE_URL + '/api/kampus/', {
+			method: 'GET',
+			headers: {
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+				'Content-Type': 'application/json'
+			},
+		}).then(function(response) {
+			return response.json();
+		}).then(function(data) {
+			self.setState({
+				kampus: data.results
+			})
+		});
+
+		fetch(BASE_URL + '/api/jurusan/', {
+			method: 'GET',
+			headers: {
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+				'Content-Type': 'application/json'
+			},
+		}).then(function(response) {
+			return response.json();
+		}).then(function(data) {
+			self.setState({
+				jurusan: data.results
+			})
+		});
+
     }
 
     handleChangeMahasiswa = () => {
     	const self = this
-    	console.log(cookie.load('user_id'))
-    	console.log(JSON.stringify(self.state.mahasiswa))
-		fetch('http://lpkn.itec.my.id:9000/api/mahasiswa/1/', {
-			method: 'put',
+    	
+		fetch(BASE_URL + '/api/mahasiswa/'+ window.sessionStorage.getItem('user_id')+'/', {
+			method: 'patch',
 			headers: {
-				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify(self.state.mahasiswa)
 		}).then(function(response) {
-			console.log(response)
 			return response.json();
 		}).then(function(data) {
-			console.log(data)
+			self.setState({
+				mahasiswa: data
+			})
+			toastr.success("Data Mahasiswa Berhasil diupdate", "Sukses ! ")
+		});	
+    }
+
+    loadPengumuman = () => {
+    	const self = this
+    	
+		fetch(BASE_URL + '/api/mahasiswa/'+ window.sessionStorage.getItem('user_id')+'/', {
+			method: 'patch',
+			headers: {
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(self.state.mahasiswa)
+		}).then(function(response) {
+			return response.json();
+		}).then(function(data) {
+			self.setState({
+				mahasiswa: data
+			})
+			toastr.success("Data Mahasiswa Berhasil diupdate", "Sukses ! ")
 		});	
     }
 
@@ -195,7 +248,7 @@ class Dashboard extends Component {
 				                        </div>
 				                        <div>
 				                            <div className="ibox-content no-padding border-left-right">
-				                                <img alt="image" width="100%" className="img-fluid" src="http://help.wojilu.com/metronic/theme/assets/admin/pages/media/profile/profile_user.jpg"/>
+				                                <img alt="image" width="100%" className="img-fluid" src="https://footnote.org.nz/wp-content/uploads/2015/09/person-placeholder.jpg"/>
 				                            </div>
 				                            <div className="ibox-content profile-content">
 				                                <h3 style={{'textAlign': 'center'}}><strong>{this.state.mahasiswa.nama}</strong></h3>
@@ -207,7 +260,7 @@ class Dashboard extends Component {
 												    	<table className="table">
 												    		<tr>
 												    			<td><b>Jurusan</b></td>
-												    			<td>: Pariwisata</td>
+												    			<td>: {this.state.jurusan.find((jurusan) => (jurusan.id == this.state.mahasiswa.jurusan)).nama}</td>
 												    		</tr>
 												    		<tr>
 												    			<td><b>Tempat Lahir</b></td>
@@ -243,7 +296,7 @@ class Dashboard extends Component {
 												    		</tr>
 												    		<tr>
 												    			<td><b>Kampus</b></td>
-												    			<td>: {this.state.mahasiswa.kampus}</td>
+												    			<td>: {this.state.kampus.find((kampus) => (kampus.id == this.state.mahasiswa.kampus)).nama}</td>
 												    		</tr>
 												    	</table>
 													</div>
@@ -257,7 +310,7 @@ class Dashboard extends Component {
 				                    <div className="tabs-container">
 				                        <ul className="nav nav-tabs" role="tablist">
 				                            <li className="active"><a className="nav-link" data-toggle="tab" href="#tab-1"> Informasi Mahasiswa</a></li>
-				                            <li>
+				                            <li onClick={this.loadPengumuman}>
 				                            	<a className="nav-link" data-toggle="tab" href="#tab-2"> Pengumuman</a>
 				                            </li>
 				                        </ul>
@@ -427,6 +480,7 @@ class Dashboard extends Component {
 				                            	<div className="panel-body">
 				                            		<table className="table table-hover issue-tracker">
 													    <tbody>
+
 													    <tr>
 													        <td>
 													            <a href="#">

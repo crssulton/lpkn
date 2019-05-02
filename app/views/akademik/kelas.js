@@ -3,77 +3,86 @@ import cookie from 'react-cookies';
 import swal from 'sweetalert';
 import {BASE_URL} from '../../config/config.js'
 
-class Kampus extends Component {
+class Kelas extends Component {
 
 	constructor(props){
         super(props);
         this.state = {
-            kampus: [],
+            kelas: [],
             loading: true,
             form: false,
             selected: null,
-            kampusBaru: {},
+            kelasBaru: {},
             add: true,
             addForm: true,
             jurusans: [],
-            editKampus : {}
+            editkelas : {},
+            selectedJurusan: 1,
+            jurusans: []
         }
     }
 
     componentDidMount(){
     	const self = this
 		
-		fetch(BASE_URL + '/api/kampus/', {
+		fetch(BASE_URL + '/api/kelas/', {
 			method: 'get',
+			headers: {
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+			}
 		}).then(function(response) {
 			return response.json();
 		}).then(function(data) {
 			console.log(data)
 			self.setState({
-				kampus: data.results,
+				kelas: data.results,
 				loading: !self.state.loading
+			})
+		});
+
+		fetch(BASE_URL + '/api/jurusan/', {
+			method: 'get',
+			headers: {
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+			}
+		}).then(function(response) {
+			return response.json();
+		}).then(function(data) {
+			self.setState({
+				jurusans: data.results
 			})
 		});
 
     }
 
-    handleChangeKode = e => {
-        let kampus = []
-        kampus = this.state.kampus
-        kampus.filter(data => data.id == this.state.selected)[0].kode = e.target.value
-        this.setState({
-        	kampus,
-        	editKampus: kampus.filter(data => data.id == this.state.selected)[0]
-        })
-    }
     handleChangeNama = e => {
-        let kampus = []
-        kampus = this.state.kampus
-        kampus.filter(data => data.id == this.state.selected)[0].nama = e.target.value
+        let kelas = []
+        kelas = this.state.kelas
+        kelas.filter(data => data.id == this.state.selected)[0].nama = e.target.value
         this.setState({
-        	kampus,
-        	editKampus: kampus.filter(data => data.id == this.state.selected)[0]
+        	kelas,
+        	editkelas: kelas.filter(data => data.id == this.state.selected)[0]
         })
     }
-    handleChangeAlamat = e => {
-        let kampus = []
-        kampus = this.state.kampus
-        kampus.filter(data => data.id == this.state.selected)[0].alamat = e.target.value
+    handleChangeJurusan = e => {
+        let kelas = []
+        kelas = this.state.kelas
+        kelas.filter(data => data.id == this.state.selected)[0].jurusan = e.target.value
         this.setState({
-        	kampus,
-        	editKampus: kampus.filter(data => data.id == this.state.selected)[0]
+        	kelas,
+        	editkelas: kelas.filter(data => data.id == this.state.selected)[0]
         })
     }
 
-    editKampus = () => {
+    editkelas = () => {
     	const self = this
-    	let editKampus = this.state.editKampus
-    	delete editKampus.id
-    	self.setState({editKampus})
-    	console.log(JSON.stringify(this.state.editKampus))
-    	fetch(BASE_URL + '/api/kampus/'+ this.state.selected+'/', {
+    	let editkelas = this.state.editkelas
+    	delete editkelas.id
+    	self.setState({editkelas})
+
+    	fetch(BASE_URL + '/api/kelas/'+ this.state.selected+'/', {
 			method: 'put',
-			body: JSON.stringify(this.state.editKampus),
+			body: JSON.stringify(this.state.editkelas),
 			headers: {
 				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
 				'Content-Type': 'application/json',
@@ -81,81 +90,75 @@ class Kampus extends Component {
 			}
 		}).then(function(response) {
 			if (response.status == 200) {
-				toastr.success("Kampus berhasil diubah", "Sukses ! ")
+				toastr.success("kelas berhasil diubah", "Sukses ! ")
 				self.setState({
 					addForm: !self.state.addForm
 				})
 			}else{
-				toastr.warning("Gagal mengubah kampus", "Gagal ! ")
+				toastr.warning("Gagal mengubah kelas", "Gagal ! ")
 			}
 		}).then(function(data) {
 			
 		});
     }
 
-    addKampusKode = (e) => {
-    	let kampusBaru = {}
-        kampusBaru = this.state.kampusBaru
-        kampusBaru.kode = e.target.value
-        this.setState({kampusBaru})	
+    addkelasNama = (e) => {
+    	let kelasBaru = {}
+        kelasBaru = this.state.kelasBaru
+        kelasBaru.nama = e.target.value
+        this.setState({kelasBaru})	
     }
-    addKampusNama = (e) => {
-    	let kampusBaru = {}
-        kampusBaru = this.state.kampusBaru
-        kampusBaru.nama = e.target.value
-        this.setState({kampusBaru})	
-    }
-    addKampusAlamat = (e) => {
-    	let kampusBaru = {}
-        kampusBaru = this.state.kampusBaru
-        kampusBaru.alamat = e.target.value
-        this.setState({kampusBaru})	
+    addkelasJurusan = (e) => {
+    	let kelasBaru = {}
+        kelasBaru = this.state.kelasBaru
+        kelasBaru.jurusan = e.target.value
+        this.setState({kelasBaru})	
     }
 
-    addKampus = ()=> {
+    addkelas = ()=> {
     	const self = this
     	let addButton = document.getElementsByClassName("btn-add")
-    	console.log(JSON.stringify(this.state.kampusBaru))
+
     	addButton[0].setAttribute("disabled", "disabled")
 
-    	fetch(BASE_URL + '/api/kampus/', {
+    	fetch(BASE_URL + '/api/kelas/', {
 			method: 'post',
 			headers: {
 				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
 				'Content-Type': 'application/json',
                 'Accept': 'application/json'
 			},
-			body: JSON.stringify(this.state.kampusBaru)
+			body: JSON.stringify(this.state.kelasBaru)
 		}).then(function(response) {
 			return response.json();
 		}).then(function(data) {
-			console.log(data)
+
 			if(data.id != null || data.id != undefined){
 				addButton[0].removeAttribute("disabled")
-				let kampus = []
-				let kampusBaru = {}
-				kampusBaru = self.state.kampusBaru
+				let kelas = []
+				let kelasBaru = {}
+				kelasBaru = self.state.kelasBaru
 
-	        	kampus = self.state.kampus
-	        	kampus.push(data)
+	        	kelas = self.state.kelas
+	        	kelas.push(data)
 
-	    		kampusBaru.kode = null
-				kampusBaru.nama = null
-				kampusBaru.alamat = null
+	    		kelasBaru.kode = null
+				kelasBaru.nama = null
+				kelasBaru.alamat = null
 
 				self.setState({
 					addForm: true,
-					kampus,
-					kampusBaru
+					kelas,
+					kelasBaru
 					
 				})
-				toastr.success("Kampus berhasil ditambahkan", "Sukses ! ")
+				toastr.success("kelas berhasil ditambahkan", "Sukses ! ")
 			}else{
 				addButton[0].removeAttribute("disabled")
 				self.setState({
 					addForm: true
 				})
-				toastr.warning("Gagal menambahkan Kampus", "Gagal ! ")
+				toastr.warning("Gagal menambahkan kelas", "Gagal ! ")
 			}
 		});
     }
@@ -164,14 +167,14 @@ class Kampus extends Component {
     	console.log(id)
     	const self = this
     	swal({
-		  title: "Hapus Mata Kuliah ?",
+		  title: "Hapus Kelas?",
 		  icon: "warning",
 		  buttons: true,
 		  dangerMode: true,
 		})
 		.then((willDelete) => {
 		  if (willDelete) {
-		  	fetch(BASE_URL + '/api/kampus/' + id, {
+		  	fetch(BASE_URL + '/api/kelas/' + id, {
 				method: 'delete',
 				headers: {
 					'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
@@ -179,16 +182,16 @@ class Kampus extends Component {
 			}).then(function(response) {
 
 				self.setState({
-					kampus: self.state.kampus.filter(data => data.id !== id)
+					kelas: self.state.kelas.filter(data => data.id !== id)
 				})
-				swal("Sukses! Kampus telah dihapus!", {
+				swal("Sukses! kelas telah dihapus!", {
 			      icon: "success",
 			    });
 			}).then(function(data) {
 				self.setState({
-					kampus: self.state.kampus.filter(data => data.id !== id)
+					kelas: self.state.kelas.filter(data => data.id !== id)
 				})
-				swal("Sukses! Kampus telah dihapus!", {
+				swal("Sukses! kelas telah dihapus!", {
 			      icon: "success",
 			    });
 			});
@@ -201,7 +204,7 @@ class Kampus extends Component {
             <div >
                 <div className="row wrapper border-bottom white-bg page-heading">
 		            <div className="col-lg-8">
-		                <h2>Daftar Kampus</h2>
+		                <h2>Daftar kelas</h2>
 		            </div>
 		            <div className="col-lg-4">
 		            </div>
@@ -211,20 +214,25 @@ class Kampus extends Component {
                         <div className="col-lg-8">
                             <div className="ibox ">
                                 <div className="ibox-title" style={{'backgroundColor':'#1ab394', 'color':'white'}}>
-                                    <h5> <i className="fa fa-list "></i> Daftar Kampus</h5>
+                                    <h5> <i className="fa fa-list "></i> Daftar kelas</h5>
                                 </div>
                                 <div className="ibox-content">
                                 	<div className="row">
 	                                    <div className="col-lg-6">
-	                                    	<label className="col-sm-3 col-form-label">Cari :</label>
-	                                    	<div className="col-sm-9">
-			                                    <input 
-		                                    		type="text" 
-		                                    		disabled="" 
-		                                    		placeholder="Nama Kampus"
-		                                    		className="form-control"/>
+                                        	<label className="col-sm-3 col-form-label">Filter </label>
+                                        	<div className="col-sm-9">
+			                                    <select
+			                                    	value={this.state.selectedJurusan}
+			                                    	onChange={(e) => this.setState({selectedJurusan: e.target.value}) }
+			                                        className="form-control">
+			                                        {
+			                                        	this.state.jurusans.map((jurusan) => 
+			                                        		<option value={jurusan.id}>{jurusan.nama}</option>
+			                                        	)
+			                                        }
+			                                    </select>
 		                                    </div>
-	                                    </div>
+                                        </div>
 	                                </div>
 	                                <div className="hr-line-dashed"></div>
                                     {
@@ -240,19 +248,19 @@ class Kampus extends Component {
 											<table className="table table-striped" align="right">
 					                            <thead>
 					                            <tr>
-					                                <th style={{'width':'5%'}}>KODE</th>
-					                                <th style={{'width':'15%'}}>NAMA</th>
-					                                <th style={{'width':'5%'}}>ALAMAT</th>
+					                                <th style={{'width':'5%'}}>NO</th>
+					                                <th style={{'width':'15%'}}>KELAS</th>
+					                                <th style={{'width':'10%'}}>JURUSAN</th>
 					                                <th style={{'width':'13%', 'textAlign':'center'}}>AKSI</th>
 					                            </tr>
 					                            </thead>
 					                            <tbody>
 					                            {
-					                            	this.state.kampus.map((data, key) =>
+					                            	this.state.kelas.filter(jurusan => jurusan.jurusan == this.state.selectedJurusan).map((data, key) =>
 					                            		<tr>
-							                                <td>{data.kode}</td>
+							                                <td>{key+1}</td>
 							                                <td>{data.nama}</td>
-							                                <td>{data.alamat}</td>
+							                                <td>{this.state.jurusans.find((jurusan) => (jurusan.id == data.jurusan)).nama}</td>
 							                                <td>
 						                                		<center>
 						                                			<button 
@@ -286,104 +294,98 @@ class Kampus extends Component {
                                 {
                                 	this.state.addForm ?
                                 	<div className="ibox-title" style={{'backgroundColor':'#1ab394', 'color':'white'}}>
-	                                    <h5> <i className="fa fa-plus"></i> Tambah Kampus</h5>
+	                                    <h5> <i className="fa fa-plus"></i> Tambah kelas</h5>
 	                                </div>
 	                                :
 	                                <div className="ibox-title" style={{'backgroundColor':'#fad284', 'color':'white'}}>
-	                                    <h5> <i className="fa fa-pencil"></i> Ubah Kampus</h5>
+	                                    <h5> <i className="fa fa-pencil"></i> Ubah kelas</h5>
 	                                </div>
                                 }
                                 
                                 {
                                 	this.state.addForm?
                                 	<div className="ibox-content">
-	                                	<div className="form-group row"><label className="col-lg-3 col-form-label">Kode</label>
+	                                	<div className="form-group row"><label className="col-lg-3 col-form-label">Nama</label>
 	                                        <div className="col-lg-9">
 	                                            <input 
 	                                            	type="text" 
+	                                            	required
 	                                            	className="form-control m-b" 
 	                                            	name="account"
-	                                            	value={this.state.kampusBaru.kode}
-						                            onChange={this.addKampusKode}
+	                                            	value={this.state.kelasBaru.nama}
+						                            onChange={this.addkelasNama}
 	                                            	/>
 	                                        </div>
 	                                    </div>
 
-	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Nama</label>
-	                                        <div className="col-lg-9">
-	                                            <input 
-	                                            	type="text" 
-	                                            	className="form-control m-b" 
-	                                            	name="account"
-	                                            	value={this.state.kampusBaru.nama}
-						                            onChange={this.addKampusNama}
-						                            />
-	                                        </div>
-	                                    </div>
-	                                    
-	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Alamat</label>
-	                                        <div className="col-lg-9">
-	                                            <input 
-	                                            	type="text" 
-	                                            	className="form-control m-b" 
-	                                            	name="account"
-	                                            	value={this.state.kampusBaru.alamat}
-						                            onChange={this.addKampusAlamat}
-	                                            	/>
-	                                        </div>
+	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Jurusan</label>
+		                                    <div className="col-lg-9">
+		                                    <select
+		                                    	className="form-control m-b" 
+		                                    	required
+		                                    	value={this.state.kelasBaru.jurusan}
+							                    onChange={this.addkelasJurusan}
+		                                    >
+		                                    	<option>Pilih Jurusan</option>
+		                                    	{
+		                                    		this.state.jurusans.map(data =>{
+		                                    			return(
+		                                    				<option value={data.id}>{data.nama}</option>
+		                                    			)
+		                                    		})
+		                                    	}
+		                                    </select>
+		                                    </div>
 	                                    </div>
 
 	                                    <button
 	                                		className="btn btn-primary btn-sm btn-add" 
 	                                		type="button"
-	                                		onClick={this.addKampus}>
+	                                		onClick={this.addkelas}>
 	                                		Tambah
 	                                	</button>
 	                                </div>
 	                                :
 	                                <div className="ibox-content">
-	                                	<div className="form-group row"><label className="col-lg-3 col-form-label">Kode</label>
+	                                	<div className="form-group row"><label className="col-lg-3 col-form-label">Nama</label>
 	                                        <div className="col-lg-9">
 	                                            <input 
 	                                            	type="text" 
+	                                            	required
 	                                            	className="form-control m-b" 
 	                                            	name="account"
-	                                            	value={this.state.kampus.filter(data => data.id === this.state.selected)[0].kode}
-					                                onChange={this.handleChangeKode}
+	                                            	value={this.state.kelas.filter(data => data.id === this.state.selected)[0].nama}
+						                            onChange={this.handleChangeNama}
 	                                            	/>
 	                                        </div>
 	                                    </div>
 
-	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Nama</label>
-	                                        <div className="col-lg-9">
-	                                            <input 
-	                                            	type="text" 
-	                                            	className="form-control m-b" 
-	                                            	name="account"
-	                                            	value={this.state.kampus.filter(data => data.id === this.state.selected)[0].nama}
-					                                onChange={this.handleChangeNama}
-						                            />
-	                                        </div>
+	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Jurusan</label>
+		                                    <div className="col-lg-9">
+		                                    <select
+		                                    	className="form-control m-b" 
+		                                    	required
+		                                    	value={this.state.kelas.filter(data => data.id === this.state.selected)[0].jurusan}
+							                    onChange={this.handleChangeJurusan}
+		                                    >
+		                                    	<option>Pilih Jurusan</option>
+		                                    	{
+		                                    		this.state.jurusans.map(data =>{
+		                                    			return(
+		                                    				<option value={data.id}>{data.nama}</option>
+		                                    			)
+		                                    		})
+		                                    	}
+		                                    </select>
+		                                    </div>
 	                                    </div>
 
-	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Alamat</label>
-	                                        <div className="col-lg-9">
-	                                            <input 
-	                                            	type="text" 
-	                                            	className="form-control m-b" 
-	                                            	name="account"
-	                                            	value={this.state.kampus.filter(data => data.id === this.state.selected)[0].alamat}
-					                                onChange={this.handleChangeAlamat}
-						                            />
-	                                        </div>
-	                                    </div>
-	                                    
-	                                    
+	                                	
 	                                    <button
 	                                    	style={{'marginRight': '10px'}}
 	                                		className="btn btn-info btn-add" 
 	                                		type="button"
-	                                		onClick={this.editKampus}>
+	                                		onClick={this.editkelas}>
 	                                		Edit
 	                                	</button>
 	                                	<button 
@@ -411,4 +413,4 @@ class Kampus extends Component {
 
 }
 
-export default Kampus
+export default Kelas
