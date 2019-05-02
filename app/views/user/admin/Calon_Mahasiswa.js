@@ -248,7 +248,7 @@ class Calon_Mahasiswa extends Component {
 										        		<tr key={key}>
 										        			<td>{key+1}</td>
 												            <td>{mahasiswa.nama}</td>
-												            <td>Industri Maskapai</td>
+												            <td>{this.state.jurusans.find((jurusan) => (jurusan.id == mahasiswa.jurusan)).nama}</td>
 												            <td>
 												            	<center>
 						                                			<button 

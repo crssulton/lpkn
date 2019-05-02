@@ -215,7 +215,7 @@ class List_pendaftar extends Component {
 										        		<tr key={key}>
 										        			<td>{key+1}</td>
 												            <td>{pendaftar.nama}</td>
-												            <td>Hotel/Kapal Pesiar</td>
+												            <td>{this.state.jurusans.find((jurusan) => (jurusan.id == pendaftar.jurusan)).nama}</td>
 												            <td>
 												            	<center>
 						                                			<button 
