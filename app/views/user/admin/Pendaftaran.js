@@ -76,17 +76,20 @@ class Pendaftaran extends Component {
             },
             body: JSON.stringify(this.state.pendaftar)
           }).then(function(response) {
-            return response.json();
-          }).then(function(data) {
-            if(data.non_field_errors != null) {
-                toastr.error("Data mahasiswa gagal ditambahkan", "Error ! ")
-            }else{
+            if(response.status === 201 || response.status === 200){
+                toastr.success("Data mahasiswa berhasil ditambahkan", "Sukses ! ")
                 self.setState({
                     loading: !self.state.loading,
                     alert: !self.state.alert
                 })
-                toastr.success("Data mahasiswa berhasil ditambahkan", "Sukses ! ")
+            } else {
+                toastr.error("Data mahasiswa gagal ditambahkan", "Error ! ")
+                self.setState({
+                    loading: !self.state.loading,
+                    pendaftar: {},
+                })
             }
+          }).then(function(data) {
         });
     }
 

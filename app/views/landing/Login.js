@@ -37,6 +37,7 @@ class Login extends Component {
       body: JSON.stringify(user)
     }).then(function(response) {
       return response.json();
+      toastr.warning("Gagal mendaftar secara online", "Error ! ")
     }).then(function(data) {
 
       if(data.non_field_errors == null){
@@ -53,7 +54,7 @@ class Login extends Component {
             window.location = "/";
         },500);
       }else{
-        swal("Oops!", "Username atau Password salah!", "error");
+        toastr.warning("Gagal mendaftar secara online", "Error ! ")
         setTimeout(() => {
             self.setState({loading : false})
         },500);

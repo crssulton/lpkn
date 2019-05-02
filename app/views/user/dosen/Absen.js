@@ -78,14 +78,14 @@ class Absen extends Component {
                                                     <th>NIM</th>
                                                     <th>NAMA</th>
                                                     <th>JURUSAN</th>                                                    
-                                                    <th style={{'textAlign': 'center'}}>AKSI</th>
+                                                    <th style={{'textAlign': 'center', 'width':"20%"}}>AKSI</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
                                                 {
                                                     this.state.mahasiswas.filter(mahasiswa => mahasiswa.calon == false).map((mahasiswa, key) => 
 
-                                                        <tr>
+                                                        <tr key={key}>
                                                             <td>{key+1}</td>
                                                             <td>{mahasiswa.nim}</td>
                                                             <td>{mahasiswa.nama}</td>

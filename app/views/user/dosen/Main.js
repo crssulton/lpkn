@@ -1,5 +1,6 @@
 import React, { Component } from 'react';   
 import {BASE_URL} from '../../../config/config.js'
+import moment from 'moment'
 
 class Main extends Component {
 
@@ -7,7 +8,18 @@ class Main extends Component {
         super(props);
         this.state = {
             loading: false,
-            jadwals: []
+            jadwals: [],
+            months:[
+                    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 
+                    'Agustus', 'September', 'Oktober', 'November', 'Desember'],
+            days:[
+                {day:'Sunday',hari:'Minggu'}, 
+                {day:'Monday',hari:'Senin'}, 
+                {day:'Tuesday',hari:'Selasa'}, 
+                {day:'Wednesday',hari:'Rabu'}, 
+                {day:'Thursday',hari:'Kamis'}, 
+                {day:'Friday',hari:'Jum'+"'"+'at'}, 
+                {day:'Saturday',hari:'Sabtu'}],
         }
     }
 
@@ -56,13 +68,13 @@ class Main extends Component {
                                         </div> :
                                         
                                         <div>
-                                            <table className="table table-striped">
+                                            <table className="table">
                                                 <thead>
                                                 <tr>
                                                     <th>HARI</th>
                                                     <th>TANGGAL</th>
-                                                    <th rowSpan="2">MATA KULIAH</th>
-                                                    <th>JML PERTEMUAN</th>
+                                                    <th>MATA KULIAH</th>
+                                                    <th>RUANGAN</th>
                                                     <th>WAKTU</th>
                                                 </tr>
                                                 </thead>
@@ -70,12 +82,15 @@ class Main extends Component {
                                                 
                                                 {
                                                     this.state.jadwals.map((jadwal, key) =>
-                                                    <tr key={key}>
-                                                        <th>Senin</th>
-                                                        <td>{jadwal.start}</td>
+                                                    <tr key={key}  
+                                                        style={
+                                                        (moment(new Date()).format('D MMM YYYY') !== moment(jadwal.start).format('D MMM YYYY'))?
+                                                        null : {'background':'#E6E6FA'}}>
+                                                        <th>{this.state.days.find((dy) => (dy.day == moment(jadwal.start).format('dddd'))).hari}</th>
+                                                        <td>{moment(jadwal.start).format('D MMM YYYY')}</td>
                                                         <td>{jadwal.title}</td>
-                                                        <td>12</td>
-                                                        <td>{jadwal.jam}</td>
+                                                        <td>{jadwal.ruangan_info.nama}</td>
+                                                        <td>{jadwal.jam_mulai +" - "+jadwal.jam_selesai}</td>
                                                     </tr>
                                                     )
                                                 }
