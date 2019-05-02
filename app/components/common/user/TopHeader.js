@@ -1,5 +1,4 @@
 import React from 'react';
-import cookie from 'react-cookies';
 import { smoothlyMenu } from '../../layouts/user/Helpers';
 
 class TopHeader extends React.Component {
