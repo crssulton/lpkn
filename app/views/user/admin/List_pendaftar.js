@@ -215,7 +215,10 @@ class List_pendaftar extends Component {
 										        		<tr key={key}>
 										        			<td>{key+1}</td>
 												            <td>{pendaftar.nama}</td>
-												            <td>{this.state.jurusans.find((jurusan) => (jurusan.id == pendaftar.jurusan)).nama}</td>
+												            <td>{
+																(this.state.jurusans.length === 0)?null:
+																this.state.jurusans.find((jurusan) => (jurusan.id == pendaftar.jurusan)).nama
+															}</td>
 												            <td>
 												            	<center>
 						                                			<button 
@@ -362,11 +365,17 @@ class List_pendaftar extends Component {
 															    </tr>
 															    <tr>
 															        <td><b>Jurusan</b></td>
-																	<td>: {this.state.jurusans.find((jurusan) => (jurusan.id == this.state.pendaftar.jurusan)).nama}</td>
+																	<td>: {
+																		(this.state.jurusans.length === 0)?null:
+																		this.state.jurusans.find((jurusan) => (jurusan.id == this.state.pendaftar.jurusan)).nama
+																	}</td>
 															    </tr>
 															    <tr>
 															        <td><b>Kampus</b></td>
-																	<td>: {this.state.kampus.find((kamp) => (kamp.id == this.state.pendaftar.kampus)).nama}</td>
+																	<td>: {
+																		(this.state.kampus.length === 0)? null:
+																		this.state.kampus.find((kamp) => (kamp.id == this.state.pendaftar.kampus)).nama
+																	}</td>
 															    </tr>
 															    <tr>
 															        <td><b>Pesan</b></td>

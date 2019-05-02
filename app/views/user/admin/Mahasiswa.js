@@ -356,11 +356,17 @@ class Calon_Mahasiswa extends Component {
 															    </tr>
 															    <tr>
 															        <td><b>Jurusan</b></td>
-																	<td>: {this.state.jurusans.find((jurusan) => (jurusan.id == this.state.mahasiswa.jurusan)).nama}</td>
+																	<td>: {
+																		(this.state.jurusans.length === 0)?null:
+																		this.state.jurusans.find((jurusan) => (jurusan.id == this.state.mahasiswa.jurusan)).nama
+																	}</td>
 															    </tr>
 															    <tr>
 															        <td><b>Kampus</b></td>
-																	<td>: {this.state.kampus.find((kamp) => (kamp.id == this.state.mahasiswa.kampus)).nama}</td>
+																	<td>: {
+																		(this.state.kampus.length === 0)? null:
+																		this.state.kampus.find((kamp) => (kamp.id == this.state.mahasiswa.kampus)).nama
+																	}</td>
 															    </tr>
 															    <tr>
 															        <td><b>Pesan</b></td>

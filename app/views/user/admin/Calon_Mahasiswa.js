@@ -248,7 +248,10 @@ class Calon_Mahasiswa extends Component {
 										        		<tr key={key}>
 										        			<td>{key+1}</td>
 												            <td>{mahasiswa.nama}</td>
-												            <td>{this.state.jurusans.find((jurusan) => (jurusan.id == mahasiswa.jurusan)).nama}</td>
+												            <td>{
+																(this.state.jurusans.length === 0)?null:
+																this.state.jurusans.find((jurusan) => (jurusan.id == mahasiswa.jurusan)).nama
+															}</td>
 												            <td>
 												            	<center>
 						                                			<button 
@@ -644,7 +647,10 @@ class Calon_Mahasiswa extends Component {
 																		mahasiswa.jurusan = e.target.value
 																		this.setState({mahasiswa})
 																	}}
-																	defaultValue={this.state.jurusans.find((jurusan) => (jurusan.id == this.state.mahasiswa.jurusan)).nama} 
+																	defaultValue={
+																		(this.state.jurusans.length === 0)?null:
+																		this.state.jurusans.find((jurusan) => (jurusan.id == this.state.mahasiswa.jurusan)).nama
+																	} 
 																	type="text" className="form-control m-b" 
 																	name="account"/>
 						                                        </div>
@@ -658,7 +664,10 @@ class Calon_Mahasiswa extends Component {
 																		mahasiswa.kampus = e.target.value
 																		this.setState({mahasiswa})
 																	}}
-																	defaultValue={this.state.kampus.find((kamp) => (kamp.id == this.state.mahasiswa.kampus)).nama} 
+																	defaultValue={
+																		(this.state.kampus.length === 0)? null:
+																		this.state.kampus.find((kamp) => (kamp.id == this.state.mahasiswa.kampus)).nama
+																	} 
 																	type="text" className="form-control m-b" 
 																	name="account"/>
 						                                        </div>
