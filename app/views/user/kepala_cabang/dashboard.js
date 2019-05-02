@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class Data_Cabang extends Component {
+class Dashboard extends Component {
 
     render() {
         return (
@@ -23,4 +23,4 @@ class Data_Cabang extends Component {
 
 }
 
-export default Data_Cabang
+export default Dashboard

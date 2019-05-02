@@ -43,11 +43,26 @@ class Navigation extends Component {
                                 LPKN
                             </div>
                         </li>
-                        <li className={this.activeRoute("/data_cabang")}>
-                            <Link to="/data_cabang"><i className="fa fa-th-large"></i> <span className="nav-label">View Data Cabang</span></Link>
+                        <li className={this.activeRoute("/dashboard")}>
+                            <Link to="/dashboard"><i className="fa fa-th-large"></i> <span className="nav-label">Dashboard</span></Link>
                         </li>
-                        <li className={this.activeRoute("/review_approve")}>
-                            <Link to="/review_approve"><i className="fa fa-users"></i> <span className="nav-label">Review dan Approve</span></Link>
+                        <li className={this.activeRoute("/jurusan")}>
+                            <Link to="/jurusan"><i className="fa fa-users"></i> <span className="nav-label">Jurusan</span></Link>
+                        </li>
+                        <li className={this.activeRoute("/admin")}>
+                            <Link to="/admin"><i className="fa fa-users"></i> <span className="nav-label">Administrator</span></Link>
+                        </li>
+                        <li className={this.activeRoute("/akademik")}>
+                            <Link to="/akademik"><i className="fa fa-book"></i> <span className="nav-label">Akademik</span></Link>
+                        </li>
+                        <li className={this.activeRoute("/keuangan")}>
+                            <Link to="/keuangan"><i className="fa fa-home"></i> <span className="nav-label">Keuangan</span></Link>
+                        </li>
+                        <li className={this.activeRoute("/anggaran")}>
+                            <Link to="/anggaran"><i className="fa fa-calendar"></i> <span className="nav-label">Approve Anggaran</span></Link>
+                        </li>
+                        <li className={this.activeRoute("/perubahan")}>
+                            <Link to="/perubahan"><i className="fa fa-info-circle"></i> <span className="nav-label">Perubahan Data</span></Link>
                         </li>
                     </ul>
             </nav>

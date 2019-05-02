@@ -43,11 +43,49 @@ class Navigation extends Component {
                                 LPKN
                             </div>
                         </li>
-                        <li className={this.activeRoute("/transaksi")}>
-                            <Link to="/transaksi"><i className="fa fa-th-large"></i> <span className="nav-label">Transaksi</span></Link>
+                        <li className={this.activeRoute("/akun")}>
+                            <Link to="/akun"><i className="fa fa-book"></i> <span className="nav-label">Akun</span></Link>
                         </li>
-                        <li className={this.activeRoute("/laporan")}>
-                            <Link to="/laporan"><i className="fa fa-users"></i> <span className="nav-label">Laporan</span></Link>
+                        <li className={this.activeRoute("/transaksi")}>
+                            <Link to="/transaksi"><i className="fa fa-calendar"></i> <span className="nav-label">Transaksi</span></Link>
+                        </li>
+                        <li className={this.activeRoute("/jurnal")}>
+                            <Link to="/jurnal"><i className="fa fa-calendar"></i> <span className="nav-label">Data Jurnal</span></Link>
+                        </li>
+                        <li>
+                            <a><i className="fa fa-book"></i> <span className="nav-label">Report</span> <span className="fa arrow"></span></a>
+                            <ul className="nav nav-second-level collapse">
+                                <li className={this.activeRoute("/neraca_saldo_awal")}>
+                                    <Link to="/neraca_saldo_awal"><span className="nav-label">Neraca Saldo Awal</span></Link>
+                                </li>
+                                <li className={this.activeRoute("/umum_jurnal")}>
+                                    <Link to="/umum_jurnal"><span className="nav-label">Jurnal Umum</span></Link>
+                                </li>
+                                <li className={this.activeRoute("/ayat_jurnal_penyesuaian")}>
+                                    <Link to="/ayat_jurnal_penyesuaian"><span className="nav-label">Ayat Jurnal Penyesuaian</span></Link>
+                                </li>
+                                <li className={this.activeRoute("/penutup_jurnal")}>
+                                    <Link to="/penutup_jurnal"><span className="nav-label">Jurnal Penutup</span></Link>
+                                </li>
+                                <li className={this.activeRoute("/buku_besar")}>
+                                    <Link to="/buku_besar"><span className="nav-label">Buku Besar</span></Link>
+                                </li>
+                                <li className={this.activeRoute("/saldo_sementara")}>
+                                    <Link to="/saldo_sementara"><span className="nav-label">Neraca Saldo Sementara</span></Link>
+                                </li>
+                                <li className={this.activeRoute("/neraca_lanjut")}>
+                                    <Link to="/neraca_lanjut"><span className="nav-label">Neraca Lajur</span></Link>
+                                </li>
+                                <li className={this.activeRoute("/rugi_laba")}>
+                                    <Link to="/rugi_laba"><span className="nav-label">Rugi/Laba</span></Link>
+                                </li>
+                                <li className={this.activeRoute("/perubahan_modal")}>
+                                    <Link to="/perubahan_modal"><span className="nav-label">Perubahan Modal</span></Link>
+                                </li>
+                                <li className={this.activeRoute("/neraca_akhir")}>
+                                    <Link to="/neraca_akhir"><span className="nav-label">Neraca Akhir</span></Link>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
             </nav>

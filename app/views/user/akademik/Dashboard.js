@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {BASE_URL} from '../../../config/config.js'
+import { QRCode } from "react-qr-svg";
 
 class Dashboard extends Component {
 
@@ -17,17 +18,28 @@ class Dashboard extends Component {
 
         super(props);
         this.state = {
-            matkuls: [],
+            jadwal: [],
             date: thisDay + ', ' + day + ' ' + months[month] + ' ' + year,
-            QRCode: "",
+            QRCode: "not found",
             check: false,
-            loading: false
+            loading: false,
+            openQR:false
         }
     }
 
     componentDidMount(){
     	const self = this
-		fetch(BASE_URL + '/api/mata-kuliah/', {
+    	
+    	var d = new Date(),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+	    if (month.length < 2) month = '0' + month;
+	    if (day.length < 2) day = '0' + day;
+		let tanggal = [year, month, day].join('-')
+
+		fetch(BASE_URL + '/api/jadwal/?search=' + tanggal, {
 			method: 'get',
 			headers: {
 				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
@@ -36,26 +48,27 @@ class Dashboard extends Component {
 			return response.json();
 		}).then(function(data) {
 			self.setState({
-				matkuls: data.results
+				jadwal: data.results
 			})
 		});
     }
 
-    generateQrCode = () => {
+    generateQrCode = (id) => {
     	this.setState({
+    		openQR: true,
 			loading: !this.state.loading
 		})
 		
     	setTimeout(() => {
     		this.setState({
-				QRCode: "https://www.qr-code-generator.com/wp-content/themes/qr/img-v4/guide/design/QR_Code_Plain.svg",
+				QRCode: id.toString(),
 				loading: !this.state.loading
 			})
     	}, 1000)
     }
 
     render() {
-        return (
+    	return (
             <div >
                 <div className="row wrapper border-bottom white-bg page-heading">
 		            <div className="col-lg-8">
@@ -80,18 +93,20 @@ class Dashboard extends Component {
 			                            <tr>
 			                                <th style={{'width':'5%'}}>MATA KULIAH</th>
 			                                <th style={{'width':'10%'}}>WAKTU</th>
-			                                <th style={{'width':'10%'}}>DURASI</th>
+			                                <th style={{'width':'10%'}}>RUANGAN</th>
+			                                 <th style={{'width':'10%'}}>JURUSAN</th>
 			                                <th style={{'width':'10%'}}>DOSEN</th>
 			                            </tr>
 			                            </thead>
 			                            <tbody>
 			                            {
-			                            	this.state.matkuls.map((matkul, key) =>
-			                            		<tr key={key} onClick={this.generateQrCode} style={{'cursor': 'pointer'}}>
-					                                <td>{matkul.nama}</td>
-					                                <td>16:00 - 18:00</td>
-					                                <td>{matkul.jumlah_jam} Jam</td>
-					                                <td>Ramdani, S.T</td>
+			                            	this.state.jadwal.map((data, key) =>
+			                            		<tr key={key} onClick={() => this.generateQrCode(data.id)} style={{'cursor': 'pointer'}}>
+					                                <td>{data.title}</td>
+					                                <td>{data.jam_mulai.substring(0, 5)} - {data.jam_selesai.substring(0, 5)}</td>
+					                                <td>{data.ruangan_info.nama}</td>
+					                                <td>{data.jurusan_info.nama}</td>
+					                                <td>{data.dosen_info.nama}</td>
 					                            </tr>
 			                            	)
 			                            }
@@ -109,7 +124,9 @@ class Dashboard extends Component {
                             </div>
                             <div className="ibox-content">
                             	<div className="table-responsive">
-                            		{
+        						{
+        							this.state.openQR ?
+        							
                             			this.state.loading ?
                             			<div className="spiner-example">
 			                                <div className="sk-spinner sk-spinner-double-bounce">
@@ -118,9 +135,17 @@ class Dashboard extends Component {
 			                                </div>
 			                            </div>
 			                            :
-										<img src={this.state.QRCode}/>
-									}
-                            		
+										<QRCode
+							                bgColor="#FFFFFF"
+							                fgColor="#000000"
+							                level="Q"
+							                style={{ width: 256 }}
+							                value={this.state.QRCode}
+							            />
+									
+									:
+									null
+        						}   		
 		                        </div>
                            	</div>
                         </div>

@@ -2,34 +2,38 @@ import React, { Component } from 'react';
 import swal from 'sweetalert';
 import {BASE_URL} from '../../../config/config.js'
 
-class Kampus extends Component {
+class Ruangan extends Component {
 
 	constructor(props){
         super(props);
         this.state = {
-            kampus: [],
+            ruangan: [],
             loading: true,
             form: false,
             selected: null,
-            kampusBaru: {},
+            ruanganBaru: {},
             add: true,
             addForm: true,
             jurusans: [],
-            editKampus : {}
+            editruangan : {}
         }
     }
 
     componentDidMount(){
     	const self = this
 		
-		fetch(BASE_URL + '/api/kampus/', {
+		fetch(BASE_URL + '/api/ruangan/', {
 			method: 'get',
+			headers: {
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+				'Content-Type': 'application/json',
+                'Accept': 'application/json'
+			}
 		}).then(function(response) {
 			return response.json();
 		}).then(function(data) {
-			console.log(data)
 			self.setState({
-				kampus: data.results,
+				ruangan: data.results,
 				loading: !self.state.loading
 			})
 		});
@@ -37,42 +41,42 @@ class Kampus extends Component {
     }
 
     handleChangeKode = e => {
-        let kampus = []
-        kampus = this.state.kampus
-        kampus.filter(data => data.id == this.state.selected)[0].kode = e.target.value
+        let ruangan = []
+        ruangan = this.state.ruangan
+        ruangan.filter(data => data.id == this.state.selected)[0].kode = e.target.value
         this.setState({
-        	kampus,
-        	editKampus: kampus.filter(data => data.id == this.state.selected)[0]
+        	ruangan,
+        	editruangan: ruangan.filter(data => data.id == this.state.selected)[0]
         })
     }
     handleChangeNama = e => {
-        let kampus = []
-        kampus = this.state.kampus
-        kampus.filter(data => data.id == this.state.selected)[0].nama = e.target.value
+        let ruangan = []
+        ruangan = this.state.ruangan
+        ruangan.filter(data => data.id == this.state.selected)[0].nama = e.target.value
         this.setState({
-        	kampus,
-        	editKampus: kampus.filter(data => data.id == this.state.selected)[0]
+        	ruangan,
+        	editruangan: ruangan.filter(data => data.id == this.state.selected)[0]
         })
     }
-    handleChangeAlamat = e => {
-        let kampus = []
-        kampus = this.state.kampus
-        kampus.filter(data => data.id == this.state.selected)[0].alamat = e.target.value
+    handleChangeKeterangan = e => {
+        let ruangan = []
+        ruangan = this.state.ruangan
+        ruangan.filter(data => data.id == this.state.selected)[0].keterangan = e.target.value
         this.setState({
-        	kampus,
-        	editKampus: kampus.filter(data => data.id == this.state.selected)[0]
+        	ruangan,
+        	editruangan: ruangan.filter(data => data.id == this.state.selected)[0]
         })
     }
 
-    editKampus = () => {
+    editruangan = () => {
     	const self = this
-    	let editKampus = this.state.editKampus
-    	delete editKampus.id
-    	self.setState({editKampus})
-    	console.log(JSON.stringify(this.state.editKampus))
-    	fetch(BASE_URL + '/api/kampus/'+ this.state.selected+'/', {
+    	let editruangan = this.state.editruangan
+    	delete editruangan.id
+    	self.setState({editruangan})
+    	console.log(JSON.stringify(this.state.editruangan))
+    	fetch(BASE_URL + '/api/ruangan/'+ this.state.selected+'/', {
 			method: 'put',
-			body: JSON.stringify(this.state.editKampus),
+			body: JSON.stringify(this.state.editruangan),
 			headers: {
 				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
 				'Content-Type': 'application/json',
@@ -80,97 +84,96 @@ class Kampus extends Component {
 			}
 		}).then(function(response) {
 			if (response.status == 200) {
-				toastr.success("Kampus berhasil diubah", "Sukses ! ")
+				toastr.success("Ruangan berhasil diubah", "Sukses ! ")
 				self.setState({
 					addForm: !self.state.addForm
 				})
 			}else{
-				toastr.warning("Gagal mengubah kampus", "Gagal ! ")
+				toastr.warning("Gagal mengubah ruangan", "Gagal ! ")
 			}
 		}).then(function(data) {
 			
 		});
     }
 
-    addKampusKode = (e) => {
-    	let kampusBaru = {}
-        kampusBaru = this.state.kampusBaru
-        kampusBaru.kode = e.target.value
-        this.setState({kampusBaru})	
+    addruanganKode = (e) => {
+    	let ruanganBaru = {}
+        ruanganBaru = this.state.ruanganBaru
+        ruanganBaru.kode = e.target.value
+        this.setState({ruanganBaru})	
     }
-    addKampusNama = (e) => {
-    	let kampusBaru = {}
-        kampusBaru = this.state.kampusBaru
-        kampusBaru.nama = e.target.value
-        this.setState({kampusBaru})	
+    addruanganNama = (e) => {
+    	let ruanganBaru = {}
+        ruanganBaru = this.state.ruanganBaru
+        ruanganBaru.nama = e.target.value
+        this.setState({ruanganBaru})	
     }
-    addKampusAlamat = (e) => {
-    	let kampusBaru = {}
-        kampusBaru = this.state.kampusBaru
-        kampusBaru.alamat = e.target.value
-        this.setState({kampusBaru})	
+    addruanganKeterangan = (e) => {
+    	let ruanganBaru = {}
+        ruanganBaru = this.state.ruanganBaru
+        ruanganBaru.keterangan = e.target.value
+        this.setState({ruanganBaru})	
     }
 
-    addKampus = ()=> {
+    addruangan = ()=> {
     	const self = this
     	let addButton = document.getElementsByClassName("btn-add")
-    	console.log(JSON.stringify(this.state.kampusBaru))
+    	console.log(JSON.stringify(this.state.ruanganBaru))
     	addButton[0].setAttribute("disabled", "disabled")
 
-    	fetch(BASE_URL + '/api/kampus/', {
+    	fetch(BASE_URL + '/api/ruangan/', {
 			method: 'post',
 			headers: {
 				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
-				'Content-Type': 'application/json',
-                'Accept': 'application/json'
+				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify(this.state.kampusBaru)
+			body: JSON.stringify(this.state.ruanganBaru)
 		}).then(function(response) {
+			console.log(response)
 			return response.json();
 		}).then(function(data) {
-			console.log(data)
 			if(data.id != null || data.id != undefined){
 				addButton[0].removeAttribute("disabled")
-				let kampus = []
-				let kampusBaru = {}
-				kampusBaru = self.state.kampusBaru
+				let ruangan = []
+				let ruanganBaru = {}
+				ruanganBaru = self.state.ruanganBaru
 
-	        	kampus = self.state.kampus
-	        	kampus.push(data)
+	        	ruangan = self.state.ruangan
+	        	ruangan.push(data)
 
-	    		kampusBaru.kode = null
-				kampusBaru.nama = null
-				kampusBaru.alamat = null
+	    		ruanganBaru.kode = null
+				ruanganBaru.nama = null
+				ruanganBaru.alamat = null
 
 				self.setState({
 					addForm: true,
-					kampus,
-					kampusBaru
+					ruangan,
+					ruanganBaru
 					
 				})
-				toastr.success("Kampus berhasil ditambahkan", "Sukses ! ")
+				toastr.success("Ruangan berhasil ditambahkan", "Sukses ! ")
 			}else{
 				addButton[0].removeAttribute("disabled")
 				self.setState({
 					addForm: true
 				})
-				toastr.warning("Gagal menambahkan Kampus", "Gagal ! ")
+				toastr.warning("Gagal menambahkan Ruangan", "Gagal ! ")
 			}
 		});
     }
 
-    handleDeleteMatkul = (id, key)=> {
+    handleDeleteKelompokAkun = (id, key)=> {
     	console.log(id)
     	const self = this
     	swal({
-		  title: "Hapus Mata Kuliah ?",
+		  title: "Hapus Ruangan ?",
 		  icon: "warning",
 		  buttons: true,
 		  dangerMode: true,
 		})
 		.then((willDelete) => {
 		  if (willDelete) {
-		  	fetch(BASE_URL + '/api/kampus/' + id, {
+		  	fetch(BASE_URL + '/api/ruangan/' + id, {
 				method: 'delete',
 				headers: {
 					'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
@@ -178,16 +181,16 @@ class Kampus extends Component {
 			}).then(function(response) {
 
 				self.setState({
-					kampus: self.state.kampus.filter(data => data.id !== id)
+					ruangan: self.state.ruangan.filter(data => data.id !== id)
 				})
-				swal("Sukses! Kampus telah dihapus!", {
+				swal("Sukses! ruangan telah dihapus!", {
 			      icon: "success",
 			    });
 			}).then(function(data) {
 				self.setState({
-					kampus: self.state.kampus.filter(data => data.id !== id)
+					ruangan: self.state.ruangan.filter(data => data.id !== id)
 				})
-				swal("Sukses! Kampus telah dihapus!", {
+				swal("Sukses! ruangan telah dihapus!", {
 			      icon: "success",
 			    });
 			});
@@ -200,7 +203,7 @@ class Kampus extends Component {
             <div >
                 <div className="row wrapper border-bottom white-bg page-heading">
 		            <div className="col-lg-8">
-		                <h2>Daftar Kampus</h2>
+		                <h2>Ruangan Perkuliahan</h2>
 		            </div>
 		            <div className="col-lg-4">
 		            </div>
@@ -210,7 +213,7 @@ class Kampus extends Component {
                         <div className="col-lg-8">
                             <div className="ibox ">
                                 <div className="ibox-title" style={{'backgroundColor':'#1ab394', 'color':'white'}}>
-                                    <h5> <i className="fa fa-list "></i> Daftar Kampus</h5>
+                                    <h5> <i className="fa fa-list "></i> Daftar Ruangan</h5>
                                 </div>
                                 <div className="ibox-content">
                                 	<div className="row">
@@ -220,7 +223,7 @@ class Kampus extends Component {
 			                                    <input 
 		                                    		type="text" 
 		                                    		disabled="" 
-		                                    		placeholder="Nama Kampus"
+		                                    		placeholder="Nama Ruangan"
 		                                    		className="form-control"/>
 		                                    </div>
 	                                    </div>
@@ -239,19 +242,21 @@ class Kampus extends Component {
 											<table className="table table-striped" align="right">
 					                            <thead>
 					                            <tr>
+					                            	<th style={{'width':'5%'}}>NO. </th>
 					                                <th style={{'width':'5%'}}>KODE</th>
 					                                <th style={{'width':'15%'}}>NAMA</th>
-					                                <th style={{'width':'5%'}}>ALAMAT</th>
+					                                <th style={{'width':'15%'}}>KETERANGAN</th>
 					                                <th style={{'width':'13%', 'textAlign':'center'}}>AKSI</th>
 					                            </tr>
 					                            </thead>
 					                            <tbody>
 					                            {
-					                            	this.state.kampus.map((data, key) =>
-					                            		<tr key={key}>
+					                            	this.state.ruangan.map((data, key) =>
+					                            		<tr>
+					                            			<td>{key+1}</td>
 							                                <td>{data.kode}</td>
 							                                <td>{data.nama}</td>
-							                                <td>{data.alamat}</td>
+							                                <td>{data.keterangan}</td>
 							                                <td>
 						                                		<center>
 						                                			<button 
@@ -263,7 +268,7 @@ class Kampus extends Component {
 						                                				<i className="fa fa-edit"></i></button>
 
 						                                			<button 
-						                                				onClick={() => this.handleDeleteMatkul( data.id, key )}
+						                                				onClick={() => this.handleDeleteKelompokAkun( data.id, key )}
 						                                				className="btn btn-danger btn-sm" 
 						                                				type="button"
 						                                				><i className="fa fa-trash"></i></button>
@@ -285,11 +290,11 @@ class Kampus extends Component {
                                 {
                                 	this.state.addForm ?
                                 	<div className="ibox-title" style={{'backgroundColor':'#1ab394', 'color':'white'}}>
-	                                    <h5> <i className="fa fa-plus"></i> Tambah Kampus</h5>
+	                                    <h5> <i className="fa fa-plus"></i> Tambah Kelompok Akun</h5>
 	                                </div>
 	                                :
 	                                <div className="ibox-title" style={{'backgroundColor':'#fad284', 'color':'white'}}>
-	                                    <h5> <i className="fa fa-pencil"></i> Ubah Kampus</h5>
+	                                    <h5> <i className="fa fa-pencil"></i> Ubah Kelompok Akun</h5>
 	                                </div>
                                 }
                                 
@@ -302,8 +307,8 @@ class Kampus extends Component {
 	                                            	type="text" 
 	                                            	className="form-control m-b" 
 	                                            	name="account"
-	                                            	value={this.state.kampusBaru.kode}
-						                            onChange={this.addKampusKode}
+	                                            	value={this.state.ruanganBaru.kode}
+						                            onChange={this.addruanganKode}
 	                                            	/>
 	                                        </div>
 	                                    </div>
@@ -314,20 +319,20 @@ class Kampus extends Component {
 	                                            	type="text" 
 	                                            	className="form-control m-b" 
 	                                            	name="account"
-	                                            	value={this.state.kampusBaru.nama}
-						                            onChange={this.addKampusNama}
+	                                            	value={this.state.ruanganBaru.nama}
+						                            onChange={this.addruanganNama}
 						                            />
 	                                        </div>
 	                                    </div>
 	                                    
-	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Alamat</label>
+	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Keterangan</label>
 	                                        <div className="col-lg-9">
 	                                            <input 
 	                                            	type="text" 
 	                                            	className="form-control m-b" 
 	                                            	name="account"
-	                                            	value={this.state.kampusBaru.alamat}
-						                            onChange={this.addKampusAlamat}
+	                                            	value={this.state.ruanganBaru.keterangan}
+						                            onChange={this.addruanganKeterangan}
 	                                            	/>
 	                                        </div>
 	                                    </div>
@@ -335,7 +340,7 @@ class Kampus extends Component {
 	                                    <button
 	                                		className="btn btn-primary btn-sm btn-add" 
 	                                		type="button"
-	                                		onClick={this.addKampus}>
+	                                		onClick={this.addruangan}>
 	                                		Tambah
 	                                	</button>
 	                                </div>
@@ -347,7 +352,7 @@ class Kampus extends Component {
 	                                            	type="text" 
 	                                            	className="form-control m-b" 
 	                                            	name="account"
-	                                            	value={this.state.kampus.filter(data => data.id === this.state.selected)[0].kode}
+	                                            	value={this.state.ruangan.filter(data => data.id === this.state.selected)[0].kode}
 					                                onChange={this.handleChangeKode}
 	                                            	/>
 	                                        </div>
@@ -359,20 +364,20 @@ class Kampus extends Component {
 	                                            	type="text" 
 	                                            	className="form-control m-b" 
 	                                            	name="account"
-	                                            	value={this.state.kampus.filter(data => data.id === this.state.selected)[0].nama}
+	                                            	value={this.state.ruangan.filter(data => data.id === this.state.selected)[0].nama}
 					                                onChange={this.handleChangeNama}
 						                            />
 	                                        </div>
 	                                    </div>
 
-	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Alamat</label>
+	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Role</label>
 	                                        <div className="col-lg-9">
 	                                            <input 
 	                                            	type="text" 
 	                                            	className="form-control m-b" 
 	                                            	name="account"
-	                                            	value={this.state.kampus.filter(data => data.id === this.state.selected)[0].alamat}
-					                                onChange={this.handleChangeAlamat}
+	                                            	value={this.state.ruangan.filter(data => data.id === this.state.selected)[0].keterangan}
+					                                onChange={this.handleChangeKeterangan}
 						                            />
 	                                        </div>
 	                                    </div>
@@ -382,7 +387,7 @@ class Kampus extends Component {
 	                                    	style={{'marginRight': '10px'}}
 	                                		className="btn btn-info btn-add" 
 	                                		type="button"
-	                                		onClick={this.editKampus}>
+	                                		onClick={this.editruangan}>
 	                                		Edit
 	                                	</button>
 	                                	<button 
@@ -410,4 +415,4 @@ class Kampus extends Component {
 
 }
 
-export default Kampus
+export default Ruangan

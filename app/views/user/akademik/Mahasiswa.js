@@ -60,12 +60,34 @@ class Mahasiswa extends Component {
 		}, 1000);
     }
 
-    getMahasiswa = (key) => {
+    getMahasiswa = (id) => {
     	this.setState({
-    		mahasiswa: this.state.mahasiswas[key],
+    		mahasiswa: this.state.mahasiswas.find(data => data.id == id),
     		profil: true
     	})
     }
+
+  //   updateStatusMahasiswa = () => {
+  //   	let url = ""
+  //   	let mahasiswa = this.state.mahasiswa
+  //   	if (this.state.selectedStatus  == "aktif" || this.state.selectedStatus == "tidak aktif") {
+  //   		mahasiswa.
+  //   		url = BASE_URL + '/api/mahasiswa/'
+  //   	}
+  //   	fetch(, {
+		// 	method: 'get',
+		// 	headers: {
+		// 		'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+		// 	}
+		// }).then(function(response) {
+		// 	return response.json();
+		// }).then(function(data) {
+		// 	self.setState({
+		// 		mahasiswas: data.results,
+		// 		loading: !self.state.loading,
+		// 	})
+		// });
+  //   }
 
     render() {
         return (
@@ -87,15 +109,15 @@ class Mahasiswa extends Component {
                                 <div className="ibox-content">
                                 	<div className="row">
                                         <div className="col-lg-6">
-                                        	<label className="col-sm-3 col-form-label">Filter :</label>
+                                        	<label className="col-sm-3 col-form-label">Filter </label>
                                         	<div className="col-sm-9">
 			                                    <select
 			                                    	value={this.state.selectedJurusan}
 			                                    	onChange={(e) => this.setState({selectedJurusan: e.target.value}) }
 			                                        className="form-control">
 			                                        {
-			                                        	this.state.jurusans.map((jurusan, i) => 
-			                                        		<option key={i} value={jurusan.id}>{jurusan.nama}</option>
+			                                        	this.state.jurusans.map((jurusan, key) => 
+			                                        		<option key={key} value={jurusan.id}>{jurusan.nama}</option>
 			                                        	)
 			                                        }
 			                                    </select>
@@ -143,12 +165,21 @@ class Mahasiswa extends Component {
 										        		<tr key={key}>
 												            <td>{mahasiswa.nim}</td>
 												            <td>{mahasiswa.nama}</td>
-												            <td>{ 
-																(this.state.jurusans.length === 0)? null: this.state.jurusans.find((jurusan) => (jurusan.id == mahasiswa.jurusan)).nama
-															 }
+															<td>
+															{
+																(this.state.jurusans.length === 0)? null:
+																this.state.jurusans.find((jurusan) => (jurusan.id == mahasiswa.jurusan)).nama
+															}
 												            </td>
 												            <td><span className="badge badge-primary">Aktif</span></td>
-												            <td><a onClick={() => this.getMahasiswa(key)}><i className="fa fa-eye text-navy"></i></a></td>
+												            <td>
+												            	<button 
+					                                				className="btn btn-info btn-sm" 
+					                                				type="button"
+					                                				onClick={() => this.getMahasiswa(mahasiswa.id)}
+					                                				>
+					                                				<i className="fa fa-eye"></i></button>
+												            </td>
 												        </tr>
 
 										        	)
@@ -286,8 +317,10 @@ class Mahasiswa extends Component {
 
 											<button
 		                                		className="btn btn-info btn-block" 
-		                                		type="button">
-		                                		Edit
+		                                		type="button"
+		                                		onClick={this.updateStatusMahasiswa}
+		                                		>
+		                                		Simpan
 		                                	</button>
 
 	                                    </div>

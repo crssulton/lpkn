@@ -37,8 +37,10 @@ import TagihanAdmin from '../views/user/admin/Tagihan';
 
 // Folder Keuangan (Role 4)
 import MainKeuangan from '../components/layouts/MainKeuangan';
-import TransaksiKeuangan from '../views/user/keuangan/Transaksi';
-import LaporanKeuangan from '../views/user/keuangan/Laporan';
+import AkunKeuangan from '../views/user/keuangan/akun';
+import TransaksiKeuangan from '../views/user/keuangan/transaksi';
+import DataJurnalKeuangan from '../views/user/keuangan/data-jurnal';
+import Laporan from '../views/user/keuangan/Laporan';
 
 // Folder Akademik (Role 5)
 import MainAkademik from '../components/layouts/MainAkademik';
@@ -47,16 +49,23 @@ import DaftarMahasiswaAkademik from '../views/user/akademik/Mahasiswa';
 import MataKuliahAkademik from '../views/user/akademik/Mata_Kuliah';
 import JadwalAkademik from '../views/user/akademik/Jadwal';
 import PengumumanAkademik from '../views/user/akademik/Pengumuman';
+import RuanganAkademik from '../views/user/akademik/Ruangan';
+import KelasAkademik from '../views/user/akademik/kelas';
 
 // Folder Kepala Cabang (Role 6)
 import MainKepalaCabang from '../components/layouts/MainKepalaCabang';
-import DataCabang from '../views/user/kepala_cabang/Data_Cabang';
-import ReviewApprove from '../views/user/kepala_cabang/Review_and_approve';
+import AdministratorKepalaCabang from '../views/user/kepala_cabang/administrator';
+import AkademikKepalaCabang from '../views/user/kepala_cabang/akademik';
+import DashboardKepalaCabang from '../views/user/kepala_cabang/dashboard';
+import KeuanganKepalaCabang from '../views/user/kepala_cabang/keuangan';
+import JurusanKepalaCabang from '../views/user/kepala_cabang/jurusan';
 
 // Folder HRD (Role 7)
 import MainHRD from '../components/layouts/MainHrd';
-import Pegawai from '../views/user/hrd/Pegawai';
-import Pengajuan from '../views/user/hrd/Pengajuan';
+import PegawaiHRD from '../views/user/hrd/pegawai';
+import PengajuanHRD from '../views/user/hrd/pengajuan';
+import addPegawaiHRD from '../views/user/hrd/add_pegawai';
+import editPegawaiHRD from '../views/user/hrd/edit_pegawai';
 
 // Folder Owner (Role 8)
 import MainOwner from '../components/layouts/MainOwner';
@@ -64,7 +73,10 @@ import DashboardOwner from '../views/user/owner/Dashboard';
 import KampusOwner from '../views/user/owner/Kampus';
 import HRDOwner from '../views/user/owner/HRD';
 import AnggaranOwner from '../views/user/owner/Anggaran';
+import Form_add_staffOwner from '../views/user/owner/Form_add_staff';
+import Form_edit_staffOwner from '../views/user/owner/Form_edit_staff';
 import KepalaCabangOwner from '../views/user/owner/Kepala_cabang';
+import KelompokAkunOwner from '../views/user/owner/kelompok_akun';
 
 let komponen= null;
 
@@ -129,9 +141,20 @@ if(window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStor
     komponen = (
     <Router history={browserHistory}>
         <Route path="/" component={MainKeuangan}>
-            <IndexRedirect to="/transaksi" />
+            <IndexRedirect to="/akun" />
+            <Route path="akun" component={AkunKeuangan}> </Route>
             <Route path="transaksi" component={TransaksiKeuangan}> </Route>
-            <Route path="laporan" component={LaporanKeuangan}> </Route>
+            <Route path="jurnal" component={DataJurnalKeuangan}> </Route>
+            <Route path="neraca_saldo_awal" component={Laporan}> </Route>
+            <Route path="umum_jurnal" component={Laporan}> </Route>
+            <Route path="ayat_jurnal_penyesuaian" component={Laporan}> </Route>
+            <Route path="penutup_jurnal" component={Laporan}> </Route>
+            <Route path="buku_besar" component={Laporan}> </Route>
+            <Route path="saldo_sementara" component={Laporan}> </Route>
+            <Route path="neraca_lanjut" component={Laporan}> </Route>
+            <Route path="rugi_laba" component={Laporan}> </Route>
+            <Route path="perubahan_modal" component={Laporan}> </Route>
+            <Route path="neraca_akhir" component={Laporan}> </Route>
         </Route>
     </Router> )
 }
@@ -146,6 +169,8 @@ if(window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStor
             <Route path="matkul" component={MataKuliahAkademik}> </Route>
             <Route path="jadwal" component={JadwalAkademik}> </Route>
             <Route path="pengumuman" component={PengumumanAkademik}> </Route>
+            <Route path="ruangan" component={RuanganAkademik}> </Route>
+            <Route path="kelas" component={KelasAkademik}> </Route>
         </Route>
     </Router> )
 }
@@ -154,9 +179,16 @@ if(window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStor
     komponen = (
     <Router history={browserHistory}>
         <Route path="/" component={MainKepalaCabang}>
-            <IndexRedirect to="/data_cabang" />
-            <Route path="data_cabang" component={DataCabang}> </Route>
-            <Route path="review_approve" component={ReviewApprove}> </Route>
+            <IndexRedirect to="/dashboard" />
+            <Route path="dashboard" component={DashboardKepalaCabang}> </Route>
+            <Route path="akademik" component={AkademikKepalaCabang}> </Route>
+            <Route path="admin" component={AdministratorKepalaCabang}> </Route>
+            <Route path="keuangan" component={KeuanganKepalaCabang}> </Route>
+            <Route path="jurusan" component={JurusanKepalaCabang}> </Route>
+            <Route path="add-staff" component={Form_add_staffOwner}> </Route>
+            <Route path="edit-staff" component={Form_edit_staffOwner}> </Route>
+            <Route path="anggaran" component={AnggaranOwner}> </Route>
+            <Route path="perubahan" component={Perubahan}> </Route>
         </Route>
     </Router> )
 }
@@ -166,8 +198,10 @@ if(window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStor
     <Router history={browserHistory}>
         <Route path="/" component={MainHRD}>
             <IndexRedirect to="/pegawai" />
-            <Route path="pegawai" component={Pegawai}> </Route>
-            <Route path="pengajuan" component={Pengajuan}> </Route>
+            <Route path="pegawai" component={PegawaiHRD}> </Route>
+            <Route path="pengajuan" component={PengajuanHRD}> </Route>
+            <Route path="add-pegawai" component={addPegawaiHRD}> </Route>
+            <Route path="edit-pegawai" component={editPegawaiHRD}> </Route>
         </Route>
     </Router> )
 }
@@ -182,6 +216,9 @@ if(window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStor
             <Route path="kepala" component={KepalaCabangOwner}> </Route>
             <Route path="hrd" component={HRDOwner}> </Route>
             <Route path="anggaran" component={AnggaranOwner}> </Route>
+            <Route path="add-staff" component={Form_add_staffOwner}> </Route>
+            <Route path="edit-staff" component={Form_edit_staffOwner}> </Route>
+            <Route path="kelompok-account" component={KelompokAkunOwner}> </Route>
         </Route>
     </Router> )
 }

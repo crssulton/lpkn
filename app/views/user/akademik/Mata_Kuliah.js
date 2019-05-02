@@ -31,6 +31,7 @@ class Mata_Kuliah extends Component {
 		}).then(function(response) {
 			return response.json();
 		}).then(function(data) {
+			console.log(data)
 			self.setState({
 				matkuls: data.results,
 				loading: !self.state.loading
@@ -180,6 +181,7 @@ class Mata_Kuliah extends Component {
 		}).then(function(response) {
 			return response.json();
 		}).then(function(data) {
+			console.log(data)
 			if(data.id != null || data.id != undefined){
 				addButton[0].removeAttribute("disabled")
 				let matkuls = []
@@ -212,6 +214,7 @@ class Mata_Kuliah extends Component {
     }
 
     handleDeleteMatkul = (id, key)=> {
+    	console.log(id)
     	const self = this
     	swal({
 		  title: "Hapus Mata Kuliah ?",
@@ -273,8 +276,8 @@ class Mata_Kuliah extends Component {
 			                                    	onChange={(e) => this.setState({selectedJurusan: e.target.value}) }
 			                                        className="form-control">
 			                                        {
-			                                        	this.state.jurusans.map((jurusan, i) => 
-			                                        		<option key={i} value={jurusan.id}>{jurusan.nama}</option>
+			                                        	this.state.jurusans.map((jurusan, key) => 
+			                                        		<option key={key} value={jurusan.id}>{jurusan.nama}</option>
 			                                        	)
 			                                        }
 			                                    </select>
@@ -321,10 +324,7 @@ class Mata_Kuliah extends Component {
 							                                <td>{matkul.kode}</td>
 							                                <td>{matkul.nama}</td>
 							                                <td>{matkul.kategori}</td>
-															<td>
-															{ 
-																(this.state.jurusans.length === 0)? null: this.state.jurusans.find((jurusan) => (jurusan.id == matkul.jurusan)).nama 
-															}</td>
+							                                <td>{ this.state.jurusans.find((jurusan) => (jurusan.id == matkul.jurusan)).nama }</td>
 							                                <td>{matkul.jumlah_jam}</td>
 							                                <td>{matkul.jumlah_pertemuan}</td>
 							                                <td>
@@ -413,8 +413,8 @@ class Mata_Kuliah extends Component {
 			                                        className="form-control">
 			                                        <option value="">Pilih Jurusan</option>
 			                                        {
-			                                        	this.state.jurusans.map((jurusan, i) => 
-			                                        		<option key={i} value={jurusan.id}>{jurusan.nama}</option>
+			                                        	this.state.jurusans.map((jurusan, key) => 
+			                                        		<option key={key} value={jurusan.id}>{jurusan.nama}</option>
 			                                        	)
 			                                        }
 			                                    </select>

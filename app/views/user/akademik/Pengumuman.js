@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import {BASE_URL} from '../../../config/config.js'
 
 class Pengumuman extends Component {
 	
@@ -16,7 +15,7 @@ class Pengumuman extends Component {
 
 	componentDidMount(){
 		const self = this
-		fetch(BASE_URL + '/api/jurusan/', {
+		fetch('http://lpkn.itec.my.id:9000/api/jurusan/', {
 			method: 'get',
 			headers: {
 				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
@@ -30,15 +29,15 @@ class Pengumuman extends Component {
 		});
 	}
 
-	// handleChange(tags) {
-	// 	this.setState({tags})
-	// }
+	handleChange(tags) {
+		this.setState({tags})
+	}
 
-	// handleKhusus = () => {
-	// 	this.setState({
-	// 		khusus: true
-	// 	})
-	// }
+	handleKhusus = () => {
+		this.setState({
+			khusus: true
+		})
+	}
 
     render() {
         return (
@@ -50,8 +49,7 @@ class Pengumuman extends Component {
 		            <div className="col-lg-4">
 		            </div>
 		        </div>
-				<br/>
-		        <div className="tabs-container animated fadeInRight">
+		        <div className="tabs-container">
                     <ul className="nav nav-tabs" role="tablist">
                         <li className="active"><a className="nav-link" data-toggle="tab" href="#tab-1"> Buat Pengumuman</a></li>
                         <li><a className="nav-link" data-toggle="tab" href="#tab-2"> Daftar Pengumuman</a></li>

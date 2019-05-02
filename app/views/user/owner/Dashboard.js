@@ -1,22 +1,24 @@
 import React, { Component } from 'react';
-
 class Dashboard extends Component {
+    componentDidMount(){
+    }
 
     render() {
         return (
-            <div className="wrapper wrapper-content animated fadeInRight">
-                <div className="row">
-                    <div className="col-lg-12">
-                        <div className="text-center m-t-lg">
-                            <h1>
-                                Sample example of second view
-                            </h1>
-                            <small>
-                                Written in Minor.js component
-                            </small>
-                        </div>
-                    </div>
-                </div>
+            <div >
+                <div className="row wrapper border-bottom white-bg page-heading">
+		            <div className="col-lg-8">
+		                <h2>Dashboard</h2>
+		                <ol className="breadcrumb">
+		                    <li className="breadcrumb-item active">
+		                        <a href="index.html">Dashboard</a>
+		                    </li>
+		                </ol>
+		            </div>
+		        </div>
+		        <div className="row wrapper wrapper-content animated fadeInRight">
+		        
+		        </div>
             </div>
         )
     }
