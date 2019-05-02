@@ -144,7 +144,7 @@ class Registrasi extends Component {
                                                 }}
                                                 id="asal_sekolah" 
                                                 name="asal_sekolah" 
-                                                type="date" 
+                                                type="text" 
                                                 className="form-control required"
                                                 />
                                       </div>
