@@ -1,6 +1,9 @@
 import React, { Component } from 'react';	
 import swal from 'sweetalert';
 import {BASE_URL} from '../../../config/config.js'
+import DayPickerInput from 'react-day-picker/DayPickerInput';
+import 'react-day-picker/lib/style.css';
+import CurrencyInput from 'react-currency-input';
 
 class DataJurnal extends Component {
 
@@ -67,7 +70,7 @@ class DataJurnal extends Component {
 			return response.json();
 		}).then(function(data) {
 			self.setState({
-				account: data.results,
+				account: data,
 				loading: !self.state.loading
 			})
 		});
@@ -182,16 +185,16 @@ class DataJurnal extends Component {
         jurnalBaru.tanggal = e.target.value
         this.setState({jurnalBaru})	
     }
-    addjurnalJumlahDebet = (e) => {
+    addjurnalJumlahDebet = (e, maskedvalue, floatvalue) => {
     	let jurnalBaru = {}
         jurnalBaru = this.state.jurnalBaru
-        jurnalBaru.jumlah_debet = e.target.value
+        jurnalBaru.jumlah_debet = floatvalue
         this.setState({jurnalBaru})	
     }
-    addjurnalJumlahKredit = (e) => {
+    addjurnalJumlahKredit = (e, maskedvalue, floatvalue) => {
     	let jurnalBaru = {}
         jurnalBaru = this.state.jurnalBaru
-        jurnalBaru.jumlah_kredit = e.target.value
+        jurnalBaru.jumlah_kredit = floatvalue
         this.setState({jurnalBaru})	
     }
     addjurnalJenis = (e) => {
@@ -301,7 +304,15 @@ class DataJurnal extends Component {
             <div >
                 <div className="row wrapper border-bottom white-bg page-heading">
 		            <div className="col-lg-8">
-		                <h2>Data Jurnal</h2>
+		                <h2>Daftar Data Jurnal</h2>
+		                <ol className="breadcrumb">
+                            <li className="breadcrumb-item">
+                                Dashboard
+                            </li>
+                            <li className="breadcrumb-item active">
+                                <strong>Data Jurnal</strong>
+                            </li>
+                        </ol>
 		            </div>
 		            <div className="col-lg-4">
 		            </div>
@@ -316,13 +327,12 @@ class DataJurnal extends Component {
                                 <div className="ibox-content">
                                 	<div className="row">
 	                                    <div className="col-lg-6">
-	                                    	<label className="col-sm-3 col-form-label">Cari :</label>
-	                                    	<div className="col-sm-9">
-			                                    <input 
-		                                    		type="text" 
-		                                    		disabled="" 
-		                                    		placeholder="Nama jurnal"
-		                                    		className="form-control"/>
+	                                    	<label className="col-sm-4 col-form-label">Filter : </label>
+	                                    	<div className="col-sm-8">
+			                                    <DayPickerInput 
+			                                    	className="form-control m-b" 
+			                                    	onDayChange={day => console.log(day)} 
+			                                    />
 		                                    </div>
 	                                    </div>
 	                                </div>
@@ -336,17 +346,17 @@ class DataJurnal extends Component {
 					                            	<th style={{'width':'5%'}}>KODE</th>
 					                            	<th style={{'width':'5%'}}>JENIS</th>
 					                                <th style={{'width':'10%'}}>TANGGAL</th>
-					                                <th style={{'width':'10%'}}>JML DEBET</th>
-					                                <th style={{'width':'10%'}}>JML KREDIT</th>
-					                                <th style={{'width':'5%'}}>AKUN</th>
-					                                <th style={{'width':'10%'}}>TIPE</th>
-					                                <th style={{'width':'13%', 'textAlign':'center'}}>AKSI</th>
+					                                <th style={{'width':'10%'}}>DEBET</th>
+					                                <th style={{'width':'10%'}}>KREDIT</th>
+					                                <th style={{'width':'5%'}}>TIPE</th>
+					                                <th style={{'width':'10%'}}>AKUN</th>
+					                                <th style={{'width':'15%', 'textAlign':'center'}}>AKSI</th>
 					                            </tr>
 					                            </thead>
 					                            <tbody>
 					                            {
 					                            	this.state.jurnal.map((data, key) =>
-					                            		<tr>
+					                            		<tr key={key}>
 					                            			<td>{data.kode}</td>
 							                                <td>{data.jenis}</td>
 							                                <td>{data.tanggal}</td>
@@ -419,25 +429,27 @@ class DataJurnal extends Component {
 
 	                                	<div className="form-group row"><label className="col-lg-3 col-form-label">Jumlah Debet</label>
 	                                        <div className="col-lg-9">
-	                                            <input 
-	                                            	type="number" 
-	                                            	className="form-control m-b" 
-	                                            	name="jurnal"
-	                                            	value={this.state.jurnalBaru.jumlah_debet}
-						                            onChange={this.addjurnalJumlahDebet}
-	                                            	/>
+	                                        	<CurrencyInput 
+	                                        		precision="0" 
+	                                        		className="form-control m-b" 
+	                                        		prefix="Rp "
+	                                        		value={this.state.jurnalBaru.jumlah_debet} 
+	                                        		onChangeEvent={this.addjurnalJumlahDebet}
+	                                        		/>
+	                                            
 	                                        </div>
 	                                    </div>
 
 	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Jumlah Kredit</label>
 	                                        <div className="col-lg-9">
-	                                            <input 
-	                                            	type="number" 
-	                                            	className="form-control m-b" 
-	                                            	name="jurnal"
-	                                            	value={this.state.jurnalBaru.jumlah_kredit}
-						                            onChange={this.addjurnalJumlahKredit}
-	                                            	/>
+	                                        	<CurrencyInput 
+	                                        		precision="0" 
+	                                        		className="form-control m-b" 
+	                                        		prefix="Rp "
+	                                        		value={this.state.jurnalBaru.jumlah_kredit}
+	                                        		onChangeEvent={this.addjurnalJumlahKredit}
+	                                        		/>
+	                                            
 	                                        </div>
 	                                    </div>
 

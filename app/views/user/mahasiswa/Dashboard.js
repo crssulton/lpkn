@@ -1,19 +1,23 @@
 import React, { Component } from 'react';
 import {BASE_URL} from '../../../config/config.js'
 
+
 class Dashboard extends Component {
 
 	constructor(props){
         super(props);
         this.state ={
             mahasiswa: [],
-            loading: true
+            loading: true,
+            pengumuman: [],
+            isiPengumuman: "",
+            foto: null
         }
     }
 
     componentDidMount(){
     	const self = this
-		fetch(BASE_URL + '/api/mahasiswa/1/', {
+		fetch(BASE_URL + '/api/mahasiswa/' +  window.sessionStorage.getItem('user_id') +'/', {
 			method: 'GET',
 			headers: {
 				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
@@ -26,20 +30,61 @@ class Dashboard extends Component {
 				loading: !self.state.loading
 			})
 		});
-    }
-
-    handleChangeMahasiswa = () => {
-    	const self = this
-		fetch(BASE_URL + '/api/mahasiswa/1/', {
-			method: 'put',
+	}
+	
+	updateDataMhs = () => {
+		const self = this
+		fetch(BASE_URL + '/api/mahasiswa/' +  window.sessionStorage.getItem('user_id') +'/', {
+			method: 'GET',
 			headers: {
 				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
-			},
-			body: JSON.stringify(self.state.mahasiswa)
+			}
 		}).then(function(response) {
 			return response.json();
 		}).then(function(data) {
-		});	
+			self.setState({
+				mahasiswa: data
+			})
+		});
+	}
+
+    handleChangeMahasiswa = () => {
+		const self = this
+		let formData = new FormData()
+		let mahasiswa = {...this.state.mahasiswa}
+
+		if(mahasiswa.alamat != null) formData.append('alamat', mahasiswa.alamat)
+		if(mahasiswa.no_hp != null) formData.append('no_hp', mahasiswa.no_hp)
+		if(mahasiswa.email != null) formData.append('email', mahasiswa.email)
+		if(mahasiswa.id_facebook != null) formData.append('id_facebook', mahasiswa.id_facebook)
+		if(mahasiswa.wa_or_line != null) formData.append('wa_or_line', mahasiswa.wa_or_line)
+		if(mahasiswa.tinggi_badan != null) formData.append('tinggi_badan', mahasiswa.tinggi_badan)
+		if(mahasiswa.berat_badan != null) formData.append('berat_badan', mahasiswa.berat_badan)
+		if(mahasiswa.nama_ayah != null) formData.append('nama_ayah', mahasiswa.nama_ayah)
+		if(mahasiswa.pekerjaan_ayah != null) formData.append('pekerjaan_ayah', mahasiswa.pekerjaan_ayah)
+		if(mahasiswa.nama_ibu != null) formData.append('nama_ibu', mahasiswa.nama_ibu)
+		if(mahasiswa.pekerjaan_ibu != null) formData.append('pekerjaan_ibu', mahasiswa.pekerjaan_ibu)
+		if(mahasiswa.alamat_wali != null) formData.append('alamat_wali', mahasiswa.alamat_wali)
+		if( this.state.fotoMhs != null) formData.append('foto', this.state.fotoMhs)
+		console.log(formData)
+		fetch(BASE_URL + '/api/mahasiswa/' +  window.sessionStorage.getItem('user_id') +'/', {
+			method: 'patch',
+			headers: {
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+			},
+			body: formData
+		}).then(function(response) {
+			console.log(response)
+			if(response.status == 200){
+				toastr.success("Data berhasil diubah", "Sukses ! ")
+			}else{
+				toastr.warning("Gagal mengubah Data", "Gagal ! ")
+			}
+		})
+		.then(function(data) {
+			console.log(data)
+			self.updateDataMhs()
+		})
     }
 
     onChangeAlamat = e => {
@@ -157,6 +202,28 @@ class Dashboard extends Component {
     	mahasiswa.kampus = e.target.value
     	this.setState({mahasiswa})
     }
+    onChangeFoto = e => {
+    	this.setState({fotoMhs : e.target.files[0]})
+    	
+    }
+
+    loadPengumuman = () => {
+    	const self = this
+		fetch(BASE_URL + '/api/pengumuman/', {
+			method: 'GET',
+			headers: {
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+			}
+		}).then(function(response) {
+			return response.json();
+		}).then(function(data) {
+			console.log(data.results)
+			self.setState({
+				pengumuman: data.results
+			})
+		});
+
+    }
 
     render() {
         return (
@@ -164,6 +231,11 @@ class Dashboard extends Component {
                 <div className="row wrapper border-bottom white-bg page-heading">
 		            <div className="col-lg-10">
 		                <h2>Dashboard Mahasiswa</h2>
+		                <ol className="breadcrumb">
+                            <li className="breadcrumb-item">
+                                Dashboard
+                            </li>
+                        </ol>
 		            </div>
 		            <div className="col-lg-2">
 
@@ -188,7 +260,12 @@ class Dashboard extends Component {
 				                        </div>
 				                        <div>
 				                            <div className="ibox-content no-padding border-left-right">
-				                                <img alt="image" width="100%" className="img-fluid" src="http://help.wojilu.com/metronic/theme/assets/admin/pages/media/profile/profile_user.jpg"/>
+				                                {
+				                                	this.state.mahasiswa.foto != null ?
+				                                	<img alt="image" width="100%" className="img-fluid" src={this.state.mahasiswa.foto}/>
+				                                	:
+				                                	<img alt="image" width="100%" className="img-fluid" src="http://www.personalbrandingblog.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640-300x300.png"/>
+				                                }
 				                            </div>
 				                            <div className="ibox-content profile-content">
 				                                <h3 style={{'textAlign': 'center'}}><strong>{this.state.mahasiswa.nama}</strong></h3>
@@ -201,7 +278,7 @@ class Dashboard extends Component {
                                                         <tbody>
 												    		<tr>
 												    			<td><b>Jurusan</b></td>
-												    			<td>: Pariwisata</td>
+												    			<td>: {this.state.mahasiswa.jurusan_info.nama}</td>
 												    		</tr>
 												    		<tr>
 												    			<td><b>Tempat Lahir</b></td>
@@ -237,7 +314,7 @@ class Dashboard extends Component {
 												    		</tr>
 												    		<tr>
 												    			<td><b>Kampus</b></td>
-												    			<td>: {this.state.mahasiswa.kampus}</td>
+												    			<td>: {this.state.mahasiswa.kampus_info.nama}</td>
 												    		</tr>
                                                         </tbody>
 												    	</table>
@@ -252,7 +329,7 @@ class Dashboard extends Component {
 				                    <div className="tabs-container">
 				                        <ul className="nav nav-tabs" role="tablist">
 				                            <li className="active"><a className="nav-link" data-toggle="tab" href="#tab-1"> Informasi Mahasiswa</a></li>
-				                            <li>
+				                            <li onClick={this.loadPengumuman}>
 				                            	<a className="nav-link" data-toggle="tab" href="#tab-2"> Pengumuman</a>
 				                            </li>
 				                        </ul>
@@ -271,7 +348,7 @@ class Dashboard extends Component {
 							                                    		className="form-control"/>
 							                                    </div>
 							                                </div>
-							                                <div className="hr-line-dashed"></div>
+
 							                                <div className="form-group row"><label className="col-sm-2 col-form-label">No Hp</label>
 							                                    <div className="col-sm-10">
 							                                    	<input 
@@ -282,7 +359,7 @@ class Dashboard extends Component {
 							                                    		className="form-control"/> 
 							                                    </div>
 							                                </div>
-							                                <div className="hr-line-dashed"></div>
+
 							                                <div className="form-group row"><label className="col-sm-2 col-form-label">Email</label>
 							                                    <div className="col-sm-10">
 								                                    <input 
@@ -294,7 +371,7 @@ class Dashboard extends Component {
 								                                    	name="password"/>
 							                                    </div>
 							                                </div>
-							                                <div className="hr-line-dashed"></div>
+
 							                                <div className="form-group row"><label className="col-sm-2 col-form-label">Facebook</label>
 							                                    <div className="col-sm-10">
 							                                    	<input 
@@ -305,7 +382,7 @@ class Dashboard extends Component {
 							                                    	className="form-control"/>
 							                                    </div>
 							                                </div>
-							                                <div className="hr-line-dashed"></div>
+
 							                                <div className="form-group row"><label className="col-lg-2 col-form-label">Whatsapp</label>
 							                                    <div className="col-lg-10">
 							                                    	<input 
@@ -317,7 +394,7 @@ class Dashboard extends Component {
 							                                    		className="form-control"/>
 							                                    </div>
 							                                </div>
-							                                <div className="hr-line-dashed"></div>
+
 							                                <div className="form-group row"><label className="col-lg-2 col-form-label">Tinggi Badan</label>
 							                                    <div className="col-lg-10">
 							                                    	<input 
@@ -330,7 +407,7 @@ class Dashboard extends Component {
 							                                    </div>
 							                                </div>
 							                                
-							                                <div className="hr-line-dashed"></div>
+
 							                                <div className="form-group row"><label className="col-lg-2 col-form-label">Berat Badan</label>
 							                                    <div className="col-lg-10">
 							                                    	<input 
@@ -343,7 +420,7 @@ class Dashboard extends Component {
 							                                    </div>
 							                                </div>
 							                                
-							                                <div className="hr-line-dashed"></div>
+
 							                                <div className="form-group row"><label className="col-lg-2 col-form-label">Nama Ayah</label>
 							                                    <div className="col-lg-10">
 							                                    	<input 
@@ -356,7 +433,7 @@ class Dashboard extends Component {
 							                                    </div>
 							                                </div>
 							                                
-							                                <div className="hr-line-dashed"></div>
+
 							                                <div className="form-group row"><label className="col-lg-2 col-form-label">Pekerjaan Ayah</label>
 							                                    <div className="col-lg-10">
 							                                    	<input 
@@ -369,7 +446,7 @@ class Dashboard extends Component {
 							                                    </div>
 							                                </div>
 							                                
-							                                <div className="hr-line-dashed"></div>
+
 							                                <div className="form-group row"><label className="col-lg-2 col-form-label">Nama Ibu</label>
 							                                    <div className="col-lg-10">
 							                                    	<input 
@@ -382,7 +459,7 @@ class Dashboard extends Component {
 							                                    </div>
 							                                </div>
 							                                
-							                                <div className="hr-line-dashed"></div>
+
 							                                <div className="form-group row"><label className="col-lg-2 col-form-label">Pekerjaan Ibu</label>
 							                                    <div className="col-lg-10">
 							                                    	<input 
@@ -395,7 +472,7 @@ class Dashboard extends Component {
 							                                    </div>
 							                                </div>
 							                                
-							                                <div className="hr-line-dashed"></div>
+
 							                                <div className="form-group row"><label className="col-lg-2 col-form-label">Alamat Wali</label>
 							                                    <div className="col-lg-10">
 							                                    	<input 
@@ -407,8 +484,18 @@ class Dashboard extends Component {
 							                                    		className="form-control"/>
 							                                    </div>
 							                                </div>
+
+							                                <div className="form-group row"><label className="col-lg-2 col-form-label">Foto</label>
+							                                    <div className="col-lg-10">
+							                                    	<input 
+							                                    		type="file" 
+																		disabled="" 
+																		onChange={this.onChangeFoto}
+							                                    		className="form-control"/>
+							                                    </div>
+							                                </div>
 							                                
-							                                <div className="hr-line-dashed"></div>
+
 							                                <div className="form-group row">
 							                                    <div className="col-sm-4 col-sm-offset-2">
 							                                        <button onClick={this.handleChangeMahasiswa} className="btn btn-primary btn-sm" type="submit">Simpan</button>
@@ -422,42 +509,64 @@ class Dashboard extends Component {
 				                            	<div className="panel-body">
 				                            		<table className="table table-hover issue-tracker">
 													    <tbody>
-													    <tr>
-													        <td>
-													            <a href="#">
-													                ADMINISTRATOR
-													            </a>
-													        </td>
-													        <td>
-													            Silahkan lengkapi data masing - masing
-													        </td>
-													        <td>
-													            <span className="pie">14-03-2019</span>
-													           
-													        </td>
-													    </tr>
+													    {
+													    	this.state.pengumuman.map((data, key) => {
+													    		return(
+													    			
+													    				(data.untuk_mhs && data.untuk_jurusan_info.id == this.state.mahasiswa.jurusan_info.id) || data.untuk_semua_jurusan ?
+													    				<tr 
+													    					style={{'cursor' : 'pointer'}} 
+													    					key={key}
+													    					onClick={ () => {
+							                                					this.setState({ isiPengumuman: data.isi}) 
+							                                					$('#ModalInputPegawai').modal('show')
+							                                				}}
+													    					>
+																	        <td>
+																	            <a href="#">
+																	                {
+																	                	data.dari == 5 ?
+																	                	"AKADEMIK"
+																	                	:
+																	                	"ADMINISTRATOR"
+																	                }
+																	            </a>
+																	        </td>
+																	        <td>
+																	            {data.judul}
+																	        </td>
+																	        <td>
+																	            <span className="pie">{data.created.substring(0, 10)}</span>
+																	           
+																	        </td>
+																	    </tr>
+																	    :
+																	    null
+													    		)
+													    	})
+													    }
 
-													    <tr>
-													        <td>
-													            <a href="#">
-													                AKADEMIK
-													            </a>
-													        </td>
-													        <td>
-													            Info perubahan jadwal mata kuliah Pengantar Manajemen
-													        </td>
-													        <td>
-													            <span className="pie">12-03-2019</span>
-													           
-													        </td>
-													    </tr>
-													    
 													    </tbody>
 													</table>
 				                            	</div>
 				                            </div>
 				                        </div>
-
+				                        <div id="ModalInputPegawai" className="modal fade">
+					                        <div className="modal-dialog">
+					                            <div className="modal-content">
+					                                <div className="modal-header">
+					                                    <button type="button" className="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span className="sr-only">close</span></button>
+					                                    <h4 id="modalTitle" className="modal-title">Isi Pengumuman</h4>
+					                                </div>
+					                                <div className="modal-body">
+				                                	{this.state.isiPengumuman}
+					                                </div>
+					                                <div className="modal-footer">
+					                                    <button type="button" className="btn btn-default" data-dismiss="modal">Tutup</button>
+					                                </div>
+					                            </div>
+					                        </div>
+					                    </div>
 
 				                    </div>
 				                </div>

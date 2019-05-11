@@ -47,7 +47,7 @@ class Navigation extends Component {
                             <Link to="/dashboard"><i className="fa fa-th-large"></i> <span className="nav-label">Dashboard</span></Link>
                         </li>
                         <li className={this.activeRoute("/jurusan")}>
-                            <Link to="/jurusan"><i className="fa fa-users"></i> <span className="nav-label">Jurusan</span></Link>
+                            <Link to="/jurusan"><i className="fa fa-graduation-cap"></i> <span className="nav-label">Jurusan</span></Link>
                         </li>
                         <li className={this.activeRoute("/admin")}>
                             <Link to="/admin"><i className="fa fa-users"></i> <span className="nav-label">Administrator</span></Link>
@@ -56,13 +56,20 @@ class Navigation extends Component {
                             <Link to="/akademik"><i className="fa fa-book"></i> <span className="nav-label">Akademik</span></Link>
                         </li>
                         <li className={this.activeRoute("/keuangan")}>
-                            <Link to="/keuangan"><i className="fa fa-home"></i> <span className="nav-label">Keuangan</span></Link>
+                            <Link to="/keuangan"><i className="fa fa-credit-card-alt"></i> <span className="nav-label">Keuangan</span></Link>
                         </li>
-                        <li className={this.activeRoute("/anggaran")}>
-                            <Link to="/anggaran"><i className="fa fa-calendar"></i> <span className="nav-label">Approve Anggaran</span></Link>
+                        <li className={this.activeRoute("/pengajuan")}>
+                            <Link to="/pengajuan"><i className="fa fa-check"></i> <span className="nav-label">Approve Anggaran</span></Link>
                         </li>
-                        <li className={this.activeRoute("/perubahan")}>
-                            <Link to="/perubahan"><i className="fa fa-info-circle"></i> <span className="nav-label">Perubahan Data</span></Link>
+                        <li>
+                            <a><i className="fa fa-database"></i> <span className="nav-label">View Kampus</span> <span className="fa arrow"></span></a>
+                            <ul className="nav nav-second-level collapse">
+                                <li className={this.activeRoute("/pendaftaran")}>
+                                    <Link to="/mahasiswa">Mahasiswa</Link>
+                                </li>
+                                <li><Link to="/dosen">Dosen</Link></li>
+                                <li><Link to="/staff">Staff</Link></li>
+                            </ul>
                         </li>
                     </ul>
             </nav>

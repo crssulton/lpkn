@@ -1,21 +1,33 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router'; 
+import React, { Component } from 'react';   
 import {BASE_URL} from '../../../config/config.js'
+import moment from 'moment'
+import { Link, Location } from 'react-router';
 
 class Absen extends Component {
-    constructor(props) {
+
+    constructor(props){
         super(props);
-        $('#fullCalModal').modal('hide');
         this.state = {
-            mahasiswas: [],
-            jurusans: []
+            loading: false,
+            jadwals: [],
+            mahasiswa: [],
+            months:[
+                    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 
+                    'Agustus', 'September', 'Oktober', 'November', 'Desember'],
+            days:[
+                {day:'Sunday',hari:'Minggu'}, 
+                {day:'Monday',hari:'Senin'}, 
+                {day:'Tuesday',hari:'Selasa'}, 
+                {day:'Wednesday',hari:'Rabu'}, 
+                {day:'Thursday',hari:'Kamis'}, 
+                {day:'Friday',hari:'Jum'+"'"+'at'}, 
+                {day:'Saturday',hari:'Sabtu'}],
         }
     }
 
-
-    componentDidMount(){
+    componentWillMount(){
         const self = this
-        fetch(BASE_URL + '/api/mahasiswa/', {
+        fetch(BASE_URL + '/api/jadwal/', {
             method: 'get',
             headers: {
                 'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
@@ -24,101 +36,110 @@ class Absen extends Component {
             return response.json();
         }).then(function(data) {
             self.setState({
-                mahasiswas: data.results,
+                jadwals: data.results
             })
         });
-
-        fetch(BASE_URL + '/api/jurusan/', {
-            method: 'get'
-        }).then(function(response) {
-            return response.json();
-        }).then(function(data) {
-            self.setState({
-                jurusans: data.results
-            })
-        });
-
     }
 
+    
     render() {
+        let thisDay = moment(new Date()).format('YYYY-MM-DD')
         return (
-            <div>
+            <div >
                 <div className="row wrapper border-bottom white-bg page-heading">
-                    <div className="col-lg-10">
-                        <h2>Absen Mahasiswa</h2>
+                    <div className="col-lg-8">
+                        <h2>Jadwal Perkuliahan</h2>
                         <ol className="breadcrumb">
                             <li className="breadcrumb-item">
-                                <Link to="/main">Home</Link>
-                            </li>
-                            <li className="breadcrumb-item">
-                                <Link to="/main">Dashboard</Link>
+                                Dashboard
                             </li>
                             <li className="breadcrumb-item active">
-                                <strong>Absen Mahasiswa</strong>
+                                <strong>Kehadiran Mahasiswa</strong>
                             </li>
                         </ol>
                     </div>
-                    <div className="col-lg-2">
+                    <div className="col-lg-4">
                     </div>
                 </div>
                 <div className="wrapper wrapper-content">
-                    <div className="row">
+                    <div className="row animated fadeInRight">
                         <div className="col-lg-12">
                             <div className="ibox ">
-                                <div className="ibox-title">
-                                    <h5>Daftar Absensi Mahasiswa </h5>
+                                <div className="ibox-title" style={{'backgroundColor':'#1ab394', 'color':'white'}}>
+                                    <h5> <i className="fa fa-list "></i> Jadwal Perkuliahan</h5>
                                 </div>
                                 <div className="ibox-content">
-                                    
-                                    <div className="table-responsive">
-                                            <table className="table table-striped">
+                                    {
+                                        this.state.loading?
+                                        <div className="spiner-example">
+                                            <div className="sk-spinner sk-spinner-double-bounce">
+                                                <div className="sk-double-bounce1"></div>
+                                                <div className="sk-double-bounce2"></div>
+                                            </div>
+                                        </div> :
+                                        
+                                        <div>
+                                            <table className="table table-hover">
                                                 <thead>
                                                 <tr>
-                                                    <th>NO.</th>
-                                                    <th>NIM</th>
-                                                    <th>NAMA</th>
-                                                    <th>JURUSAN</th>                                                    
-                                                    <th style={{'textAlign': 'center', 'width':"20%"}}>AKSI</th>
+                                                    <th>HARI</th>
+                                                    <th>TANGGAL</th>
+                                                    <th>MATA KULIAH</th>
+                                                    <th>RUANGAN</th>
+                                                    <th>WAKTU</th>
+                                                    <th><center>ABSEN</center></th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
+                                                
                                                 {
-                                                    this.state.mahasiswas.filter(mahasiswa => mahasiswa.calon == false).map((mahasiswa, key) => 
-
-                                                        <tr key={key}>
-                                                            <td>{key+1}</td>
-                                                            <td>{mahasiswa.nim}</td>
-                                                            <td>{mahasiswa.nama}</td>
-                                                            <td>{ this.state.jurusans.find((jurusan) => (jurusan.id == mahasiswa.jurusan)).nama }</td>
-                                                            <td>
-                                                                <center>
-                                                                    <select className="form-control m-b" name="account">
-                                                                        <option>Hadir</option>
-                                                                        <option>Tidak Hadir</option>
-                                                                    </select>
-                                                                </center>
-                                                            </td>
-
-                                                        </tr>
-
+                                                    this.state.jadwals.filter(data => data.start == thisDay && data.dosen == window.sessionStorage.getItem('user_id')) != 0 ?
+                                                    this.state.jadwals.filter(data => data.start == thisDay && data.dosen == window.sessionStorage.getItem('user_id')).map((jadwal, key) =>
+                                                    <tr key={key}  
+                                                        style={{'cursor' : 'pointer'}}>
+                                                        <th>{this.state.days.find((dy) => (dy.day == moment(jadwal.start).format('dddd'))).hari}</th>
+                                                        <td>{moment(jadwal.start).format('D MMM YYYY')}</td>
+                                                        <td>{jadwal.title}</td>
+                                                        <td>{jadwal.ruangan_info.nama}</td>
+                                                        <td>{jadwal.jam_mulai +" - "+jadwal.jam_selesai}</td>
+                                                        <td>
+                                                            <center>
+                                                                <Link to={{ pathname: 'kehadiran', state: { jadwal: jadwal } }}>
+                                                                    <button 
+                                                                        className="btn btn-primary btn-sm" 
+                                                                        type="button"
+                                                                        ><i className="fa fa-id-card"></i></button>
+                                                                </Link>
+                                                            </center>
+                                                        </td>
+                                                    </tr>
                                                     )
+                                                    :
+                                                    <tr>
+                                                        <td colSpan="6">
+                                                            <h3 style={{'textAlign': 'center', 'fontWeight': 'normal'}}>Tidak Ada Jadwal Perkuliahan Hari ini</h3>
+                                                        </td>
+                                                    </tr>
                                                 }
+                                            
                                                 </tbody>
                                             </table>
                                         </div>
 
-                                    <div className="row">
-                                        
-                                        <div className="col-lg-12">
-                                            <Link to="/bap" className="btn btn-sm btn-warning block full-width"> Isi Berita Acara </Link>
-                                        </div>
-                                    </div>
+                                    }
                                 </div>
                             </div>
                         </div>
+                        
                     </div>
+                    
+                    
                 </div>
+
+                
             </div>
+            
+
         )
     }
 

@@ -36,6 +36,7 @@ class Navigation extends Component {
                             <span className="clear"> <span className="block m-t-xs"> <strong className="font-bold">MAHASISWA</strong>
                              </span> <span className="text-muted text-xs block">Setting <b className="caret"></b></span> </span> </a>
                                 <ul className="dropdown-menu animated fadeInLeft m-t-xs">
+                                    <li><a onClick={this.handleLogout}> Pengaturan</a></li>
                                     <li><a onClick={this.handleLogout}> Logout</a></li>
                                 </ul>
                             </div>
@@ -56,7 +57,6 @@ class Navigation extends Component {
                             <Link to="/pembayaran"><i className="fa fa-university"></i> 
 
                                 <span className="nav-label">Pembayaran </span>
-                                <span className="badge badge-warning">1</span>
 
                             </Link>
                         </li>

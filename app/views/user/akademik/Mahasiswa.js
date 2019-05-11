@@ -1,5 +1,6 @@
 import React, { Component } from 'react';	
 import {BASE_URL} from '../../../config/config.js'
+import print from 'print-js'
 
 class Mahasiswa extends Component {
 
@@ -9,12 +10,16 @@ class Mahasiswa extends Component {
             mahasiswas: [],
             mahasiswa: [],
             loading: true,
-            selectedJurusan: 1,
+            selectedJurusan: 0,
             selectedNama: '',
             key: null,
+            magang: [],
+            bekerja: [],
             profil: false,
             jurusans: [],
-            selectedStatus: ''
+            selectedStatus: '',
+            sendMagang: {},
+            sendBekerja: {}
         }
     }
 
@@ -35,6 +40,32 @@ class Mahasiswa extends Component {
 			})
 		});
 
+		fetch(BASE_URL + '/api/magang/', {
+			method: 'get',
+			headers: {
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+			}
+		}).then(function(response) {
+			return response.json();
+		}).then(function(data) {
+			self.setState({
+				magang: data.results
+			})
+		});
+
+		fetch(BASE_URL + '/api/bekerja/', {
+			method: 'get',
+			headers: {
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+			}
+		}).then(function(response) {
+			return response.json();
+		}).then(function(data) {
+			self.setState({
+				bekerja: data.results
+			})
+		});
+
 		fetch(BASE_URL + '/api/jurusan/', {
 			method: 'get',
 			headers: {
@@ -44,6 +75,7 @@ class Mahasiswa extends Component {
 			return response.json();
 		}).then(function(data) {
 			self.setState({
+				selectedJurusan: data.results[0].id,
 				jurusans: data.results
 			})
 		});
@@ -67,34 +99,133 @@ class Mahasiswa extends Component {
     	})
     }
 
-  //   updateStatusMahasiswa = () => {
-  //   	let url = ""
-  //   	let mahasiswa = this.state.mahasiswa
-  //   	if (this.state.selectedStatus  == "aktif" || this.state.selectedStatus == "tidak aktif") {
-  //   		mahasiswa.
-  //   		url = BASE_URL + '/api/mahasiswa/'
-  //   	}
-  //   	fetch(, {
-		// 	method: 'get',
-		// 	headers: {
-		// 		'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
-		// 	}
-		// }).then(function(response) {
-		// 	return response.json();
-		// }).then(function(data) {
-		// 	self.setState({
-		// 		mahasiswas: data.results,
-		// 		loading: !self.state.loading,
-		// 	})
-		// });
-  //   }
+    exportData(){
+        printJS({
+            printable: 'print_data',
+            type: 'html',
+            modalMessage:"Sedang memuat data...",
+            showModal:true,
+            maxWidth:'1300',
+            font_size:'8pt',
+            documentTitle:'DATA MAHASISWA',
+            targetStyles: ['*']
+        })
+    }
+
+    fetchMahasiswa = () => {
+    	const self = this
+
+		fetch(BASE_URL + '/api/mahasiswa/', {
+			method: 'get',
+			headers: {
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+			}
+		}).then(function(response) {
+			return response.json();
+		}).then(function(data) {
+			self.setState({
+				mahasiswas: data.results
+			})
+		});
+    }
+
+    updateStatusMahasiswa = () => {
+    	const self = this
+    	let mahasiswa = this.state.mahasiswa
+    	let aktif = false
+    	if (this.state.selectedStatus  == "aktif" || this.state.selectedStatus == "tidak aktif") {
+    		
+    		if (this.state.selectedStatus  == "aktif") aktif = true
+    		else aktif = false
+
+    		let status = {
+    			aktif: aktif
+    		}
+
+    		fetch(BASE_URL + '/api/mahasiswa/' + this.state.mahasiswa.id + '/', {
+				method: 'patch',
+				headers: {
+					'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(status)
+			}).then(function(response) {
+				if (response.status == 200) {
+					toastr.success("Data berhasil diubah", "Sukses ! ")
+					self.fetchMahasiswa()
+				}
+				else toastr.warning("Data gagal diubah", "Gagal ! ")
+			}).then(function(data) {
+
+			});
+    	}else if(this.state.selectedStatus  == "magang"){
+    		let sendMagang = {...this.state.sendMagang}
+    		sendMagang.mahasiswa = this.state.mahasiswa.id
+
+    		fetch(BASE_URL + '/api/magang/', {
+				method: 'post',
+				headers: {
+					'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(sendMagang)
+			}).then(function(response) {
+				if (response.status == 201) {
+					toastr.success("Data berhasil diubah", "Sukses ! ")
+					self.setState({selectedStatus: null})
+					self.fetchMahasiswa()
+				}
+				else toastr.warning("Data gagal diubah", "Gagal ! ")
+			}).then(function(data) {
+
+			});
+    	}else if(this.state.selectedStatus  == "bekerja"){
+    		let sendBekerja = {...this.state.sendBekerja}
+    		sendBekerja.mahasiswa = this.state.mahasiswa.id
+
+    		fetch(BASE_URL + '/api/bekerja/', {
+				method: 'post',
+				headers: {
+					'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(sendBekerja)
+			}).then(function(response) {
+				if (response.status == 201) {
+					toastr.success("Data berhasil diubah", "Sukses ! ")
+					self.setState({selectedStatus: null})
+					self.fetchMahasiswa()
+				}
+				else toastr.warning("Data gagal diubah", "Gagal ! ")
+			}).then(function(data) {
+
+			});
+    	}
+    	
+    }
 
     render() {
+    	const styletb = {
+            borderCollapse:'collapse',
+            borderSpacing:0,
+            borderStyle:'solid',
+            width:'100%',
+            fontSize:'12px'
+        }
+
         return (
             <div >
                 <div className="row wrapper border-bottom white-bg page-heading">
 		            <div className="col-lg-8">
-		                <h2>Mahasiswa</h2>
+		                <h2>Daftar Mahasiswa</h2>
+		                <ol className="breadcrumb">
+                            <li className="breadcrumb-item">
+                                Dashboard
+                            </li>
+                            <li className="breadcrumb-item active">
+                                <strong>Mahasiswa</strong>
+                            </li>
+                        </ol>
 		            </div>
 		            <div className="col-lg-4">
 		            </div>
@@ -108,7 +239,7 @@ class Mahasiswa extends Component {
                                 </div>
                                 <div className="ibox-content">
                                 	<div className="row">
-                                        <div className="col-lg-6">
+                                        <div className="col-lg-5">
                                         	<label className="col-sm-3 col-form-label">Filter </label>
                                         	<div className="col-sm-9">
 			                                    <select
@@ -123,14 +254,20 @@ class Mahasiswa extends Component {
 			                                    </select>
 		                                    </div>
                                         </div>
-                                        <div className="col-lg-6">
-                                        	<label className="col-sm-3 col-form-label">Cari :</label>
-                                        	<div className="col-sm-9">
+                                        <div className="col-lg-4">
+                                        	<div className="col-sm-12">
 			                                    <input 
 		                                    		type="text" 
 		                                    		disabled="" 
 		                                    		placeholder="Nama Mahasiswa"
 		                                    		className="form-control"/>
+		                                    </div>
+                                        </div>
+                                        <div className="col-lg-3">
+                                        	<div className="col-sm-12">
+			                                    <button className="btn btn-primary" onClick={() => this.exportData()}>
+			                                    	<i className="fa fa-print"></i> Cetak
+			                                    </button>
 		                                    </div>
                                         </div>
                                     </div>
@@ -171,7 +308,11 @@ class Mahasiswa extends Component {
 																this.state.jurusans.find((jurusan) => (jurusan.id == mahasiswa.jurusan)).nama
 															}
 												            </td>
-												            <td><span className="badge badge-primary">Aktif</span></td>
+												            <td>
+												            {
+												            	mahasiswa.aktif ? <span className="badge badge-primary">Aktif</span> : <span className="badge badge-secondary">Tidak Aktif</span>
+												            }
+												            </td>
 												            <td>
 												            	<button 
 					                                				className="btn btn-info btn-sm" 
@@ -202,12 +343,12 @@ class Mahasiswa extends Component {
                                     	this.state.profil ?
                                     	<div className="table-responsive">
 	                                    	<div className="">
-				                                <img
-				                                	alt="image" 
-				                                	width="50%" 
-				                                	style={{'borderRadius':'50%', 'display':'block', 'margin':'0 auto'}}
-				                                	className="img-fluid" 
-				                                	src="http://help.wojilu.com/metronic/theme/assets/admin/pages/media/profile/profile_user.jpg"/>
+				                                {
+				                                	this.state.mahasiswa.foto != null ?
+				                                	<img alt="image" width="50%" style={{'borderRadius':'50%', 'display':'block', 'margin':'0 auto'}} className="img-fluid"  src={this.state.mahasiswa.foto}/>
+				                                	:
+				                                	<img alt="image" width="50%" style={{'borderRadius':'50%', 'display':'block', 'margin':'0 auto'}} className="img-fluid"  src="http://www.personalbrandingblog.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640-300x300.png"/>
+				                                }
 				                            </div>
 				                            <div className="ibox-content profile-content">
 				                                <h3 style={{'textAlign': 'center'}}><strong>{this.state.mahasiswa.nama}</strong></h3>
@@ -219,8 +360,9 @@ class Mahasiswa extends Component {
 				                                		style={{'width' : '50%', 'margin' : '0 auto'}} 
 				                                		className="form-control m-b" 
 				                                		name="account">
+				                                		<option value="">--Status--</option>
 				                                        <option value="aktif">Aktif</option>
-				                                        <option value="tida aktif">Tidak Aktif</option>
+				                                        <option value="tidak aktif">Tidak Aktif</option>
 				                                        <option value="magang">Magang</option>
 				                                        <option value="bekerja">Bekerja</option>
 			                                    	</select>
@@ -230,6 +372,12 @@ class Mahasiswa extends Component {
 				                                	<div>
 				                                		<label>Lokasi Magang</label>
 						                                <input 
+						                                	value={this.state.sendMagang.tempat}
+						                                	onChange={(e) => {
+						                                		let sendMagang = {...this.state.sendMagang}
+						                                		sendMagang.tempat = e.target.value
+						                                		this.setState({sendMagang})
+						                                	}}
 				                                    		type="text" 
 				                                    		disabled="" 
 				                                    		placeholder="Lokasi"
@@ -237,6 +385,12 @@ class Mahasiswa extends Component {
 				                                    	<br/>
 				                                    	<label>Tanggal Mulai</label>
 				                                    	<input 
+				                                    		value={this.state.sendMagang.tanggal_mulai}
+						                                	onChange={(e) => {
+						                                		let sendMagang = {...this.state.sendMagang}
+						                                		sendMagang.tanggal_mulai = e.target.value
+						                                		this.setState({sendMagang})
+						                                	}}
 				                                    		type="date" 
 				                                    		disabled="" 
 				                                    		placeholder="Tanggal"
@@ -244,6 +398,12 @@ class Mahasiswa extends Component {
 				                                    	<br/>
 				                                    	<label>Tanggal Selesai</label>
 				                                    	<input 
+				                                    		value={this.state.sendMagang.tanggal_selesai}
+						                                	onChange={(e) => {
+						                                		let sendMagang = {...this.state.sendMagang}
+						                                		sendMagang.tanggal_selesai = e.target.value
+						                                		this.setState({sendMagang})
+						                                	}}
 				                                    		type="date" 
 				                                    		disabled="" 
 				                                    		placeholder="Tanggal"
@@ -254,6 +414,12 @@ class Mahasiswa extends Component {
 			                                    	<div>
 				                                		<label>Lokasi Bekerja</label>
 						                                <input 
+						                                	value={this.state.sendBekerja.tempat}
+						                                	onChange={(e) => {
+						                                		let sendBekerja = {...this.state.sendBekerja}
+						                                		sendBekerja.tempat = e.target.value
+						                                		this.setState({sendBekerja})
+						                                	}}
 				                                    		type="text" 
 				                                    		disabled="" 
 				                                    		placeholder="Lokasi"
@@ -261,6 +427,12 @@ class Mahasiswa extends Component {
 				                                    	<br/>
 				                                    	<label>Tanggal</label>
 				                                    	<input 
+				                                    		value={this.state.sendBekerja.tanggal_mulai}
+						                                	onChange={(e) => {
+						                                		let sendBekerja = {...this.state.sendBekerja}
+						                                		sendBekerja.tanggal_mulai = e.target.value
+						                                		this.setState({sendBekerja})
+						                                	}}
 				                                    		type="date" 
 				                                    		disabled="" 
 				                                    		placeholder="Tanggal"
@@ -270,10 +442,53 @@ class Mahasiswa extends Component {
 				                                	: null
 				                                }
 				                             </div>
-	                                    	<table className="table">
+
+				                            
+				                            {
+												this.state.bekerja.find(data => data.mahasiswa == this.state.mahasiswa.id) != null ?
+												<table className="table">
+													<tbody>
+														<tr>
+													        <td style={{'width': '40%'}}><b>Lokasi Bekerja</b> </td>
+															<td>: {this.state.bekerja.find(data => data.mahasiswa == this.state.mahasiswa.id).tempat}</td>
+													    </tr>
+													    <tr>
+													        <td><b>Tanggal Mulai</b> </td>
+															<td>: {this.state.bekerja.find(data => data.mahasiswa == this.state.mahasiswa.id).tanggal_mulai}</td>
+													    </tr>
+													</tbody>
+												</table>
+												:
+												null
+											}
+				                            
+				                            
+				                            {
+												this.state.magang.find(data => data.mahasiswa == this.state.mahasiswa.id) != null ?
+												<table className="table">
+													<tbody>
+														<tr>
+													        <td style={{'width': '40%'}}><b>Lokasi Magang</b> </td>
+															<td>: {this.state.magang.find(data => data.mahasiswa == this.state.mahasiswa.id).tempat}</td>
+													    </tr>
+													    <tr>
+													        <td><b>Tanggal Mulai</b> </td>
+															<td>: {this.state.magang.find(data => data.mahasiswa == this.state.mahasiswa.id).tanggal_mulai}</td>
+													    </tr>
+													    <tr>
+													        <td><b>Tanggal Selesai</b> </td>
+															<td>: {this.state.magang.find(data => data.mahasiswa == this.state.mahasiswa.id).tanggal_selesai}</td>
+													    </tr>
+													</tbody>
+												</table>
+												:
+												null
+											}
+
+	                                    	<table className="table" style={{'width': '100%'}}>
 											<tbody>
 											    <tr>
-											        <td><b>Alamat</b> </td>
+											        <td style={{'width': '40%'}}><b>Alamat</b> </td>
 													<td>: {this.state.mahasiswa.alamat}</td>
 											    </tr>
 											    <tr>
@@ -332,6 +547,46 @@ class Mahasiswa extends Component {
                             </div>
                         </div>
                     </div>
+
+                    <div style={{'backgroundColor': 'white', 'display' : 'none'}}>
+						<table border="1" align="left" style={styletb} id="print_data" width="100%" style={{fontSize:'12px'}}>
+		                    <thead>
+		                    <tr>
+		                    	<th align="left" style={{background:'#e5e5e5',padding:'10px'}}>NO.</th>
+		                    	<th align="left" style={{background:'#e5e5e5',padding:'10px'}}>NIM.</th>
+		                        <th align="left" style={{background:'#e5e5e5',padding:'10px'}}>NAMA</th>
+		                        <th align="left" style={{background:'#e5e5e5',padding:'10px'}}>ALAMAT</th>
+		                        <th align="left" style={{background:'#e5e5e5',padding:'10px'}}>TMPT LAHIR</th>
+		                        <th align="left" style={{background:'#e5e5e5',padding:'10px'}}>TGL LAHIR</th>
+		                        <th align="left" style={{background:'#e5e5e5',padding:'10px'}}>JK</th>
+		                        <th align="left" style={{background:'#e5e5e5',padding:'10px'}}>JURUSAN</th>
+		                        <th align="left" style={{background:'#e5e5e5',padding:'10px'}}>KAMPUS</th>
+		                        <th align="left" style={{background:'#e5e5e5',padding:'10px'}}>TOTAL BAYAR</th>
+		                        <th align="left" style={{background:'#e5e5e5',padding:'10px'}}>ANGKATAN</th>
+		                    </tr>
+		                    </thead>
+		                    <tbody>
+		                    {
+		                    	this.state.mahasiswas.filter(mahasiswa => mahasiswa.calon == false && mahasiswa.jurusan == this.state.selectedJurusan)
+					        	.map((data, key) =>
+		                    		<tr >
+		                    			<td style={{padding:'7px',textAlign:'left'}}>{key+1}</td>
+		                    			<td style={{padding:'7px',textAlign:'left'}}>{data.nim}</td>
+		                                <td style={{padding:'7px',textAlign:'left'}}>{data.nama}</td>
+		                                <td style={{padding:'7px',textAlign:'left'}}>{data.alamat}</td>
+		                                <td style={{padding:'7px',textAlign:'left'}}>{data.tempat_lahir}</td>
+		                                <td style={{padding:'7px',textAlign:'left'}}>{data.tgl_lahir}</td>
+		                                <td style={{padding:'7px',textAlign:'left'}}>{data.jenis_kelamin}</td>
+		                                <td style={{padding:'7px',textAlign:'left'}}>{data.jurusan_info.nama}</td>
+		                                <td style={{padding:'7px',textAlign:'left'}}>{data.kampus_info.nama}</td>
+		                                <td style={{padding:'7px',textAlign:'left'}}>{data.total_bayar}</td>
+		                                <td style={{padding:'7px',textAlign:'left'}}>{data.tahun_angkatan}</td>
+		                            </tr>
+		                    	)
+		                    }
+		                    </tbody>
+		                </table>
+					</div>
                     
                     
                 </div>

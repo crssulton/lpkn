@@ -1,13 +1,119 @@
 import React, { Component } from 'react';
+import {BASE_URL} from '../../../config/config.js'
+import CurrencyInput from 'react-currency-input';
 
 class Pembayaran extends Component {
+
+	constructor(props){
+        super(props);
+        this.state = {
+            pembayaran: {},
+            mahasiswa: [],
+            riwayat: []
+        }
+    }
+
+    componentDidMount(){
+    	const self = this
+		fetch(BASE_URL + '/api/mahasiswa/' +  window.sessionStorage.getItem('user_id') +'/', {
+			method: 'GET',
+			headers: {
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+				'Content-Type': 'application/json',
+    			'Accept': 'application/json'
+			}
+		}).then(function(response) {
+			return response.json();
+		}).then(function(data) {
+			self.setState({
+				mahasiswa: data
+			})
+		});
+
+		fetch(BASE_URL + '/api/pembayaran-mahasiswa/', {
+			method: 'GET',
+			headers: {
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+				'Content-Type': 'application/json',
+    			'Accept': 'application/json'
+			}
+		}).then(function(response) {
+			return response.json();
+		}).then(function(data) {
+			self.setState({
+				riwayat: data.results
+			})
+		});
+
+    }
+
+    getData = () => {
+    	const self = this
+    	fetch(BASE_URL + '/api/pembayaran-mahasiswa/', {
+			method: 'GET',
+			headers: {
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+				'Content-Type': 'application/json',
+    			'Accept': 'application/json'
+			}
+		}).then(function(response) {
+			return response.json();
+		}).then(function(data) {
+			self.setState({
+				riwayat: data.results
+			})
+		});
+    }
+
+    addPembayaran = () => {
+    	const self = this
+
+    	let formData = new FormData()
+		let pembayaran = {...this.state.pembayaran}
+
+		formData.append('judul', pembayaran.judul)
+		formData.append('tanggal_pembayaran', pembayaran.tanggal_pembayaran)
+		formData.append('nominal', pembayaran.nominal)
+		formData.append('bukti', pembayaran.bukti)
+
+    	fetch(BASE_URL + '/api/pembayaran-mahasiswa/', {
+			method: 'post',
+			headers: {
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+			},
+			body: formData
+		}).then(function(response) {
+			if (response.status == 201) {
+				toastr.success("Pembayaran telah dikirim", "Sukses ! ")
+				self.setState({pembayaran : {} })
+			}else{
+				toastr.warning("Pembayaran gagal dikirim", "Gagal ! ")
+			}
+			return response.json();
+		}).then(function(data) {
+			
+		});
+    }
+
+    formatNumber = (num) => {
+	  return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+	}
     
     render() {
+    	let total = 0
         return (
             <div >
                 <div className="row wrapper border-bottom white-bg page-heading">
 		            <div className="col-lg-8">
 		                <h2>Pembayaran Mahasiswa</h2>
+		                <ol className="breadcrumb">
+                            <li className="breadcrumb-item">
+                                Dashboard
+                            </li>
+                            <li className="breadcrumb-item active">
+                                <strong>Pembayaran</strong>
+                            </li>
+                        </ol>
 		            </div>
 		            <div className="col-lg-4">
 		                
@@ -20,24 +126,25 @@ class Pembayaran extends Component {
 
 		                        <ul className="nav nav-tabs" role="tablist">
 		                            <li className="active"><a className="nav-link active" data-toggle="tab" href="#tab-1"> Konfirmasi Pembayaran</a></li>
-		                            <li><a className="nav-link" data-toggle="tab" href="#tab-2">Riwayat Pembayaran</a></li>
+		                            <li onClick={this.getData}><a className="nav-link" data-toggle="tab" href="#tab-2">Riwayat Pembayaran</a></li>
 		                        </ul>
 		                        <div className="tab-content">
 		                        	<div role="tabpanel" id="tab-1" className="tab-pane active">
 
 		                                <div className="panel-body">
-
-		                                	<div className="alert alert-warning">
-				                                Silahkan lakukan pembayaran tagihan bulan Maret 2019 pada NO INVOICE : <a className="alert-link">440051</a>.
-				                            </div>
-
 		                                	<div className="ibox-content">
-				                                <div className="form-group row"><label className="col-lg-2 col-form-label">NO INVOICE</label>
+				                                <div className="form-group row"><label className="col-lg-2 col-form-label">NO AKUN</label>
 				                                    <div className="col-lg-4">
 				                                    	<input 
 				                                    		type="text" 
 				                                    		disabled="" 
 				                                    		name="nama_ayah"
+				                                    		value={this.state.pembayaran.judul}
+				                                    		onChange={(e) => {
+				                                    			let pembayaran = {...this.state.pembayaran}
+				                                    			pembayaran.judul = e.target.value
+				                                    			this.setState({pembayaran})
+				                                    		}}
 				                                    		className="form-control"/>
 				                                    </div>
 				                                </div>
@@ -48,19 +155,31 @@ class Pembayaran extends Component {
 				                                    	<input 
 				                                    		type="date" 
 				                                    		disabled="" 
+				                                    		value={this.state.pembayaran.tanggal_pembayaran}
+				                                    		onChange={(e) => {
+				                                    			let pembayaran = {...this.state.pembayaran}
+				                                    			pembayaran.tanggal_pembayaran = e.target.value
+				                                    			this.setState({pembayaran})
+				                                    		}}
 				                                    		name="pekerjaan_ayah"
 				                                    		className="form-control"/>
 				                                    </div>
 				                                </div>
 				                                
 				                                <div className="hr-line-dashed"></div>
-				                                <div className="form-group row"><label className="col-lg-2 col-form-label">NO REKENING PENYETOR</label>
+				                                <div className="form-group row"><label className="col-lg-2 col-form-label">NOMINAL</label>
 				                                    <div className="col-lg-4">
-				                                    	<input 
-				                                    		type="number" 
-				                                    		disabled="" 
-				                                    		name="nama_ibu"
-				                                    		className="form-control"/>
+				                                    	<CurrencyInput 
+                                                            precision="0" 
+                                                            className="form-control m-b" 
+                                                            prefix="Rp "
+                                                            value={this.state.pembayaran.nominal}
+                                                            onChangeEvent={(e, maskedvalue, floatvalue) => {
+                                                                let pembayaran = {...this.state.pembayaran}
+				                                    			pembayaran.nominal = floatvalue
+				                                    			this.setState({pembayaran})
+                                                            }}
+                                                        />
 				                                    </div>
 				                                </div>
 				                                
@@ -70,6 +189,11 @@ class Pembayaran extends Component {
 				                                    	<input 
 				                                    		type="file" 
 				                                    		disabled="" 
+				                                    		onChange={(e) => {
+				                                    			let pembayaran = {...this.state.pembayaran}
+				                                    			pembayaran.bukti = e.target.files[0]
+				                                    			this.setState({pembayaran})
+				                                    		}}
 				                                    		name="pekerjaan_ibu"
 				                                    		className="form-control"/>
 				                                    </div>
@@ -96,7 +220,7 @@ class Pembayaran extends Component {
 				                                <div className="hr-line-dashed"></div>
 				                                <div className="form-group row">
 				                                    <div className="col-sm-4 col-sm-offset-2">
-				                                        <button className="btn btn-primary btn-sm" type="submit">KIRIM</button>
+				                                        <button onClick={this.addPembayaran} className="btn btn-primary btn-sm" type="submit">KIRIM</button>
 				                                    </div>
 				                                </div>
 					                           
@@ -111,42 +235,57 @@ class Pembayaran extends Component {
 												    <thead>
 												    <tr>
 												        <th>#</th>
-												        <th>NO INVOICE</th>
+												        <th>NO AKUN</th>
 												        <th>TANGGAL</th>
-												        <th>MASA</th>
 												        <th>NILAI (Rp.)</th>
 												        <th>STATUS</th>
 												    </tr>
 												    </thead>
 												    <tbody>
-												    <tr>
-												        <td>1</td>
-												        <td>1281788</td>
-												        <td>02-03-2019</td>
-												        <td>03 - 2019</td>
-												        <td>600.000</td>
-												        <td><span className="badge badge-primary">Sukses</span></td>
-												    </tr>
-												    <tr>
-												        <td>2</td>
-												        <td>3431788</td>
-												        <td>04-04-2019</td>
-												        <td>03 - 2019</td>
-												        <td>1.000.000</td>
-												        <td><span className="badge badge-warning">Menunggu</span></td>
-												    </tr>
-												    
+												    {
+												    	this.state.riwayat != 0 ?
+												    	this.state.riwayat.map((data, key) => {
+												    		data.status == 'verified' ? total += data.nominal : null
+												    		return(
+												    			<tr key={key}>
+															        <td>{key+1}</td>
+															        <td>14001</td>
+															        <td>{data.tanggal_pembayaran}</td>
+															        <td>{this.formatNumber(data.nominal)}</td>
+															        <td style={{'align': "center"}}>
+															        {
+															        	data.status == 'verified' ?
+															        	<span className="badge badge-primary">Sukses</span> : null
+															        }
+															        {
+															        	data.status == 'rejected' ?
+															        	<span className="badge badge-danger">Ditolak</span> : null
+															        }
+															        {
+															        	data.status == 'pending' ?
+															        	<span className="badge badge-warning">Menunggu</span> : null
+															        }
+															        </td>
+															    </tr>
+												    		)
+												    	})
+												    	:
+												    	<tr><td colSpan="5">BELUM ADA PEMBAYARAN</td></tr>
+												    }
+
 												    </tbody>
 												    <thead>
 												    	<tr>
-											    	    	<th colSpan="4">Total</th>
-													    	<th colSpan="2">1.600.000</th>
+											    	    	<th colSpan="3">Total</th>
+													    	<th colSpan="2">{ this.formatNumber(total) }
+													    	</th>
 												    	</tr>
 												    </thead>
 												    <thead>
 												    	<tr>
-											    	    	<th colSpan="4">Sisa</th>
-													    	<th colSpan="2">8.400.000</th>
+											    	    	<th colSpan="3">Sisa</th>
+											    	    	<th colSpan="2">{this.formatNumber(parseFloat(this.state.mahasiswa.total_bayar))}</th>
+
 												    	</tr>
 												    </thead>
 												</table>

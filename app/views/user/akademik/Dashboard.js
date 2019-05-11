@@ -38,7 +38,7 @@ class Dashboard extends Component {
 	    if (month.length < 2) month = '0' + month;
 	    if (day.length < 2) day = '0' + day;
 		let tanggal = [year, month, day].join('-')
-
+		console.log(tanggal)
 		fetch(BASE_URL + '/api/jadwal/?search=' + tanggal, {
 			method: 'get',
 			headers: {
@@ -72,7 +72,7 @@ class Dashboard extends Component {
             <div >
                 <div className="row wrapper border-bottom white-bg page-heading">
 		            <div className="col-lg-8">
-		                <h2>Dashboard</h2>
+		                <h2>Dashboard Akademik</h2>
 		                <ol className="breadcrumb">
 		                    <li className="breadcrumb-item active">
 		                        <a href="index.html">Dashboard</a>

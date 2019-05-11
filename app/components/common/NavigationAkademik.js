@@ -49,6 +49,18 @@ class Navigation extends Component {
                         <li className={this.activeRoute("/mahasiswa")}>
                             <Link to="/mahasiswa"><i className="fa fa-users"></i> <span className="nav-label">Mahasiswa</span></Link>
                         </li>
+                        <li className={this.activeRoute("/absensi")}>
+                            <Link to="/absensi"><i className="fa fa-address-card"></i> <span className="nav-label">Absensi</span></Link>
+                        </li>
+                        <li className={this.activeRoute("/daftar-jadwal")}>
+                            <Link to="/daftar-jadwal"><i className="fa fa-address-card"></i> <span className="nav-label">Kehadiran Mahasiswa</span></Link>
+                        </li>
+                        <li className={this.activeRoute("/nilai")}>
+                            <Link to="/nilai"><i className="fa fa-pencil"></i> <span className="nav-label">Nilai Mahasiswa</span></Link>
+                        </li>
+                        <li className={this.activeRoute("/ruangan")}>
+                            <Link to="/ruangan"><i className="fa fa-home"></i> <span className="nav-label">Ruangan</span></Link>
+                        </li>
                         <li className={this.activeRoute("/matkul")}>
                             <Link to="/matkul"><i className="fa fa-book"></i> <span className="nav-label">Mata Kuliah</span></Link>
                         </li>

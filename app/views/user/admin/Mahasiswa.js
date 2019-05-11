@@ -154,12 +154,24 @@ class Calon_Mahasiswa extends Component {
 		});
     }
 
+    formatNumber = (num) => {
+	  return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+	}
+
     render() {
         return (
             <div >
                 <div className="row wrapper border-bottom white-bg page-heading">
 		            <div className="col-lg-8">
-		                <h2>Mahasiswa</h2>
+		                <h2>Daftar Mahasiswa</h2>
+		                <ol className="breadcrumb">
+                            <li className="breadcrumb-item">
+                               Dashboard
+                            </li>
+                            <li className="breadcrumb-item active">
+                                <strong>Mahasiswa</strong>
+                            </li>
+                        </ol>
 		            </div>
 		            <div className="col-lg-4">
 		            </div>
@@ -238,12 +250,12 @@ class Calon_Mahasiswa extends Component {
                                     	this.state.profil ?
                                     	<div className="table-responsive">
 	                                    	<div className="">
-				                                <img
-				                                	alt="image" 
-				                                	width="50%" 
-				                                	style={{'borderRadius':'50%', 'display':'block', 'margin':'0 auto'}}
-				                                	className="img-fluid" 
-				                                	src="http://help.wojilu.com/metronic/theme/assets/admin/pages/media/profile/profile_user.jpg"/>
+			                                	{
+				                                	this.state.mahasiswa.foto != null ?
+				                                	<img alt="image" width="50%" style={{'borderRadius':'50%', 'display':'block', 'margin':'0 auto'}} className="img-fluid"  src={this.state.mahasiswa.foto}/>
+				                                	:
+				                                	<img alt="image" width="50%" style={{'borderRadius':'50%', 'display':'block', 'margin':'0 auto'}} className="img-fluid"  src="http://www.personalbrandingblog.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640-300x300.png"/>
+				                                }
 				                            </div>
 				                            <div className="ibox-content profile-content">
 				                                <h3 style={{'textAlign': 'center'}}><strong>{this.state.mahasiswa.nama}</strong></h3>
@@ -252,7 +264,7 @@ class Calon_Mahasiswa extends Component {
 												{
 													(this.state.mahasiswa.aktif !== true)? 
 													<p style={{'textAlign': 'center'}}><span className="badge badge-danger">TIDAK AKTIF</span></p> : 
-													<p style={{'textAlign': 'center'}}><span className="badge badge-warning">AKTIF</span></p>
+													<p style={{'textAlign': 'center'}}><span className="badge badge-secondary">AKTIF</span></p>
 												}
 				                             </div>
 				                             <div className="tabs-container">
@@ -264,6 +276,7 @@ class Calon_Mahasiswa extends Component {
 											    <div className="tab-content">
 											        <div role="tabpanel" id="tab-1" className="tab-pane active">
 											            <div className="panel-body" style={{'padding':'0px'}}>
+
 											            	<table className="table">
 															<tbody>
 															    <tr>
@@ -371,6 +384,10 @@ class Calon_Mahasiswa extends Component {
 															    <tr>
 															        <td><b>Pesan</b></td>
 																	<td>: {this.state.mahasiswa.pesan}</td>
+															    </tr>
+															    <tr>
+															        <td><b>Total Bayar</b></td>
+																	<td>: Rp. {this.formatNumber(this.state.mahasiswa.total_bayar)}</td>
 															    </tr>
 															</tbody>
 															</table>

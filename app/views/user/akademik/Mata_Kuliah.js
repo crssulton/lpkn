@@ -9,7 +9,7 @@ class Mata_Kuliah extends Component {
         this.state = {
             matkuls: [],
             loading: true,
-            selectedJurusan: 1,
+            selectedJurusan: 0,
             form: false,
             selected: null,
             matkulBaru: {},
@@ -20,7 +20,7 @@ class Mata_Kuliah extends Component {
         }
     }
 
-    componentDidMount(){
+    componentWillMount(){
     	const self = this
 		
 		fetch(BASE_URL + '/api/mata-kuliah/', {
@@ -47,7 +47,8 @@ class Mata_Kuliah extends Component {
 			return response.json();
 		}).then(function(data) {
 			self.setState({
-				jurusans: data.results
+				jurusans: data.results,
+				selectedJurusan: data.results[0].id
 			})
 		});
 
@@ -103,9 +104,13 @@ class Mata_Kuliah extends Component {
 
     editMataKuliah = () => {
     	const self = this
+    	let editMatkul = {...this.state.editMatkul}
+    	editMatkul.jurusan = this.state.editMatkul.jurusan_info.id
+
+    	console.log(JSON.stringify(editMatkul))
     	fetch(BASE_URL + '/api/mata-kuliah/'+ this.state.selected+'/', {
 			method: 'put',
-			body: JSON.stringify(this.state.editMatkul),
+			body: JSON.stringify(editMatkul),
 			headers: {
 				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
 				'Content-Type': 'application/json',
@@ -250,11 +255,20 @@ class Mata_Kuliah extends Component {
     }
 
     render() {
+    	console.log(this.state.selectedJurusan)
         return (
             <div >
                 <div className="row wrapper border-bottom white-bg page-heading">
 		            <div className="col-lg-8">
 		                <h2>Daftar Mata Kuliah</h2>
+		                <ol className="breadcrumb">
+                            <li className="breadcrumb-item">
+                                Dashboard
+                            </li>
+                            <li className="breadcrumb-item active">
+                                <strong>Mata Kuliah</strong>
+                            </li>
+                        </ol>
 		            </div>
 		            <div className="col-lg-4">
 		            </div>
@@ -319,12 +333,12 @@ class Mata_Kuliah extends Component {
 					                            </thead>
 					                            <tbody>
 					                            {
-					                            	this.state.matkuls.filter(matkul => matkul.jurusan == this.state.selectedJurusan).map((matkul, key) =>
+					                            	this.state.matkuls.filter(matkul => matkul.jurusan_info.id == this.state.selectedJurusan).map((matkul, key) =>
 					                            		<tr key={key}>
 							                                <td>{matkul.kode}</td>
 							                                <td>{matkul.nama}</td>
 							                                <td>{matkul.kategori}</td>
-							                                <td>{ this.state.jurusans.find((jurusan) => (jurusan.id == matkul.jurusan)).nama }</td>
+							                                <td>{ this.state.jurusans.find((jurusan) => (jurusan.id == matkul.jurusan_info.id)).nama }</td>
 							                                <td>{matkul.jumlah_jam}</td>
 							                                <td>{matkul.jumlah_pertemuan}</td>
 							                                <td>

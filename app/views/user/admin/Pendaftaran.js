@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {BASE_URL} from '../../../config/config.js'
+import CurrencyInput from 'react-currency-input';
 
 class Pendaftaran extends Component {
 
@@ -67,6 +68,7 @@ class Pendaftaran extends Component {
         self.setState({
             loading: !this.state.loading
         })
+        console.log(JSON.stringify(this.state.pendaftar))
         fetch(BASE_URL + '/api/pendaftaran/', {
             method: 'post',
             headers: {
@@ -77,16 +79,28 @@ class Pendaftaran extends Component {
             body: JSON.stringify(this.state.pendaftar)
           }).then(function(response) {
             if(response.status === 201 || response.status === 200){
+                let pendaftar = {...self.state.pendaftar}
+                pendaftar.nama = null
+                pendaftar.alamat = null
+                pendaftar.tempat_lahir = null
+                pendaftar.no_hp = null
+                pendaftar.email = null
+                pendaftar.asal_sekolah = null
+                pendaftar.total_bayar = null
+                pendaftar.dp = false
+                pendaftar.dp_nominal = null
+                delete pendaftar.dp_nominal
+                
                 toastr.success("Data mahasiswa berhasil ditambahkan", "Sukses ! ")
                 self.setState({
                     loading: !self.state.loading,
-                    alert: !self.state.alert
+                    alert: !self.state.alert,
+                    pendaftar
                 })
             } else {
                 toastr.error("Data mahasiswa gagal ditambahkan", "Error ! ")
                 self.setState({
-                    loading: !self.state.loading,
-                    pendaftar: {},
+                    loading: !self.state.loading
                 })
             }
           }).then(function(data) {
@@ -98,7 +112,15 @@ class Pendaftaran extends Component {
             <div>
                 <div className="row wrapper border-bottom white-bg page-heading">
 		            <div className="col-lg-8">
-		                <h2>Pendaftaran Manual</h2>
+		                <h2>Pendaftaran Manual Mahasiswa</h2>
+                        <ol className="breadcrumb">
+                            <li className="breadcrumb-item">
+                                Dashboard
+                            </li>
+                            <li className="breadcrumb-item active">
+                                <strong>Pendaftaran</strong>
+                            </li>
+                        </ol>
 		            </div>
 		            <div className="col-lg-4">
 		            </div>
@@ -108,7 +130,7 @@ class Pendaftaran extends Component {
                         <div className="col-lg-12">
                             <div className="ibox ">
                                 <div className="ibox-title" style={{'backgroundColor':'#1ab394', 'color':'white'}}>
-                                    <h5> <i className="fa fa-plus"></i> Tambah Data</h5>
+                                    <h5> Data Pendaftar</h5>
                                 </div>
                                 <div className="ibox-content">
                                     <div className="form-group row">
@@ -121,8 +143,6 @@ class Pendaftaran extends Component {
                                                         let pendaftar = []
                                                         pendaftar = this.state.pendaftar
                                                         pendaftar.nama = e.target.value
-                                                        pendaftar.nama_ayah = "Muhram"
-                                                        pendaftar.nama_ibu = "Siti Rochmiyati"
                                                         this.setState({pendaftar})
                                                     }}
                                                     type="text" 
@@ -132,7 +152,7 @@ class Pendaftaran extends Component {
                                             </div>
                                             <label className="col-lg-4 col-form-label">Alamat</label>
                                             <div className="text-right col-lg-8">
-                                                <textarea 
+                                                <input 
                                                     value={this.state.pendaftar.alamat}
                                                     onChange={(e) => {
                                                         let pendaftar = []
@@ -259,27 +279,81 @@ class Pendaftaran extends Component {
                                                     }
                                                 </select>
                                             </div>
-                                            <label className="col-lg-4 col-form-label">Kampus</label>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-lg-12">
+                            <div className="ibox ">
+                                <div className="ibox-title" style={{'backgroundColor':'#1ab394', 'color':'white'}}>
+                                    <h5> Pembayaran</h5>
+                                </div>
+                                <div className="ibox-content">
+                                    <div className="form-group row">
+                                        <div className="col-lg-6">
+
+                                            <label className="col-lg-4 col-form-label">Jumlah Pembayaran</label>
+                                            <div className="text-right col-lg-8">
+                                                <CurrencyInput 
+                                                    precision="0" 
+                                                    className="form-control m-b" 
+                                                    prefix="Rp "
+                                                    value={this.state.pendaftar.total_bayar}
+                                                    onChangeEvent={(e, maskedvalue, floatvalue) => {
+                                                        let pendaftar = []
+                                                        pendaftar = this.state.pendaftar
+                                                        pendaftar.total_bayar = floatvalue
+                                                        this.setState({pendaftar})
+                                                    }}
+                                                />
+                                            </div>
+
+                                            <label className="col-lg-4 col-form-label">Bayar Diawal</label>
                                             <div className="text-right col-lg-8">
                                                 <select 
-                                                    value={this.state.pendaftar.kampus}
+                                                    value={this.state.pendaftar.dp}
                                                     onChange={(e) => {
                                                         let pendaftar = []
                                                         pendaftar = this.state.pendaftar
-                                                        pendaftar.kampus = e.target.value
+                                                        pendaftar.dp = e.target.value
                                                         this.setState({pendaftar})
                                                     }}
-                                                    id="kampus" 
-                                                    name="kampus" 
+                                                    id="jurusan" 
+                                                    name="jurusan" 
+                                                    defaultValue={false}
                                                     className="form-control m-b">
-                                                    <option value="">Pilih Kampus</option>
-                                                    {
-                                                        this.state.kampus.map((kampus,i) => 
-                                                            <option key={i} value={kampus.id}>{kampus.nama}</option>
-                                                        )
-                                                    }
+                                                    <option value={false}>Tidak</option>
+                                                    <option value={true}>Ya</option>
                                                 </select>
                                             </div>
+                                            {
+                                                this.state.pendaftar.dp == "true" ?
+                                                <div>
+                                                    <label className="col-lg-4 col-form-label">Jumlah Pembayaran</label>
+                                                    <div className="text-right col-lg-8">
+                                                        <CurrencyInput 
+                                                            precision="0" 
+                                                            className="form-control m-b" 
+                                                            prefix="Rp "
+                                                            value={this.state.pendaftar.dp_nominal}
+                                                            onChangeEvent={(e, maskedvalue, floatvalue) => {
+                                                                let pendaftar = []
+                                                                pendaftar = this.state.pendaftar
+                                                                pendaftar.dp_nominal = floatvalue
+                                                                this.setState({pendaftar})
+                                                            }}
+                                                        />
+                                                    </div>
+                                                </div>
+                                                :
+                                                null
+                                            }
+                                            
+                                            
                                         </div>
                                         <div className="col-lg-9"></div>
                                         <div className="text-right col-lg-3">

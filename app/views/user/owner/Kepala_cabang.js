@@ -96,13 +96,13 @@ class Kepala_Cabang extends Component {
 		    		null
 		    		:
 		    		<div className="table-responsive">
-		    			<img
-                        	alt="image" 
-                        	width="50%" 
-                        	style={{'borderRadius':'50%', 'display':'block', 'margin':'0 auto'}}
-                        	className="img-fluid" 
-                        	src="http://help.wojilu.com/metronic/theme/assets/admin/pages/media/profile/profile_user.jpg"/>
-                        <br/>
+		    			{
+                        	data.foto != null ?
+                        	<img alt="image" width="50%" style={{'borderRadius':'50%', 'display':'block', 'margin':'0 auto'}} className="img-fluid"  src={data.foto}/>
+                        	:
+                        	<img alt="image" width="50%" style={{'borderRadius':'50%', 'display':'block', 'margin':'0 auto'}} className="img-fluid"  src="http://www.personalbrandingblog.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640-300x300.png"/>
+                        }
+		    			<br/>
 			    		<table className="table table-striped">
 						<tbody>
 				    		<tr>
@@ -170,6 +170,14 @@ class Kepala_Cabang extends Component {
                 <div className="row wrapper border-bottom white-bg page-heading">
 		            <div className="col-lg-8">
 		                <h2>Daftar Kepala Cabang</h2>
+		                <ol className="breadcrumb">
+                            <li className="breadcrumb-item">
+                                <strong>Dashboard</strong>
+                            </li>
+                            <li className="breadcrumb-item active">
+                                <strong>Kepala Cabang</strong>
+                            </li>
+                        </ol>
 		            </div>
 		            <div className="col-lg-4">
 		            </div>

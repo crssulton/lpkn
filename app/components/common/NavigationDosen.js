@@ -46,8 +46,11 @@ class Navigation extends Component {
                         <li className={this.activeRoute("/absen")}>
                             <Link to="/absen"><i className="fa fa-th-large"></i> <span className="nav-label">Absen Mahasiswa</span></Link>
                         </li>
+                        <li className={this.activeRoute("/pertemuan")}>
+                            <Link to="/pertemuan"><i className="fa fa-book"></i> <span className="nav-label">Daftar Hadir Mahasiswa</span></Link>
+                        </li>
                         <li className={this.activeRoute("/jadwal")}>
-                            <Link to="/jadwal"><i className="fa fa-group"></i> <span className="nav-label">Jadwal</span></Link>
+                            <Link to="/jadwal"><i className="fa fa-calendar"></i> <span className="nav-label">Jadwal</span></Link>
                         </li>
                         <li className={this.activeRoute("/nilai")}>
                             <Link to="/nilai"><i className="fa fa-plus"></i> <span className="nav-label">Input Nilai</span></Link>

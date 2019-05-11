@@ -104,52 +104,82 @@ class Jadwal extends Component {
 
     addJadwal = () => {
         const self = this
+        // console.log(JSON.stringify(this.state.jadwalBaru))
+        // let x = [
+        //     {date: "2019-05-17"},
+        //     {date: "2019-05-18"}
+        // ]
+
+        // let events      = {...self.state.events}
+        //     events = Object.assign([], events)
+        // x.map(data => {
+        //     let jadwalBaru = {}
+        //     // jadwalBaru = this.state.jadwalBaru
+        //     jadwalBaru.title = "BERAKKKKKKKKK"
+        //     jadwalBaru.start = data.date
+            
+        //     console.log(jadwalBaru)
+        //     events.push(jadwalBaru)
+
+        //     self.setState({
+        //         events
+        //     })
+        // })
+
         let addButton = document.getElementsByClassName("btn-add")
         addButton[0].setAttribute("disabled", "disabled")
 
-        let jadwalBaru = {}
-        jadwalBaru = this.state.jadwalBaru
-        jadwalBaru.title = $("#namaMatkul option:selected").text()
-        jadwalBaru.start = this.state.today
-        this.setState({jadwalBaru}) 
-
-        fetch(BASE_URL + '/api/jadwal/', {
-            method: 'post',
-            headers: {
-                'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(self.state.jadwalBaru)
-        }).then(function(response) {
-            if (response.status == 400 || response.status == 500) {
-                toastr.warning("Jadwal gagal ditambahkan", "Gagal ! ")
-                addButton[0].removeAttribute("disabled")
-            }else{
-                let events = {...self.state.events}
-                events = Object.assign([], events)
-
-                events.push(self.state.jadwalBaru)
-
-                self.setState({
-                    events,
-                    jadwalBaru: {},
-                    listDay: []
-                })
-
-                addButton[0].removeAttribute("disabled")
-                toastr.success("Jadwal berhasil ditambahkan", "Sukses ! ")
-            }
-        }).then(function(data) {
+        this.state.listDay.map(data => {
+            let jadwalBaru = {}
+            let newJadwal = {}
+            jadwalBaru = this.state.jadwalBaru
+            jadwalBaru.title = $("#namaMatkul option:selected").text()
+            jadwalBaru.start = moment(data).format('YYYY-MM-DD')
+            newJadwal.title = $("#namaMatkul option:selected").text()
+            newJadwal.start = moment(data).format('YYYY-MM-DD')
             
-        });
+            console.log(JSON.stringify(jadwalBaru))
+            fetch(BASE_URL + '/api/jadwal/', {
+                method: 'post',
+                headers: {
+                    'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(self.state.jadwalBaru)
+            }).then(function(response) {
+                if (response.status == 400 || response.status == 500) {
+                    toastr.warning("Jadwal gagal ditambahkan", "Gagal ! ")
+                    addButton[0].removeAttribute("disabled")
+                }else{
+                    let events      = {...self.state.events}
+                    let jadwalBaru  = {...self.state.jadwalBaru}
+                    events = Object.assign([], events)
+
+                    jadwalBaru.jam_mulai = null
+                    jadwalBaru.jam_selesai = null
+
+                    events.push(newJadwal)
+
+                    self.setState({
+                        events,
+                        jadwalBaru
+                    })
+
+                    addButton[0].removeAttribute("disabled")
+                    toastr.success("Jadwal berhasil ditambahkan", "Sukses ! ")
+                }
+            }).then(function(data) {
+                
+            });
+        })
     }
 
     deleteJadwal= () => {
         const self = this
         // let index = self.state.events.map(function (event) { return event.id; }).indexOf(self.state.idJadwalSelected);
         swal({
-          title: "Hapus Mata Kuliah ?",
+          title: "Hapus Jadwal ?",
           icon: "warning",
           buttons: true,
           dangerMode: true,
@@ -162,22 +192,16 @@ class Jadwal extends Component {
                     'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
                 }
             }).then(function(response) {
-                self.setState({
-                    events: self.state.slice(index+1, self.state.events.length)
-                })
-                swal("Sukses! Jadwal telah dihapus!", {
-                  icon: "success",
-                });
+                if (response.status == 204) {
+                    self.setState({
+                        events: self.state.events.filter(jadwal => jadwal.id != self.state.idJadwalSelected)
+                    })
+                    toastr.success("Jadwal berhasil dihapus", "Sukses ! ")
+                }else{
+                    toastr.warning("Jadwal gagal dihapus", "Gagal ! ")
+                }
             }).then(function(data) {
-                let eventsCopy = []
-                eventsCopy = self.state.events
-                let events = eventsCopy.slice(index+1, eventsCopy.length)
-                self.setState({
-                    events
-                })
-                swal("Sukses! Jadwal telah dihapus!", {
-                  icon: "success",
-                });
+
             });
           }
         });
@@ -254,6 +278,14 @@ class Jadwal extends Component {
                 <div className="row wrapper border-bottom white-bg page-heading">
                     <div className="col-lg-10">
                         <h2>Jadwal Perkuliahan</h2>
+                        <ol className="breadcrumb">
+                            <li className="breadcrumb-item">
+                                Dashboard
+                            </li>
+                            <li className="breadcrumb-item active">
+                                <strong>Jadwal</strong>
+                            </li>
+                        </ol>
                     </div>
                     <div className="col-lg-2">
                     </div>
@@ -296,7 +328,7 @@ class Jadwal extends Component {
                                         <div className="col-lg-10">
                                             {
                                                 this.state.listDay.map((date, key) => 
-                                                    <span key={key} onClick={() =>this.deleteListDay(key)} style={{'margin': '2px 6px', 'cursor':'pointer'}}  className="badge badge-info">{date}</span>
+                                                    <span key={key} onClick={() =>this.deleteListDay(key)} style={{'margin': '2px 6px', 'cursor':'pointer'}}  className="badge badge-info">{moment(date).format('DD-MM-YYYY')}</span>
                                                 )
                                             }
                                         </div>
@@ -347,41 +379,51 @@ class Jadwal extends Component {
                                     <h5>Kalender Akademik</h5>
                                 </div>
                                 <div className="ibox-content">
-                                <FullCalendar
-                                    id = "your-custom-ID"
-                                    header = {{
-                                        left: 'today',
-                                        center: 'title',
-                                        right: 'prev,next'
-                                    }}
-                                    dayClick={
+                                {
+                                    this.state.events != null ?
+                                    <FullCalendar
+                                        id = "your-custom-ID"
+                                        header = {{
+                                            left: 'today',
+                                            center: 'title',
+                                            right: 'prev,next'
+                                        }}
+                                        dayClick={
+                                                (event, jsEvent, view) => {
+                                                let listDay = []
+                                                listDay = this.state.listDay
+                                                listDay.push(event._d)
+                                                this.setState({tmpDate: event, today: moment(event._d).format('YYYY-MM-DD'), listDay})
+                                                // $('#fullCalModal').modal('show');
+                                        }}
+                                        eventClick={
+                                                (event, jsEvent, view) => {
+                                                let eventSelected = this.state.events.find(obj => obj.id == event.id);
+                                                this.setState({tmpDate: event, idJadwalSelected: event.id, eventSelected})
+                            
+                                                $('#ModalEditJadwal').modal('show');
+                                        }}
+                                        eventDrop={
                                             (event, jsEvent, view) => {
-                                            let listDay = []
-                                            listDay = this.state.listDay
-                                            listDay.push(moment(event._d).format('DD-MM-YYYY'))
-                                            this.setState({tmpDate: event, today: moment(event._d).format('YYYY-MM-DD'), listDay})
-                                            // $('#fullCalModal').modal('show');
-                                    }}
-                                    eventClick={
-                                            (event, jsEvent, view) => {
-                                            let eventSelected = this.state.events.find(obj => obj.id == event.id);
-                                            this.setState({tmpDate: event, idJadwalSelected: event.id, eventSelected})
-                        
-                                            $('#ModalEditJadwal').modal('show');
-                                    }}
-                                    eventDrop={
-                                        (event, jsEvent, view) => {
-                                            // console.log("Start " + moment(event.start).format('YYYY-MM-DD'))
-                                            // console.log("Jadi tgl " + event.end)
-                                            toastr.success("Jadwal berhasil diubah", "Sukses ! ")
+                                                // console.log("Start " + moment(event.start).format('YYYY-MM-DD'))
+                                                // console.log("Jadi tgl " + event.end)
+                                                toastr.success("Jadwal berhasil diubah", "Sukses ! ")
+                                            }
                                         }
-                                    }
-                                    defaultDate={this.state.today}
-                                    navLinks= {true} 
-                                    editable= {true}
-                                    eventLimit= {true} 
-                                    events = {this.state.events}	
-                                />
+                                        defaultDate={this.state.today}
+                                        navLinks= {true} 
+                                        editable= {true}
+                                        eventLimit= {true} 
+                                        events = {this.state.events}    
+                                    />
+                                    :
+                                    <div className="spiner-example">
+                                        <div className="sk-spinner sk-spinner-double-bounce">
+                                            <div className="sk-double-bounce1"></div>
+                                            <div className="sk-double-bounce2"></div>
+                                        </div>
+                                    </div>
+                                }
                                 </div>
                             </div>
                         </div>
@@ -430,7 +472,6 @@ class Jadwal extends Component {
                                 <div className="modal-footer">
                                     <button type="button" className="btn btn-default" data-dismiss="modal">Tutup</button>
                                     <button onClick={this.deleteJadwal} type="button" className="btn btn-danger" data-dismiss="modal">Hapus</button>
-                                    <button type="button" className="btn btn-info" onClick={this.tolol}>Edit</button>
                                 </div>
                             </div>
                         </div>

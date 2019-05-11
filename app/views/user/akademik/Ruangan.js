@@ -179,20 +179,16 @@ class Ruangan extends Component {
 					'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
 				}
 			}).then(function(response) {
-
-				self.setState({
-					ruangan: self.state.ruangan.filter(data => data.id !== id)
-				})
-				swal("Sukses! ruangan telah dihapus!", {
-			      icon: "success",
-			    });
+				if (response.status == 204) {
+					self.setState({
+						ruangan: self.state.ruangan.filter(data => data.id !== id)
+					})
+					swal("Sukses! ruangan telah dihapus!", {
+				      icon: "success",
+				    });
+				}
+				
 			}).then(function(data) {
-				self.setState({
-					ruangan: self.state.ruangan.filter(data => data.id !== id)
-				})
-				swal("Sukses! ruangan telah dihapus!", {
-			      icon: "success",
-			    });
 			});
 		  }
 		});
@@ -290,11 +286,11 @@ class Ruangan extends Component {
                                 {
                                 	this.state.addForm ?
                                 	<div className="ibox-title" style={{'backgroundColor':'#1ab394', 'color':'white'}}>
-	                                    <h5> <i className="fa fa-plus"></i> Tambah Kelompok Akun</h5>
+	                                    <h5> <i className="fa fa-plus"></i> Tambah Ruangan</h5>
 	                                </div>
 	                                :
 	                                <div className="ibox-title" style={{'backgroundColor':'#fad284', 'color':'white'}}>
-	                                    <h5> <i className="fa fa-pencil"></i> Ubah Kelompok Akun</h5>
+	                                    <h5> <i className="fa fa-pencil"></i> Ubah Ruangan</h5>
 	                                </div>
                                 }
                                 

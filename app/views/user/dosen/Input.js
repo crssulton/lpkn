@@ -8,20 +8,19 @@ class Input extends Component {
         $('#fullCalModal').modal('hide');
         this.state = {
             pilih:'',
-            matkuls: [],
-            mahasiswas: [],
+            absensi: [],
+            daftars: [],
             kehadiran: [],
             keaktifan: [],
-            uas: [],
-            tugas: [],
-            grade:[]
+            nilai: [],
+            selectedMatkul: 0
         }
         this.handlePilih   = this.handlePilih.bind(this)
     }
 
-    componentDidMount = () => {
+    componentWillMount = () => {
         const self = this
-        fetch(BASE_URL + '/api/mata-kuliah/', {
+        fetch(BASE_URL + '/api/absensi/', {
             method: 'get',
             headers: {
                 'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
@@ -30,11 +29,11 @@ class Input extends Component {
             return response.json();
         }).then(function(data) {
             self.setState({
-                matkuls: data.results
+                absensi: data.results
             })
         });
 
-        fetch(BASE_URL + '/api/mahasiswa/', {
+        fetch(BASE_URL + '/api/nilai/', {
             method: 'get',
             headers: {
                 'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
@@ -43,7 +42,7 @@ class Input extends Component {
             return response.json();
         }).then(function(data) {
             self.setState({
-                mahasiswas: data.results
+                nilai: data.results
             })
         });
 
@@ -53,6 +52,41 @@ class Input extends Component {
         this.setState({ 
             pilih : event.target.value 
         })
+        this.setState({selectedMatkul: event.target.value})
+    }
+
+    editNilai = () => {
+        this.state.nilai.map(data => {
+            let sendNilai = {}
+            sendNilai.kehadiran = data.kehadiran
+            sendNilai.keaktifan = data.keaktifan
+            sendNilai.ujian     = data.ujian
+            sendNilai.tugas     = data.tugas
+            sendNilai.nilai_angka = data.nilai_angka
+            sendNilai.nilai_grade = data.nilai_grade
+            sendNilai.status      = data.status
+            if(data.keterangan != "") sendNilai.keterangan  = data.keterangan
+
+            console.log(JSON.stringify(sendNilai))
+            fetch(BASE_URL + '/api/nilai/' + data.id + '/', {
+                method: 'patch',
+                headers: {
+                    'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(sendNilai)
+            }).then(function(response) {
+                
+                if (response.status == 200) {
+                    
+                }else{
+                }
+            }).then(function(data) {
+                
+            });
+        })
+        toastr.success("Data berhasil diubah", "Sukses ! ")
     }
 
     render() {
@@ -60,20 +94,7 @@ class Input extends Component {
         if (this.state.pilih!=='') {
             pilihanInput = 
             <div>
-                <table>
-                    {/* <thead></thead> */}
-                    <tbody>
-                        <tr>
-                            <th style={{width: 100}}>MATAKULIAH</th><td style={{width: 10}}>:</td><td>{this.state.pilih}</td>
-                        </tr>
-                        <tr>
-                            <th>DOSEN</th><td>:</td><td>BAPAK IQBAL</td>
-                        </tr>
-                        <tr>
-                            <th>KELAS</th><td>:</td><td>ABS 1</td>
-                        </tr>
-                    </tbody>
-                </table><br/>
+
                 <table className="table table-bordered">
                     <thead>
                     <tr>
@@ -94,91 +115,149 @@ class Input extends Component {
                     </thead>
                     <tbody>
                     {
-                        this.state.mahasiswas.filter(mahasiswa => mahasiswa.calon == false)
-                        .map((mahasiswa, key) =>
-                            <tr>
-                                <td className="text-center">1</td>
-                                <td>{mahasiswa.nama}</td>
+                        this.state.nilai.filter(x => x.mata_kuliah == this.state.selectedMatkul).map((data, key) =>
+                            <tr key={key}>
+                                <td className="text-center">{data.id}</td>
+                                <td>{data.mahasiswa_info.nama}</td>
                                 <td className="text-center">
                                     <input 
-                                        value={this.state.kehadiran[key]} 
+                                        value={data.kehadiran} 
                                         onChange={(e) => {
-                                            let kehadiran = []
-                                            let grade = []
-                                            grade = this.state.grade
-                                            grade[key] = 0
-                                            grade[key] += e.target.value / 4
-                                            kehadiran = this.state.kehadiran
-                                            kehadiran[key] = e.target.value
-
-                                            this.setState({kehadiran, grade})
+                                            let nilai = [...this.state.nilai]
+                                            nilai.find(x => x.mata_kuliah == this.state.selectedMatkul && x.mahasiswa == data.mahasiswa).kehadiran = e.target.value
+                                            this.setState({nilai})
                                         }}
                                         type="number" 
                                         style={{width: 50}}/>
                                 </td>
                                 <td className="text-center">
                                     <input 
-                                        value={this.state.keaktifan[key]} 
+                                        value={data.keaktifan} 
                                         onChange={(e) => {
-                                            let keaktifan = []
-                                            let grade = []
-                                            grade = this.state.grade
-                                            grade[key] += e.target.value / 4
-                                            keaktifan = this.state.keaktifan
-                                            keaktifan[key] = e.target.value
-                                            this.setState({keaktifan, grade})
+                                            let nilai = [...this.state.nilai]
+                                            nilai.find(x => x.mata_kuliah == this.state.selectedMatkul && x.mahasiswa == data.mahasiswa).keaktifan = e.target.value
+                                            this.setState({nilai})
+                                        }}
+                                        onBlur={(e) => {
+                                            let nilai = [...this.state.nilai]
+                                            nilai.find(x => x.mata_kuliah == this.state.selectedMatkul && x.mahasiswa == data.mahasiswa).nilai_angka = 
+                                            ((10/100)*data.kehadiran) + ((10/100)*data.keaktifan) + ((10/100)*data.tugas) + ((70/100)*data.ujian)
+                                            let grade = nilai.find(x => x.mata_kuliah == this.state.selectedMatkul && x.mahasiswa == data.mahasiswa).nilai_angka
+                                            if (grade >= 85) {
+                                                nilai.find(x => x.mata_kuliah == this.state.selectedMatkul && x.mahasiswa == data.mahasiswa).nilai_grade = "A"
+                                            }else if (grade < 85 && grade >= 70) {
+                                                nilai.find(x => x.mata_kuliah == this.state.selectedMatkul && x.mahasiswa == data.mahasiswa).nilai_grade = "B"
+                                            }else if (grade < 70 && grade >=60) {
+                                                nilai.find(x => x.mata_kuliah == this.state.selectedMatkul && x.mahasiswa == data.mahasiswa).nilai_grade = "C"
+                                            }else if (grade < 60 && grade >=40) {
+                                                nilai.find(x => x.mata_kuliah == this.state.selectedMatkul && x.mahasiswa == data.mahasiswa).nilai_grade = "D"
+                                            }else if (grade < 40) {
+                                                nilai.find(x => x.mata_kuliah == this.state.selectedMatkul && x.mahasiswa == data.mahasiswa).nilai_grade = "E"
+                                            }
+                                            this.setState({nilai})
                                         }}
                                         type="number" 
                                         style={{width: 50}}/>
                                 </td>
                                 <td className="text-center">
                                     <input 
-                                        value={this.state.uas[key]} 
+                                        value={data.ujian} 
                                         onChange={(e) => {
-                                            let uas = []
-                                            let grade = []
-                                            grade = this.state.grade
-                                            grade[key] += e.target.value / 4
-                                            uas = this.state.uas
-                                            uas[key] = e.target.value
-                                            this.setState({uas, grade})
+                                            let nilai = [...this.state.nilai]
+                                            nilai.find(x => x.mata_kuliah == this.state.selectedMatkul && x.mahasiswa == data.mahasiswa).ujian = e.target.value
+                                            this.setState({nilai})
+                                        }}
+                                        onBlur={(e) => {
+                                            let nilai = [...this.state.nilai]
+                                            nilai.find(x => x.mata_kuliah == this.state.selectedMatkul && x.mahasiswa == data.mahasiswa).nilai_angka = 
+                                            ((10/100)*data.kehadiran) + ((10/100)*data.keaktifan) + ((10/100)*data.tugas) + ((70/100)*data.ujian)
+                                            let grade = nilai.find(x => x.mata_kuliah == this.state.selectedMatkul && x.mahasiswa == data.mahasiswa).nilai_angka
+                                            if (grade >= 85) {
+                                                nilai.find(x => x.mata_kuliah == this.state.selectedMatkul && x.mahasiswa == data.mahasiswa).nilai_grade = "A"
+                                            }else if (grade < 85 && grade >= 70) {
+                                                nilai.find(x => x.mata_kuliah == this.state.selectedMatkul && x.mahasiswa == data.mahasiswa).nilai_grade = "B"
+                                            }else if (grade < 70 && grade >=60) {
+                                                nilai.find(x => x.mata_kuliah == this.state.selectedMatkul && x.mahasiswa == data.mahasiswa).nilai_grade = "C"
+                                            }else if (grade < 60 && grade >=40) {
+                                                nilai.find(x => x.mata_kuliah == this.state.selectedMatkul && x.mahasiswa == data.mahasiswa).nilai_grade = "D"
+                                            }else if (grade < 40) {
+                                                nilai.find(x => x.mata_kuliah == this.state.selectedMatkul && x.mahasiswa == data.mahasiswa).nilai_grade = "E"
+                                            }
+                                            this.setState({nilai})
                                         }}
                                         type="number" 
                                         style={{width: 50}}/>
                                 </td>
                                 <td className="text-center">
                                     <input 
-                                        value={this.state.tugas[key]} 
+                                        value={data.tugas} 
                                         onChange={(e) => {
-                                            let tugas = []
-                                            let grade = []
-                                            grade = this.state.grade
-                                            grade[key] += e.target.value / 4
-                                            tugas = this.state.tugas
-                                            tugas[key] = e.target.value
-                                            this.setState({tugas, grade})
+                                            let nilai = [...this.state.nilai]
+                                            nilai.find(x => x.mata_kuliah == this.state.selectedMatkul && x.mahasiswa == data.mahasiswa).tugas = e.target.value
+                                            this.setState({nilai})
+                                        }}
+                                        onBlur={(e) => {
+                                            let nilai = [...this.state.nilai]
+                                            nilai.find(x => x.mata_kuliah == this.state.selectedMatkul && x.mahasiswa == data.mahasiswa).nilai_angka = 
+                                            ((10/100)*data.kehadiran) + ((10/100)*data.keaktifan) + ((10/100)*data.tugas) + ((70/100)*data.ujian)
+                                            let grade = nilai.find(x => x.mata_kuliah == this.state.selectedMatkul && x.mahasiswa == data.mahasiswa).nilai_angka
+                                            if (grade >= 85) {
+                                                nilai.find(x => x.mata_kuliah == this.state.selectedMatkul && x.mahasiswa == data.mahasiswa).nilai_grade = "A"
+                                            }else if (grade < 85 && grade >= 70) {
+                                                nilai.find(x => x.mata_kuliah == this.state.selectedMatkul && x.mahasiswa == data.mahasiswa).nilai_grade = "B"
+                                            }else if (grade < 70 && grade >=60) {
+                                                nilai.find(x => x.mata_kuliah == this.state.selectedMatkul && x.mahasiswa == data.mahasiswa).nilai_grade = "C"
+                                            }else if (grade < 60 && grade >=40) {
+                                                nilai.find(x => x.mata_kuliah == this.state.selectedMatkul && x.mahasiswa == data.mahasiswa).nilai_grade = "D"
+                                            }else if (grade < 40) {
+                                                nilai.find(x => x.mata_kuliah == this.state.selectedMatkul && x.mahasiswa == data.mahasiswa).nilai_grade = "E"
+                                            }
+                                            this.setState({nilai})
                                         }}
                                         type="number" 
                                         style={{width: 50}}/>
                                 </td>
                                 <td className="text-center">
-                                    <input value={this.state.grade[key]} type="number" style={{width: 50}} readOnly/>
+                                    <input 
+                                        value={data.nilai_angka} 
+                                        type="number" 
+                                        style={{width: 50}} 
+                                        readOnly/>
                                 </td>
                                 <td className="text-center">
-                                    <input type="number" style={{width: 50}} readOnly/>
+                                    <input 
+                                        type="text" 
+                                        style={{width: 50}} 
+                                        value={data.nilai_grade} 
+                                        readOnly/>
                                 </td>
                                 <td>
                                     <div className="row">
                                         <div className="col-lg-12">
-                                            <select className="form-control">
-                                                <option value="">Pilih</option>
-                                                <option value="Lulus">Lulus</option>
-                                                <option value="Tidak">Tidak</option>
+                                            <select 
+                                                value={data.status}
+                                                className="form-control"
+                                                onChange={(e) => {
+                                                    let nilai = [...this.state.nilai]
+                                                    nilai.find(x => x.mata_kuliah == this.state.selectedMatkul && x.mahasiswa == data.mahasiswa).status = e.target.value
+                                                    this.setState({nilai})
+                                                }}
+                                                >
+                                                <option value="lulus">Lulus</option>
+                                                <option value="tidak_lulus">Tidak</option>
                                             </select>
                                         </div>
                                     </div>
                                 </td>
-                                <td className="text-center"><textarea rows="2" cols="20"/></td>
+                                <td className="text-center">
+                                    <input rows="2" cols="20"  
+                                        value={data.keterangan} 
+                                        onChange={(e) => {
+                                            let nilai = [...this.state.nilai]
+                                            nilai.find(x => x.mata_kuliah == this.state.selectedMatkul && x.mahasiswa == data.mahasiswa).keterangan = e.target.value
+                                            this.setState({nilai})
+                                        }}/>
+                                    </td>
                             </tr>
                         )
                     }
@@ -189,21 +268,26 @@ class Input extends Component {
                     <div className="col-lg-2"></div>
                     <div className="col-lg-8"></div>
                     <div className="col-lg-2">
-                        <Link to="/nilai" className="btn btn-sm btn-warning block full-width"> Simpan </Link>
+                        <button 
+                            className="btn btn-sm btn-warning block full-width"
+                            onClick={this.editNilai}
+                            > 
+                            Simpan 
+                        </button>
                     </div>
                 </div>
             </div>;
         } else {
-            pilihanInput = <div className="alert alert-danger"> Pilih Matakuliah yang ingin di input nilainya. </div>;
+            pilihanInput = <div className="alert alert-warning"> ** Pilih Mata Kuliah  </div>;
         }
         return (
             <div>
                 <div className="row wrapper border-bottom white-bg page-heading">
                     <div className="col-lg-10">
-                        <h2>Input Nilai</h2>
+                        <h2>Input Nilai Mahasiswa</h2>
                         <ol className="breadcrumb">
                             <li className="breadcrumb-item">
-                                <Link to="/main">Home</Link>
+                                Dashboard
                             </li>
                             <li className="breadcrumb-item active">
                                 <strong>Input Nilai</strong>
@@ -223,10 +307,10 @@ class Input extends Component {
                                 <div className="row">
                                     <div className="col-lg-4">
                                         <select className="form-control m-b" onChange={this.handlePilih}>
-                                            <option value="">-- Pilih Mata Kuliah --</option>
+                                            <option>-- Pilih Mata Kuliah --</option>
                                             {
-                                                this.state.matkuls.map((matkul, key) => 
-                                                    <option value={matkul.id}>{matkul.nama}</option>
+                                                this.state.absensi.map((matkul, key) => 
+                                                    <option value={matkul.mata_kuliah}>{matkul.mata_kuliah_info.nama}</option>
                                                 )
                                             }
                                         </select>

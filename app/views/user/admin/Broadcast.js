@@ -151,6 +151,14 @@ class Broadcast extends Component {
                 <div className="row wrapper border-bottom white-bg page-heading">
                     <div className="col-lg-8">
                         <h2>Pengumuman Administrator</h2>
+                        <ol className="breadcrumb">
+                            <li className="breadcrumb-item">
+                               Dashboard
+                            </li>
+                            <li className="breadcrumb-item active">
+                                <strong>Broadcast</strong>
+                            </li>
+                        </ol>
                     </div>
                     <div className="col-lg-4">
                     </div>

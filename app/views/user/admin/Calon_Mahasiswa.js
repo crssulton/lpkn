@@ -16,7 +16,8 @@ class Calon_Mahasiswa extends Component {
             selectedJurusan: 'all',
             key: null,
             profil: false,
-            key: null
+            key: null,
+            loadingApprove: false
         }
     }
 
@@ -74,89 +75,71 @@ class Calon_Mahasiswa extends Component {
     }
 
     getmahasiswa = (id) => {
-	    let index
-    	this.state.mahasiswas.forEach(function (o, key) {
-            if (o.id  == id) {
-            	index = key
-            }
-        });
-
-
     	this.setState({
-    		mahasiswa: this.state.mahasiswas[index],
-    		profil: true,
-    		key: index
+    		mahasiswa : this.state.mahasiswas.find(data => data.id == id),
+    		profil: true
     	})
 	}
 	
 	handleUpdatemahasiswa = (key) => {
 		const self = this
-		swal({
-			title: "Update " + key.nama + " ?",
-			icon: "warning",
-			buttons: true,
-			dangerMode: true,
-		})
-		.then((willTerima) => {
-			if (willTerima) {
-				fetch(BASE_URL + '/api/mahasiswa/' + key.id +'/', {
-					method: 'put',
-					headers: {
-						'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
-						'Content-Type': 'application/json',
-            			'Accept': 'application/json'
-					},
-					body: JSON.stringify(key)
-				}).then(function(response) {
-					return response.json();
-				}).then(function(data) {
-					fetch(BASE_URL + '/api/mahasiswa/', {
-						method: 'get',
-						headers: {
-							'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
-						}
-					}).then(function(response) {
-						return response.json();
-					}).then(function(data) {
-						self.setState({
-							mahasiswas: data.results
-						})
-					});
-					toastr.success("Mahasiswa berhasil di update", "Sukses ! ")
-				});
-			}	
+		if (key.angkatan == null || key.tahun_angkatan == null){
+			toastr.error("Angkatan & Tahun Angkatan tidak boleh kosong", "Gagal ! ")
+		}else{
+			console.log(JSON.stringify(key))
+			fetch(BASE_URL + '/api/mahasiswa/' + key.id +'/', {
+				method: 'put',
+				headers: {
+					'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+					'Content-Type': 'application/json',
+        			'Accept': 'application/json'
+				},
+				body: JSON.stringify(key)
+			}).then(function(response) {
+				if (response.status == 200) {
+					self.handleTerimaCalon(key)
+				}
+			}).then(function(data) {
+				
+			});
+		}
+    }
+
+    getmahasiswaResults = () => {
+    	const self = this
+    	fetch(BASE_URL + '/api/mahasiswa/', {
+			method: 'get',
+			headers: {
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+			}
+		}).then(function(response) {
+			return response.json();
+		}).then(function(data) {
+			self.setState({
+				mahasiswas: data.results,
+				loadingApprove: false
+			})
 		});
     }
 
     handleTerimaCalon = (key) => {
 		const self = this
-		swal({
-			title: "Approve " + key.nama + " ?",
-			icon: "warning",
-			buttons: true,
-			dangerMode: true,
-		})
-		.then((willTerima) => {
-			if (willTerima) {
-				fetch(BASE_URL + '/api/mahasiswa/' + key.id +'/approve/', {
-					method: 'post',
-					headers: {
-						'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
-					}
-				}).then(function(response) {
-					return response.json();
-				}).then(function(data) {
-					let mahasiswas = []
-					mahasiswas = self.state.mahasiswas
-					delete mahasiswas[self.state.key]
-					self.setState({
-						profil: false,
-						mahasiswas
-		
-					})
-					toastr.success("Mahasiswa berhasil ditambahkan", "Sukses ! ")
-				});
-			}	
+		self.setState({loadingApprove: true})
+		fetch(BASE_URL + '/api/mahasiswa/' + key.id +'/approve/', {
+			method: 'post',
+			headers: {
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+			}
+		}).then(function(response) {
+			if (response.status == 200) {
+				self.getmahasiswaResults()
+				self.setState({profil : false})
+				toastr.success("Mahasiswa telah diterima", "Sukses ! ")
+			}else{
+				toastr.warning("Mahasiswa gagal diterima", "Gagal ! ")
+			}
+		}).then(function(data) {
+			
 		});
     }
 
@@ -210,6 +193,14 @@ class Calon_Mahasiswa extends Component {
                 <div className="row wrapper border-bottom white-bg page-heading">
 		            <div className="col-lg-8">
 		                <h2>Calon Mahasiswa</h2>
+		                <ol className="breadcrumb">
+                            <li className="breadcrumb-item">
+                               Dashboard
+                            </li>
+                            <li className="breadcrumb-item active">
+                                <strong>Calon Mahasiswa</strong>
+                            </li>
+                        </ol>
 		            </div>
 		            <div className="col-lg-4">
 		            </div>
@@ -249,9 +240,10 @@ class Calon_Mahasiswa extends Component {
 										        			<td>{key+1}</td>
 												            <td>{mahasiswa.nama}</td>
 												            <td>{
-																(this.state.jurusans.length === 0)?null:
-																this.state.jurusans.find((jurusan) => (jurusan.id == mahasiswa.jurusan)).nama
-															}</td>
+																	(this.state.jurusans.length === 0)?null:
+																	this.state.jurusans.find((jurusan) => (jurusan.id == mahasiswa.jurusan)).nama
+																}
+															</td>
 												            <td>
 												            	<center>
 						                                			<button 
@@ -265,7 +257,6 @@ class Calon_Mahasiswa extends Component {
 												            </td>
 
 												        </tr>
-
 										        	)
 										        }
 										        </tbody>
@@ -285,14 +276,7 @@ class Calon_Mahasiswa extends Component {
                                     {
                                     	this.state.profil ?
                                     	<div className="table-responsive">
-	                                    	<div className="">
-				                                <img
-				                                	alt="image" 
-				                                	width="50%" 
-				                                	style={{'borderRadius':'50%', 'display':'block', 'margin':'0 auto'}}
-				                                	className="img-fluid" 
-				                                	src="http://help.wojilu.com/metronic/theme/assets/admin/pages/media/profile/profile_user.jpg"/>
-				                            </div>
+	                                    
 				                            <div className="ibox-content profile-content">
 				                                <h3 style={{'textAlign': 'center'}}><strong>{this.state.mahasiswa.nama}</strong></h3>
 				                                <p style={{'textAlign': 'center'}}><span className="badge badge-warning">CALON MAHASISWA</span></p>
@@ -300,15 +284,14 @@ class Calon_Mahasiswa extends Component {
 				                             <div className="tabs-container">
 											    <ul className="nav nav-tabs" role="tablist">
 											        <li className="active"><a className="nav-link active" data-toggle="tab" href="#tab-1">Data Diri</a></li>
-											        <li><a className="nav-link" data-toggle="tab" href="#tab-2">Orang Tua</a></li>
+											        <li><a className="nav-link" data-toggle="tab" href="#tab-2">Orang Tua / Wali</a></li>
 											        <li><a className="nav-link" data-toggle="tab" href="#tab-3">Tambahan</a></li>
-											        <li><a className="nav-link" data-toggle="tab" href="#tab-4">Pembayaran</a></li>
 											    </ul>
 											    <div className="tab-content">
 											        <div role="tabpanel" id="tab-1" className="tab-pane active">
 											            <div className="panel-body">
-											            	<div className="form-group row"><label className="col-lg-2 col-form-label">Alamat</label>
-						                                        <div className="col-lg-10">
+											            	<div className="form-group row"><label className="col-lg-3 col-form-label">Alamat</label>
+						                                        <div className="col-lg-9">
 																	<input 
 																		onChange={(e) => {
 																			let mahasiswa = []
@@ -316,14 +299,14 @@ class Calon_Mahasiswa extends Component {
 																			mahasiswa.alamat = e.target.value
 																			this.setState({mahasiswa})
 																		}}
-																		defaultValue={this.state.mahasiswa.alamat} 
+																		value={this.state.mahasiswa.alamat} 
 																		type="text" className="form-control m-b" 
 																		name="account"
 																	/>
 						                                        </div>
 						                                    </div>
-						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Tmpt Lahir</label>
-						                                        <div className="col-lg-10">
+						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Tmpt Lahir</label>
+						                                        <div className="col-lg-9">
 																	<input 
 																	onChange={(e) => {
 																		let mahasiswa = []
@@ -331,13 +314,13 @@ class Calon_Mahasiswa extends Component {
 																		mahasiswa.tempat_lahir = e.target.value
 																		this.setState({mahasiswa})
 																	}}
-																	defaultValue={this.state.mahasiswa.tempat_lahir}  
+																	value={this.state.mahasiswa.tempat_lahir}  
 																	type="text" className="form-control m-b" 
 																	name="account"/>
 						                                        </div>
 						                                    </div>
-						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Tgl Lahir</label>
-						                                        <div className="col-lg-10">
+						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Tgl Lahir</label>
+						                                        <div className="col-lg-9">
 																	<input 
 																	onChange={(e) => {
 																		let mahasiswa = []
@@ -345,41 +328,55 @@ class Calon_Mahasiswa extends Component {
 																		mahasiswa.tgl_lahir = e.target.value
 																		this.setState({mahasiswa})
 																	}}
-																	defaultValue={this.state.mahasiswa.tgl_lahir}  
-																	type="text" className="form-control m-b" 
+																	value={this.state.mahasiswa.tgl_lahir}  
+																	type="date" className="form-control m-b" 
 																	name="account"/>
 						                                        </div>
 						                                    </div>
-						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Jenis Kelamin</label>
-						                                        <div className="col-lg-10">
-																	<input 
-																	onChange={(e) => {
-																		let mahasiswa = []
-																		mahasiswa = this.state.mahasiswa
-																		mahasiswa.jenis_kelamin = e.target.value
-																		this.setState({mahasiswa})
-																	}}
-																	defaultValue={this.state.mahasiswa.jenis_kelamin}  
-																	type="text" className="form-control m-b" 
-																	name="account"/>
+						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Jenis Kelamin</label>
+						                                        <div className="col-lg-9">
+						                                        	<select className="form-control m-b"
+					                                                    value={this.state.mahasiswa.jenis_kelamin}  
+					                                                    onChange={(e) => {
+																			let mahasiswa = []
+																			mahasiswa = this.state.mahasiswa
+																			mahasiswa.jenis_kelamin = e.target.value
+																			this.setState({mahasiswa})
+																		}}
+					                                                    name="jenis_kelamin">
+						                                                <option >Pilih</option>
+						                                                <option value="L">Laki - Laki</option>
+						                                                <option value="P">Perempuan</option>
+						                                            </select>
 						                                        </div>
 						                                    </div>
-						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Agama</label>
-						                                        <div className="col-lg-10">
-																	<input 
-																	onChange={(e) => {
-																		let mahasiswa = []
-																		mahasiswa = this.state.mahasiswa
-																		mahasiswa.agama = e.target.value
-																		this.setState({mahasiswa})
-																	}}
-																	defaultValue={this.state.mahasiswa.agama}  
-																	type="text" className="form-control m-b" 
-																	name="account"/>
+						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Agama</label>
+						                                        <div className="col-lg-9">
+						                                        	<select 
+													                    id="agama" 
+													                    name="agama" 
+													                    className="form-control required"
+													                    onChange={(e) => {
+																			let mahasiswa = []
+																			mahasiswa = this.state.mahasiswa
+																			mahasiswa.agama = e.target.value
+																			this.setState({mahasiswa})
+																		}}
+																		value={this.state.mahasiswa.agama} 
+													                    
+													                    >
+													                    <option value="">Pilih Agama</option>
+													                    <option value="islam">Islam</option>
+													                    <option value="hindu">Hindu</option>
+													                    <option value="budha">Budha</option>
+													                    <option value="protestan">Protestan</option>
+													                    <option value="katolik">Katolik</option>
+													                    <option value="konghucu">Konghucu</option>
+													                </select>
 						                                        </div>
 						                                    </div>
-						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Hp</label>
-						                                        <div className="col-lg-10">
+						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">HP</label>
+						                                        <div className="col-lg-9">
 																	<input 
 																	onChange={(e) => {
 																		let mahasiswa = []
@@ -387,13 +384,13 @@ class Calon_Mahasiswa extends Component {
 																		mahasiswa.no_hp = e.target.value
 																		this.setState({mahasiswa})
 																	}}
-																	defaultValue={this.state.mahasiswa.no_hp}  
-																	type="text" className="form-control m-b" 
+																	value={this.state.mahasiswa.no_hp}  
+																	type="number" className="form-control m-b" 
 																	name="account"/>
 						                                        </div>
 						                                    </div>
-						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Email</label>
-						                                        <div className="col-lg-10">
+						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Email</label>
+						                                        <div className="col-lg-9">
 																	<input 
 																	onChange={(e) => {
 																		let mahasiswa = []
@@ -401,13 +398,13 @@ class Calon_Mahasiswa extends Component {
 																		mahasiswa.email = e.target.value
 																		this.setState({mahasiswa})
 																	}}
-																	defaultValue={this.state.mahasiswa.email} 
-																	type="text" className="form-control m-b" 
+																	value={this.state.mahasiswa.email} 
+																	type="email" className="form-control m-b" 
 																	name="account"/>
 						                                        </div>
 						                                    </div>
-															<div className="form-group row"><label className="col-lg-2 col-form-label">Tahun Angkatan</label>
-						                                        <div className="col-lg-10">
+															<div className="form-group row"><label className="col-lg-3 col-form-label">Tahun Angkatan</label>
+						                                        <div className="col-lg-9">
 																	<input 
 																	onChange={(e) => {
 																		let mahasiswa = []
@@ -415,13 +412,13 @@ class Calon_Mahasiswa extends Component {
 																		mahasiswa.tahun_angkatan = e.target.value
 																		this.setState({mahasiswa})
 																	}}
-																	defaultValue={this.state.mahasiswa.tahun_angkatan}  
-																	type="text" className="form-control m-b" 
+																	value={this.state.mahasiswa.tahun_angkatan}  
+																	type="number" className="form-control m-b" 
 																	name="account"/>
 						                                        </div>
 						                                    </div>
-						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Angkatan Ke-</label>
-						                                        <div className="col-lg-10">
+						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Angkatan Ke-</label>
+						                                        <div className="col-lg-9">
 																	<input 
 																	onChange={(e) => {
 																		let mahasiswa = []
@@ -429,13 +426,13 @@ class Calon_Mahasiswa extends Component {
 																		mahasiswa.angkatan = e.target.value
 																		this.setState({mahasiswa})
 																	}}
-																	defaultValue={this.state.mahasiswa.angkatan} 
-																	type="text" className="form-control m-b" 
+																	value={this.state.mahasiswa.angkatan} 
+																	type="number" className="form-control m-b" 
 																	name="account"/>
 						                                        </div>
 						                                    </div>
-						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">FB</label>
-						                                        <div className="col-lg-10">
+						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Facebook</label>
+						                                        <div className="col-lg-9">
 																	<input 
 																	onChange={(e) => {
 																		let mahasiswa = []
@@ -443,13 +440,13 @@ class Calon_Mahasiswa extends Component {
 																		mahasiswa.id_facebook = e.target.value
 																		this.setState({mahasiswa})
 																	}}
-																	defaultValue={this.state.mahasiswa.id_facebook} 
+																	value={this.state.mahasiswa.id_facebook} 
 																	type="text" className="form-control m-b" 
 																	name="account"/>
 						                                        </div>
 						                                    </div>
-						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">WA/Line</label>
-						                                        <div className="col-lg-10">
+						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">WA/Line</label>
+						                                        <div className="col-lg-9">
 																	<input 
 																	onChange={(e) => {
 																		let mahasiswa = []
@@ -457,13 +454,13 @@ class Calon_Mahasiswa extends Component {
 																		mahasiswa.wa_or_line = e.target.value
 																		this.setState({mahasiswa})
 																	}}
-																	defaultValue={this.state.mahasiswa.wa_or_line} 
+																	value={this.state.mahasiswa.wa_or_line} 
 																	type="text" className="form-control m-b" 
 																	name="account"/>
 						                                        </div>
 						                                    </div>
-						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Asal Sekolah</label>
-						                                        <div className="col-lg-10">
+						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Asal Sekolah</label>
+						                                        <div className="col-lg-9">
 																	<input 
 																	onChange={(e) => {
 																		let mahasiswa = []
@@ -471,13 +468,13 @@ class Calon_Mahasiswa extends Component {
 																		mahasiswa.asal_sekolah = e.target.value
 																		this.setState({mahasiswa})
 																	}}
-																	defaultValue={this.state.mahasiswa.asal_sekolah} 
+																	value={this.state.mahasiswa.asal_sekolah} 
 																	type="text" className="form-control m-b" 
 																	name="account"/>
 						                                        </div>
 						                                    </div>
-						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Tahun Tamat</label>
-						                                        <div className="col-lg-10">
+						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Tahun Tamat</label>
+						                                        <div className="col-lg-9">
 																	<input 
 																	onChange={(e) => {
 																		let mahasiswa = []
@@ -485,13 +482,13 @@ class Calon_Mahasiswa extends Component {
 																		mahasiswa.tahun_tamat = e.target.value
 																		this.setState({mahasiswa})
 																	}}
-																	defaultValue={this.state.mahasiswa.tahun_tamat} 
-																	type="text" className="form-control m-b" 
+																	value={this.state.mahasiswa.tahun_tamat} 
+																	type="number" className="form-control m-b" 
 																	name="account"/>
 						                                        </div>
 						                                    </div>
-						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Tinggi Badan</label>
-						                                        <div className="col-lg-10">
+						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Tinggi Badan</label>
+						                                        <div className="col-lg-9">
 																	<input 
 																	onChange={(e) => {
 																		let mahasiswa = []
@@ -499,13 +496,13 @@ class Calon_Mahasiswa extends Component {
 																		mahasiswa.tinggi_badan = e.target.value
 																		this.setState({mahasiswa})
 																	}}
-																	defaultValue={this.state.mahasiswa.tinggi_badan} 
-																	type="text" className="form-control m-b" 
+																	value={this.state.mahasiswa.tinggi_badan} 
+																	type="number" className="form-control m-b" 
 																	name="account"/>
 						                                        </div>
 						                                    </div>
-						                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Berat Badan</label>
-						                                        <div className="col-lg-10">
+						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Berat Badan</label>
+						                                        <div className="col-lg-9">
 																	<input 
 																	onChange={(e) => {
 																		let mahasiswa = []
@@ -513,8 +510,8 @@ class Calon_Mahasiswa extends Component {
 																		mahasiswa.berat_badan = e.target.value
 																		this.setState({mahasiswa})
 																	}}
-																	defaultValue={this.state.mahasiswa.berat_badan} 
-																	type="text" className="form-control m-b" 
+																	value={this.state.mahasiswa.berat_badan} 
+																	type="number" className="form-control m-b" 
 																	name="account"/>
 						                                        </div>
 						                                    </div>
@@ -531,7 +528,7 @@ class Calon_Mahasiswa extends Component {
 																		mahasiswa.nama_ayah = e.target.value
 																		this.setState({mahasiswa})
 																	}}
-																	defaultValue={this.state.mahasiswa.nama_ayah}  
+																	value={this.state.mahasiswa.nama_ayah}  
 																	type="text" className="form-control m-b" 
 																	name="account"/>
 						                                        </div>
@@ -545,7 +542,7 @@ class Calon_Mahasiswa extends Component {
 																		mahasiswa.pekerjaan_ayah = e.target.value
 																		this.setState({mahasiswa})
 																	}}
-																	defaultValue={this.state.mahasiswa.pekerjaan_ayah}  
+																	value={this.state.mahasiswa.pekerjaan_ayah}  
 																	type="text" className="form-control m-b" 
 																	name="account"/>
 						                                        </div>
@@ -559,7 +556,7 @@ class Calon_Mahasiswa extends Component {
 																		mahasiswa.nama_ibu = e.target.value
 																		this.setState({mahasiswa})
 																	}}
-																	defaultValue={this.state.mahasiswa.nama_ibu}  
+																	value={this.state.mahasiswa.nama_ibu}  
 																	type="text" className="form-control m-b" 
 																	name="account"/>
 						                                        </div>
@@ -573,7 +570,7 @@ class Calon_Mahasiswa extends Component {
 																		mahasiswa.pekerjaan_ibu = e.target.value
 																		this.setState({mahasiswa})
 																	}}
-																	defaultValue={this.state.mahasiswa.pekerjaan_ibu}  
+																	value={this.state.mahasiswa.pekerjaan_ibu}  
 																	type="text" className="form-control m-b" 
 																	name="account"/>
 						                                        </div>
@@ -587,7 +584,7 @@ class Calon_Mahasiswa extends Component {
 																		mahasiswa.alamat_wali = e.target.value
 																		this.setState({mahasiswa})
 																	}}
-																	defaultValue={this.state.mahasiswa.alamat_wali}  
+																	value={this.state.mahasiswa.alamat_wali}  
 																	type="text" className="form-control m-b" 
 																	name="account"/>
 						                                        </div>
@@ -605,7 +602,7 @@ class Calon_Mahasiswa extends Component {
 																		mahasiswa.rencana_kerja = e.target.value
 																		this.setState({mahasiswa})
 																	}}
-																	defaultValue={this.state.mahasiswa.rencana_kerja} 
+																	value={this.state.mahasiswa.rencana_kerja} 
 																	type="text" className="form-control m-b" 
 																	name="account"/>
 						                                        </div>
@@ -619,7 +616,7 @@ class Calon_Mahasiswa extends Component {
 																		mahasiswa.rencana_kerja_lainnya = e.target.value
 																		this.setState({mahasiswa})
 																	}}
-																	defaultValue={this.state.mahasiswa.rencana_kerja_lainnya} 
+																	value={this.state.mahasiswa.rencana_kerja_lainnya} 
 																	type="text" className="form-control m-b" 
 																	name="account"/>
 						                                        </div>
@@ -633,45 +630,35 @@ class Calon_Mahasiswa extends Component {
 																		mahasiswa.informasi_ttg_lpkn = e.target.value
 																		this.setState({mahasiswa})
 																	}}
-																	defaultValue={this.state.mahasiswa.informasi_ttg_lpkn} 
+																	value={this.state.mahasiswa.informasi_ttg_lpkn} 
 																	type="text" className="form-control m-b" 
 																	name="account"/>
 						                                        </div>
 						                                    </div>
 						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Jurusan</label>
 						                                        <div className="col-lg-9">
-																	<input 
-																	onChange={(e) => {
-																		let mahasiswa = []
-																		mahasiswa = this.state.mahasiswa
-																		mahasiswa.jurusan = e.target.value
-																		this.setState({mahasiswa})
-																	}}
-																	defaultValue={
-																		(this.state.jurusans.length === 0)?null:
-																		this.state.jurusans.find((jurusan) => (jurusan.id == this.state.mahasiswa.jurusan)).nama
-																	} 
-																	type="text" className="form-control m-b" 
-																	name="account"/>
+						                                        	<select 
+					                                                    value={this.state.mahasiswa.jurusan}
+					                                                    onChange={(e) => {
+																			let mahasiswa = []
+																			mahasiswa = this.state.mahasiswa
+																			mahasiswa.jurusan = e.target.value
+																			this.setState({mahasiswa})
+																		}}
+					                                                    id="jurusan" 
+					                                                    name="jurusan" 
+					                                                    className="form-control m-b">
+					                                                    <option value="">Pilih Jurusan</option>
+					                                                    {
+					                                                        this.state.jurusans.map((jurusan, i) => 
+					                                                            <option key={i} value={jurusan.id}>{jurusan.nama}</option>
+					                                                        )
+					                                                    }
+					                                                </select>
 						                                        </div>
 						                                    </div>
-						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Kampus</label>
-						                                        <div className="col-lg-9">
-																	<input 
-																	onChange={(e) => {
-																		let mahasiswa = []
-																		mahasiswa = this.state.mahasiswa
-																		mahasiswa.kampus = e.target.value
-																		this.setState({mahasiswa})
-																	}}
-																	defaultValue={
-																		(this.state.kampus.length === 0)? null:
-																		this.state.kampus.find((kamp) => (kamp.id == this.state.mahasiswa.kampus)).nama
-																	} 
-																	type="text" className="form-control m-b" 
-																	name="account"/>
-						                                        </div>
-						                                    </div>
+						                                    
+						                                    
 						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Pesan</label>
 						                                        <div className="col-lg-9">
 																	<input 
@@ -681,30 +668,29 @@ class Calon_Mahasiswa extends Component {
 																		mahasiswa.pesan = e.target.value
 																		this.setState({mahasiswa})
 																	}}
-																	defaultValue={this.state.mahasiswa.pesan} 
+																	value={this.state.mahasiswa.pesan} 
 																	type="text" className="form-control m-b" 
+																	name="account"/>
+						                                        </div>
+						                                    </div>
+
+						                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Total Bayar</label>
+						                                        <div className="col-lg-9">
+																	<input 
+																	onChange={(e) => {
+																		let mahasiswa = []
+																		mahasiswa = this.state.mahasiswa
+																		mahasiswa.total_bayar = e.target.value
+																		this.setState({mahasiswa})
+																	}}
+																	value={this.state.mahasiswa.total_bayar} 
+																	type="number" className="form-control m-b" 
 																	name="account"/>
 						                                        </div>
 						                                    </div>
 											            </div>
 											        </div>
-											        <div role="tabpanel" id="tab-4" className="tab-pane">
-											            <div className="panel-body">
-											            	<div className="form-group row"><label className="col-lg-3 col-form-label">Jumlah (Rp.)</label>
-						                                        <div className="col-lg-9">
-																	<input 
-																		onChange={(e) => {
-																			let mahasiswa = []
-																			mahasiswa = this.state.mahasiswa
-																			mahasiswa.total_bayar = e.target.value
-																			this.setState({mahasiswa})
-																		}}
-																		defaultValue={this.state.mahasiswa.total_bayar} type="number" 
-																		className="form-control m-b" name="account"/>
-						                                        </div>
-						                                    </div>
-											            </div>
-											        </div>
+											       	
 											    </div>
 
 
@@ -712,19 +698,24 @@ class Calon_Mahasiswa extends Component {
 	                                     	
 
 											<center style={{'margin':'3% 0'}}>
+											{
+												this.state.loadingApprove ?
 												<button 
+													style={{'margin':'0 3%'}}
+													disabled
+		                            				className="btn btn-primary" 
+		                            				type="button"
+		                            				>Menyimpan...
+		                            			</button>
+		                            			:
+		                            			<button 
+													style={{'margin':'0 3%'}}
 		                            				onClick={() => this.handleUpdatemahasiswa(this.state.mahasiswa)}
 		                            				className="btn btn-primary" 
 		                            				type="button"
-		                            				>Update
+		                            				>Approve
 		                            			</button>
-												<button
-													style={{'margin':'0 3%'}}
-													onClick={() => this.handleTerimaCalon(this.state.mahasiswa)}
-			                                		className="btn btn-info" 
-			                                		type="button">
-			                                		Approve
-			                                	</button>
+											}
 			                                	<button 
 		                            				onClick={() => this.handleDeletemahasiswa(this.state.mahasiswa)}
 		                            				className="btn btn-danger" 

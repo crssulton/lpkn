@@ -27,7 +27,6 @@ class Jurusan extends Component {
 		}).then(function(response) {
 			return response.json();
 		}).then(function(data) {
-			console.log(data)
 			self.setState({
 				jurusan: data.results,
 				loading: !self.state.loading
@@ -69,6 +68,7 @@ class Jurusan extends Component {
     	let editjurusan = this.state.editjurusan
     	delete editjurusan.id
     	self.setState({editjurusan})
+    	console.log("ini lho")
     	console.log(JSON.stringify(this.state.editjurusan))
     	fetch(BASE_URL + '/api/jurusan/'+ this.state.selected+'/', {
 			method: 'put',
@@ -201,6 +201,14 @@ class Jurusan extends Component {
                 <div className="row wrapper border-bottom white-bg page-heading">
 		            <div className="col-lg-8">
 		                <h2>Daftar Jurusan</h2>
+		                <ol className="breadcrumb">
+                            <li className="breadcrumb-item">
+                                Dashboard
+                            </li>
+                            <li className="breadcrumb-item active">
+                                <strong>Jurusan</strong>
+                            </li>
+                        </ol>
 		            </div>
 		            <div className="col-lg-4">
 		            </div>

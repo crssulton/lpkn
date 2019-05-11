@@ -164,19 +164,31 @@ class List_pendaftar extends Component {
 		});
     }
 
+    formatNumber = (num) => {
+	  return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+	}
+
     render() {
         return (
             <div >
                 <div className="row wrapper border-bottom white-bg page-heading">
 		            <div className="col-lg-8">
 		                <h2>List Pendaftaran</h2>
+		                <ol className="breadcrumb">
+                            <li className="breadcrumb-item">
+                               Dashboard
+                            </li>
+                            <li className="breadcrumb-item active">
+                                <strong>List Pendaftar</strong>
+                            </li>
+                        </ol>
 		            </div>
 		            <div className="col-lg-4">
 		            </div>
 		        </div>
 		        <div className="wrapper wrapper-content">
                     <div className="row animated fadeInRight">
-                        <div className="col-lg-8">
+                        <div className="col-lg-7">
                             <div className="ibox ">
                                 <div className="ibox-title" style={{'backgroundColor':'#1ab394', 'color':'white'}}>
                                     <h5> <i className="fa fa-list "></i> Daftar pendaftar</h5>
@@ -243,7 +255,7 @@ class List_pendaftar extends Component {
                             </div>
                         </div>
 
-                        <div className="col-lg-4">
+                        <div className="col-lg-5">
                             <div className="ibox ">
                                 <div className="ibox-title" style={{'backgroundColor':'#1ab394', 'color':'white'}}>
                                     <h5> <i className="fa fa-user"></i> Profil pendaftar</h5>
@@ -252,14 +264,6 @@ class List_pendaftar extends Component {
                                     {
                                     	this.state.profil ?
                                     	<div className="table-responsive">
-	                                    	<div className="">
-				                                <img
-				                                	alt="image" 
-				                                	width="50%" 
-				                                	style={{'borderRadius':'50%', 'display':'block', 'margin':'0 auto'}}
-				                                	className="img-fluid" 
-				                                	src="http://help.wojilu.com/metronic/theme/assets/admin/pages/media/profile/profile_user.jpg"/>
-				                            </div>
 				                            <div className="ibox-content profile-content">
 				                                <h3 style={{'textAlign': 'center'}}><strong>{this.state.pendaftar.nama}</strong></h3>
 				                                <p style={{'textAlign': 'center'}}><span className="badge badge-danger">BELUM DI APPROVE</span></p>
@@ -267,7 +271,7 @@ class List_pendaftar extends Component {
 				                             <div className="tabs-container">
 											    <ul className="nav nav-tabs" role="tablist">
 											        <li className="active"><a className="nav-link active" data-toggle="tab" href="#tab-1">Data Diri</a></li>
-											        <li><a className="nav-link" data-toggle="tab" href="#tab-2">Orang Tua/Wali</a></li>
+											        <li><a className="nav-link" data-toggle="tab" href="#tab-2">Orang Tua</a></li>
 											        <li><a className="nav-link" data-toggle="tab" href="#tab-3">Tambahan</a></li>
 											    </ul>
 											    <div className="tab-content">
@@ -371,16 +375,22 @@ class List_pendaftar extends Component {
 																	}</td>
 															    </tr>
 															    <tr>
-															        <td><b>Kampus</b></td>
-																	<td>: {
-																		(this.state.kampus.length === 0)? null:
-																		this.state.kampus.find((kamp) => (kamp.id == this.state.pendaftar.kampus)).nama
-																	}</td>
-															    </tr>
-															    <tr>
 															        <td><b>Pesan</b></td>
 																	<td>: {this.state.pendaftar.pesan}</td>
 															    </tr>
+															    <tr>
+															        <td><b>Total Bayar</b></td>
+																	<td>: Rp. {this.formatNumber(this.state.pendaftar.total_bayar)}</td>
+															    </tr>
+															    {
+															    	this.state.pendaftar.dp ?
+															    	<tr>
+																        <td><b>Bayar Diawal</b></td>
+																		<td>: Rp. {this.formatNumber(this.state.pendaftar.dp_nominal)}</td>
+																    </tr>
+																    :
+																    null
+															    }
 															</tbody>
 															</table>
 											            </div>

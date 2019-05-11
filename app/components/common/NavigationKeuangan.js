@@ -58,8 +58,8 @@ class Navigation extends Component {
                                 <li className={this.activeRoute("/neraca_saldo_awal")}>
                                     <Link to="/neraca_saldo_awal"><span className="nav-label">Neraca Saldo Awal</span></Link>
                                 </li>
-                                <li className={this.activeRoute("/umum_jurnal")}>
-                                    <Link to="/umum_jurnal"><span className="nav-label">Jurnal Umum</span></Link>
+                                <li className={this.activeRoute("/jurnal-umum")}>
+                                    <Link to="/jurnal-umum"><span className="nav-label">Jurnal Umum</span></Link>
                                 </li>
                                 <li className={this.activeRoute("/ayat_jurnal_penyesuaian")}>
                                     <Link to="/ayat_jurnal_penyesuaian"><span className="nav-label">Ayat Jurnal Penyesuaian</span></Link>

@@ -23,6 +23,12 @@ class Login extends Component {
     self.setState({loading : true})
     event.preventDefault()
 
+    if (this.state.username == '' || this.state.password == '') {
+      toastr.error("Username dan password kosong", "Gagal ! ")
+      self.setState({loading : false})
+      return
+    }
+
     let user = {
       username: this.state.username,
       password: this.state.password
@@ -48,13 +54,16 @@ class Login extends Component {
         window.sessionStorage.setItem("token", data.token);
         window.sessionStorage.setItem("access", data.token);
         window.sessionStorage.setItem("role", data.user.role);
-        window.sessionStorage.setItem("user_id",  data.user.id);
+        
+        if (data.user.role_display != "Owner") {
+          window.sessionStorage.setItem("user_id",  data.user.profile.id);
+        }
         
         setTimeout(() => {
             window.location = "/";
         },500);
       }else{
-        toastr.warning("Gagal mendaftar secara online", "Error ! ")
+        toastr.warning("Username atau password salah", "Gagal ! ")
         setTimeout(() => {
             self.setState({loading : false})
         },500);
@@ -79,8 +88,8 @@ class Login extends Component {
                       <input type="password" className="form-control" placeholder="Password" required="" onChange={this.handlePassword}/>
                   </div>
                   <button type="submit" className="btn btn-primary block full-width m-b" type="submit">{ this.state.loading ? "Loading..." : "Login" }</button>
-                  <a href=""><small>Forgot password?</small></a>
-                  <p className="text-muted text-center"><small>Do not have an account?</small></p>
+       
+                  <p className="text-muted text-center"><small>Tidak terdaftar sebagai mahasiswa?</small></p>
                   <Link to="registrasi" className="btn btn-sm btn-white btn-block"> Registrasi </Link>
                 </form>
               </div>

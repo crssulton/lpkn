@@ -203,7 +203,15 @@ class Kelompok_akun extends Component {
             <div >
                 <div className="row wrapper border-bottom white-bg page-heading">
 		            <div className="col-lg-8">
-		                <h2>Kelompok Akun</h2>
+		                <h2>Kelompok Akun Keuangan</h2>
+		                <ol className="breadcrumb">
+                            <li className="breadcrumb-item">
+                               Dashboard
+                            </li>
+                            <li className="breadcrumb-item active">
+                                <strong>Kelompok Akun</strong>
+                            </li>
+                        </ol>
 		            </div>
 		            <div className="col-lg-4">
 		            </div>
@@ -322,18 +330,26 @@ class Kelompok_akun extends Component {
 						                            />
 	                                        </div>
 	                                    </div>
-	                                    
-	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Role</label>
-	                                        <div className="col-lg-9">
-	                                            <input 
-	                                            	type="text" 
-	                                            	className="form-control m-b" 
-	                                            	name="account"
-	                                            	value={this.state.kelompok_accountBaru.role}
-						                            onChange={this.addkelompok_accountRole}
-	                                            	/>
-	                                        </div>
-	                                    </div>
+
+	                                    <div className="form-group  row">
+								            <label className="col-sm-3 col-form-label">Jenis</label>
+								            <div className="col-sm-9">
+								                <select 
+								                    id="agama" 
+								                    name="agama" 
+								                    className="form-control required"
+								                    value={this.state.kelompok_accountBaru.role}
+								                    onChange={this.addkelompok_accountRole}
+								                    >
+								                    <option value="">Pilih</option>
+								                    <option value="1">AKTIVA</option>
+								                    <option value="2">HUTANG</option>
+								                    <option value="3">MODAL</option>
+								                    <option value="4">PENGHASILAN</option>
+								                    <option value="5">PENGELUARAN</option>
+								                </select>
+								            </div>
+								        </div>
 
 	                                    <button
 	                                		className="btn btn-primary btn-sm btn-add" 
@@ -368,17 +384,25 @@ class Kelompok_akun extends Component {
 	                                        </div>
 	                                    </div>
 
-	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Role</label>
-	                                        <div className="col-lg-9">
-	                                            <input 
-	                                            	type="text" 
-	                                            	className="form-control m-b" 
-	                                            	name="account"
-	                                            	value={this.state.kelompok_account.filter(data => data.id === this.state.selected)[0].role}
-					                                onChange={this.handleChangeRole}
-						                            />
-	                                        </div>
-	                                    </div>
+	                                    <div className="form-group  row">
+								            <label className="col-sm-3 col-form-label">Jenis</label>
+								            <div className="col-sm-9">
+								                <select 
+								                    id="agama" 
+								                    name="agama" 
+								                    className="form-control required"
+								                    value={this.state.kelompok_account.filter(data => data.id === this.state.selected)[0].role}
+								                    onChange={this.handleChangeRole}
+								                    >
+								                    <option value="">Pilih</option>
+								                    <option value="1">AKTIVA</option>
+								                    <option value="2">HUTANG</option>
+								                    <option value="3">MODAL</option>
+								                    <option value="4">PENGHASILAN</option>
+								                    <option value="5">PENGELUARAN</option>
+								                </select>
+								            </div>
+								        </div>
 	                                    
 	                                    
 	                                    <button

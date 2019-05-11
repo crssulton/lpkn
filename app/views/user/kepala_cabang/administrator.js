@@ -96,12 +96,12 @@ class Administrator extends Component {
 		    		null
 		    		:
 		    		<div className="table-responsive">
-		    			<img
-                        	alt="image" 
-                        	width="50%" 
-                        	style={{'borderRadius':'50%', 'display':'block', 'margin':'0 auto'}}
-                        	className="img-fluid" 
-                        	src="http://help.wojilu.com/metronic/theme/assets/admin/pages/media/profile/profile_user.jpg"/>
+		    			{
+                        	data.foto != null ?
+                        	<img alt="image" width="50%" style={{'borderRadius':'50%', 'display':'block', 'margin':'0 auto'}} className="img-fluid"  src={data.foto}/>
+                        	:
+                        	<img alt="image" width="50%" style={{'borderRadius':'50%', 'display':'block', 'margin':'0 auto'}} className="img-fluid"  src="http://www.personalbrandingblog.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640-300x300.png"/>
+                        }
                         <br/>
 			    		<table className="table table-striped">
 						<tbody>
@@ -166,7 +166,15 @@ class Administrator extends Component {
             <div >
                 <div className="row wrapper border-bottom white-bg page-heading">
 		            <div className="col-lg-8">
-		                <h2>Data Administrator</h2>
+		                <h2>Staff Administrator</h2>
+		                <ol className="breadcrumb">
+                            <li className="breadcrumb-item">
+                                <Link to="/main">Dashboard</Link>
+                            </li>
+                            <li className="breadcrumb-item active">
+                                <strong>Administrator</strong>
+                            </li>
+                        </ol>
 		            </div>
 		            <div className="col-lg-4">
 		            </div>

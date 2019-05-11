@@ -97,7 +97,7 @@ export default class Form_add_staff extends Component {
 												                    />
 												            </div>
 												        </div>
-												        <div className="hr-line-dashed"></div>
+
 												        <div className="form-group  row">
 												            <label className="col-sm-3 col-form-label">Alamat</label>
 												            <div className="col-sm-9">
@@ -116,7 +116,7 @@ export default class Form_add_staff extends Component {
 												                    />
 												            </div>
 												        </div>
-												        <div className="hr-line-dashed"></div>
+
 												        <div className="form-group  row">
 												            <label className="col-sm-3 col-form-label">Tmpt Lahir</label>
 												            <div className="col-sm-9">
@@ -135,7 +135,7 @@ export default class Form_add_staff extends Component {
 												                    />
 												            </div>
 												        </div>
-												        <div className="hr-line-dashed"></div>
+
 												        <div className="form-group  row">
 												            <label className="col-sm-3 col-form-label">Tgl Lahir</label>
 												            <div className="col-sm-9">
@@ -154,7 +154,7 @@ export default class Form_add_staff extends Component {
 												                    />
 												            </div>
 												        </div>
-												        <div className="hr-line-dashed"></div>
+
 												        <div className="form-group  row">
 												            <label className="col-sm-3 col-form-label">J. Kelamin</label>
 												            <div className="col-sm-9">
@@ -176,7 +176,7 @@ export default class Form_add_staff extends Component {
 												                </select>
 												            </div>
 												        </div>
-												        <div className="hr-line-dashed"></div>
+
 												        <div className="form-group  row">
 												            <label className="col-sm-3 col-form-label">Agama</label>
 												            <div className="col-sm-9">
@@ -202,25 +202,7 @@ export default class Form_add_staff extends Component {
 												                </select>
 												            </div>
 												        </div>
-												        <div className="hr-line-dashed"></div>
-												        <div className="form-group  row">
-												            <label className="col-sm-3 col-form-label">No Hp</label>
-												            <div className="col-sm-9">
-												                <input 
-												                    id="no_hp" 
-												                    name="no_hp" 
-												                    type="number" 
-												                    className="form-control required"
-												                    value={this.state.pegawai.no_hp}
-												                    onChange={(e) => {
-												                    	let pegawai = {}
-												                    	pegawai = this.state.pegawai
-												                    	pegawai.no_hp = e.target.value
-												                    	this.setState({pegawai})
-												                    }}
-												                    />
-												            </div>
-												        </div>
+
 												    </div>
 												    <div className="col-lg-6">
 												        <div className="form-group  row">
@@ -241,7 +223,7 @@ export default class Form_add_staff extends Component {
 												                    />
 												            </div>
 												        </div>
-												        <div className="hr-line-dashed"></div>
+
 												        <div className="form-group  row">
 												            <label className="col-sm-3 col-form-label">Pendidikan</label>
 												            <div className="col-sm-9">
@@ -266,7 +248,7 @@ export default class Form_add_staff extends Component {
 												                </select>
 												            </div>
 												        </div>
-												        <div className="hr-line-dashed"></div>
+
 												        <div className="form-group  row">
 												            <label className="col-sm-3 col-form-label">Status</label>
 												            <div className="col-sm-9">
@@ -288,7 +270,26 @@ export default class Form_add_staff extends Component {
 												                </select>
 												            </div>
 												        </div>
-												        <div className="hr-line-dashed"></div>
+
+												        <div className="form-group  row">
+												            <label className="col-sm-3 col-form-label">No Hp</label>
+												            <div className="col-sm-9">
+												                <input 
+												                    id="no_hp" 
+												                    name="no_hp" 
+												                    type="number" 
+												                    className="form-control required"
+												                    value={this.state.pegawai.no_hp}
+												                    onChange={(e) => {
+												                    	let pegawai = {}
+												                    	pegawai = this.state.pegawai
+												                    	pegawai.no_hp = e.target.value
+												                    	this.setState({pegawai})
+												                    }}
+												                    />
+												            </div>
+												        </div>
+
 												        <div className="form-group  row">
 												            <label className="col-sm-3 col-form-label">Foto</label>
 												            <div className="col-sm-9">
@@ -306,7 +307,7 @@ export default class Form_add_staff extends Component {
 												                    />
 												            </div>
 												        </div>
-												        <div className="hr-line-dashed"></div>
+
 												        <div className="form-group  row">
 												            <label className="col-sm-3 col-form-label">Keterangan</label>
 												            <div className="col-sm-9">
@@ -324,33 +325,7 @@ export default class Form_add_staff extends Component {
 												                    />
 												            </div>
 												        </div>
-												        <div className="hr-line-dashed"></div>
-												        <div className="form-group  row">
-												            <label className="col-sm-3 col-form-label">Kampus</label>
-												            <div className="col-sm-9">
-												                <select 
-												                    id="agama" 
-												                    name="agama" 
-												                    className="form-control required"
-												                    value={this.state.pegawai.Kampus}
-												                    onChange={(e) => {
-												                    	let pegawai = {}
-												                    	pegawai = this.state.pegawai
-												                    	pegawai.kampus = e.target.value
-												                    	this.setState({pegawai})
-												                    }}
-												                    >
-												                    <option value="">Pilih</option>
-												                    {
-												                    	this.state.kampus.map(data => {
-												                    		return(
-												                    			<option value={data.id}>{data.nama}</option>
-												                    		)
-												                    	})
-												                    }
-												                </select>
-												            </div>
-												        </div>
+
 												        
 												    </div>
 												</div>

@@ -35,7 +35,7 @@ class Akun extends Component {
 			return response.json();
 		}).then(function(data) {
 			self.setState({
-				account: data.results,
+				account: data,
 				loading: !self.state.loading
 			})
 		});
@@ -192,7 +192,7 @@ class Akun extends Component {
 				self.setState({
 					addForm: true
 				})
-				toastr.warning("Gagal menambahkan Akun", "Gagal ! ")
+				toastr.warning(data.kode[0], "Gagal ! ")
 			}
 		});
     }
@@ -238,7 +238,15 @@ class Akun extends Component {
             <div >
                 <div className="row wrapper border-bottom white-bg page-heading">
 		            <div className="col-lg-8">
-		                <h2>Akun</h2>
+		                <h2>Daftar Akun Keuangan</h2>
+		                <ol className="breadcrumb">
+                            <li className="breadcrumb-item">
+                                Dashboard
+                            </li>
+                            <li className="breadcrumb-item active">
+                                <strong>Akun</strong>
+                            </li>
+                        </ol>
 		            </div>
 		            <div className="col-lg-4">
 		            </div>
@@ -252,74 +260,68 @@ class Akun extends Component {
                                 </div>
                                 <div className="ibox-content">
                                 
-	                                <div className="row m-t-lg">
+	                                <div className="row">
 									    <div className="col-lg-12">
-									        <div className="tabs-container">
-									            <ul className="nav nav-tabs">
-									            {
-									            	this.state.kelompok_account.map((data, key) => {
-									            		return(
-									            			<li key={key}
-									            				onClick={() => this.setState({active_account: data.id})}
-									            		
-									            			>
-									            			<a className="nav-link active" data-toggle="tab" href="#tab-10">
-											                    {data.nama}
-											                </a>
-											                </li>
-									            		)
-									            	})
-									            }
-									            </ul>
-									            <div className="tab-content">
-									                <div id="tab-10" className="tab-pane active">
-									                    <div className="panel-body">
-									                        <table className="table table-striped" align="right">
-									                            <thead>
-									                            <tr>
-									                            	<th style={{'width':'5%'}}>NO. </th>
-									                                <th style={{'width':'5%'}}>KODE</th>
-									                                <th style={{'width':'15%'}}>NAMA</th>
-									                                <th style={{'width':'5%'}}>TIPE</th>
-									                                <th style={{'width':'15%'}}>KELOMPOK</th>
-									                                <th style={{'width':'13%', 'textAlign':'center'}}>AKSI</th>
-									                            </tr>
-									                            </thead>
-									                            <tbody>
-									                            {
-									                            	this.state.account.filter(akun => akun.kelompok_account == this.state.active_account).map((data, key) =>
-									                            		<tr key={key}>
-									                            			<td>{key+1}</td>
-											                                <td>{data.kode}</td>
-											                                <td>{data.nama}</td>
-											                                <td>{data.transaksi_type}</td>
-											                                <td>{this.state.kelompok_account.find((kelompok_account) => (kelompok_account.id == data.kelompok_account)).nama}</td>
-											                                <td>
-										                                		<center>
-										                                			<button 
-										                                				style={{'margin' : '0 5px'}} 
-										                                				className="btn btn-info btn-sm" 
-										                                				type="button"
-										                                				onClick={ () => {this.setState({ selected: data.id, addForm: false})} }
-										                                				>
-										                                				<i className="fa fa-edit"></i></button>
+									    	<div className="col-lg-8">
+	                                        	<label className="col-sm-3 col-form-label">Filter </label>
+	                                        	<div className="col-sm-9">
+				                                    <select
+				                                    	value={this.state.active_account}
+				                                    	onChange={(e) => this.setState({active_account: e.target.value}) }
+				                                        className="form-control">
+				                                        {
+				                                        	this.state.kelompok_account.map((data, key) => 
+				                                        		<option key={key} value={data.id}>{data.nama}</option>
+				                                        	)
+				                                        }
+				                                    </select>
+			                                    </div>
+	                                        </div>
+	                                        <br/>
+	                                        <br/>
+	                                        <br/>
+									        <table className="table table-striped" align="right">
+					                            <thead>
+					                            <tr>
+					                            	<th style={{'width':'5%'}}>NO. </th>
+					                                <th style={{'width':'5%'}}>KODE</th>
+					                                <th style={{'width':'15%'}}>NAMA</th>
+					                                <th style={{'width':'5%'}}>TIPE</th>
+					                                <th style={{'width':'15%'}}>KELOMPOK</th>
+					                                <th style={{'width':'13%', 'textAlign':'center'}}>AKSI</th>
+					                            </tr>
+					                            </thead>
+					                            <tbody>
+					                            {
+					                            	this.state.account.filter(akun => akun.kelompok_account == this.state.active_account).map((data, key) =>
+					                            		<tr key={key}>
+					                            			<td>{key+1}</td>
+							                                <td>{data.kode}</td>
+							                                <td>{data.nama}</td>
+							                                <td>{data.transaksi_type}</td>
+							                                <td>{this.state.kelompok_account.find((kelompok_account) => (kelompok_account.id == data.kelompok_account)).nama}</td>
+							                                <td>
+						                                		<center>
+						                                			<button 
+						                                				style={{'margin' : '0 5px'}} 
+						                                				className="btn btn-info btn-sm" 
+						                                				type="button"
+						                                				onClick={ () => {this.setState({ selected: data.id, addForm: false})} }
+						                                				>
+						                                				<i className="fa fa-edit"></i></button>
 
-										                                			<button 
-										                                				onClick={() => this.handleDeleteAkun( data.id, key )}
-										                                				className="btn btn-danger btn-sm" 
-										                                				type="button"
-										                                				><i className="fa fa-trash"></i></button>
-										                                		</center>
-											                                </td>
-											                            </tr>
-									                            	)
-									                            }
-									                            </tbody>
-									                        </table>
-									                    </div>
-									                </div>
-									            </div>
-									        </div>
+						                                			<button 
+						                                				onClick={() => this.handleDeleteAkun( data.id, key )}
+						                                				className="btn btn-danger btn-sm" 
+						                                				type="button"
+						                                				><i className="fa fa-trash"></i></button>
+						                                		</center>
+							                                </td>
+							                            </tr>
+					                            	)
+					                            }
+					                            </tbody>
+					                        </table>
 									    </div>
 									</div>
                                 </div>
@@ -349,6 +351,11 @@ class Akun extends Component {
 	                                            	name="account"
 	                                            	value={this.state.accountBaru.kode}
 						                            onChange={this.addaccountKode}
+						                            onKeyPress={(e) => {
+						                            	if (e.which == 13) {
+													      this.addaccount();
+													    }
+						                            }}
 	                                            	/>
 	                                        </div>
 	                                    </div>
@@ -361,6 +368,11 @@ class Akun extends Component {
 	                                            	name="account"
 	                                            	value={this.state.accountBaru.nama}
 						                            onChange={this.addaccountNama}
+						                            onKeyPress={(e) => {
+						                            	if (e.which == 13) {
+													      this.addaccount();
+													    }
+						                            }}
 						                            />
 	                                        </div>
 	                                    </div>

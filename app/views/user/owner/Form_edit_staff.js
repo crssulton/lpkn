@@ -51,7 +51,7 @@ export default class Form_add_staff extends Component {
     	}else if(title == "Keuangan"){
     		kepala_cabang.role = "4"
     	}
-    	
+    	console.log(JSON.stringify(this.state.kepala_cabang))
     	fetch(BASE_URL + '/api/staff/' + this.state.kepala_cabang.id + '/', {
 			method: 'put',
 			body: JSON.stringify(this.state.kepala_cabang),
@@ -110,7 +110,7 @@ export default class Form_add_staff extends Component {
 												                    />
 												            </div>
 												        </div>
-												        <div className="hr-line-dashed"></div>
+
 												        <div className="form-group  row">
 												            <label className="col-sm-3 col-form-label">Alamat</label>
 												            <div className="col-sm-9">
@@ -129,7 +129,7 @@ export default class Form_add_staff extends Component {
 												                    />
 												            </div>
 												        </div>
-												        <div className="hr-line-dashed"></div>
+
 												        <div className="form-group  row">
 												            <label className="col-sm-3 col-form-label">Tmpt Lahir</label>
 												            <div className="col-sm-9">
@@ -167,7 +167,7 @@ export default class Form_add_staff extends Component {
 												                    />
 												            </div>
 												        </div>
-												        <div className="hr-line-dashed"></div>
+
 												        <div className="form-group  row">
 												            <label className="col-sm-3 col-form-label">J. Kelamin</label>
 												            <div className="col-sm-9">
@@ -189,7 +189,7 @@ export default class Form_add_staff extends Component {
 												                </select>
 												            </div>
 												        </div>
-												        <div className="hr-line-dashed"></div>
+
 												        <div className="form-group  row">
 												            <label className="col-sm-3 col-form-label">Agama</label>
 												            <div className="col-sm-9">
@@ -215,25 +215,6 @@ export default class Form_add_staff extends Component {
 												                </select>
 												            </div>
 												        </div>
-												        <div className="hr-line-dashed"></div>
-												        <div className="form-group  row">
-												            <label className="col-sm-3 col-form-label">No Hp</label>
-												            <div className="col-sm-9">
-												                <input 
-												                    id="no_hp" 
-												                    name="no_hp" 
-												                    type="number" 
-												                    className="form-control required"
-												                    value={this.state.kepala_cabang.no_hp}
-												                    onChange={(e) => {
-												                    	let kepala_cabang = {}
-												                    	kepala_cabang = this.state.kepala_cabang
-												                    	kepala_cabang.no_hp = e.target.value
-												                    	this.setState({kepala_cabang})
-												                    }}
-												                    />
-												            </div>
-												        </div>
 												    </div>
 												    <div className="col-lg-6">
 												        <div className="form-group  row">
@@ -254,7 +235,7 @@ export default class Form_add_staff extends Component {
 												                    />
 												            </div>
 												        </div>
-												        <div className="hr-line-dashed"></div>
+
 												        <div className="form-group  row">
 												            <label className="col-sm-3 col-form-label">Pendidikan</label>
 												            <div className="col-sm-9">
@@ -279,7 +260,7 @@ export default class Form_add_staff extends Component {
 												                </select>
 												            </div>
 												        </div>
-												        <div className="hr-line-dashed"></div>
+
 												        <div className="form-group  row">
 												            <label className="col-sm-3 col-form-label">Status</label>
 												            <div className="col-sm-9">
@@ -301,7 +282,26 @@ export default class Form_add_staff extends Component {
 												                </select>
 												            </div>
 												        </div>
-												        <div className="hr-line-dashed"></div>
+
+												        <div className="form-group  row">
+												            <label className="col-sm-3 col-form-label">No Hp</label>
+												            <div className="col-sm-9">
+												                <input 
+												                    id="no_hp" 
+												                    name="no_hp" 
+												                    type="number" 
+												                    className="form-control required"
+												                    value={this.state.kepala_cabang.no_hp}
+												                    onChange={(e) => {
+												                    	let kepala_cabang = {}
+												                    	kepala_cabang = this.state.kepala_cabang
+												                    	kepala_cabang.no_hp = e.target.value
+												                    	this.setState({kepala_cabang})
+												                    }}
+												                    />
+												            </div>
+												        </div>
+
 												        <div className="form-group  row">
 												            <label className="col-sm-3 col-form-label">Foto</label>
 												            <div className="col-sm-9">
@@ -319,7 +319,7 @@ export default class Form_add_staff extends Component {
 												                    />
 												            </div>
 												        </div>
-												        <div className="hr-line-dashed"></div>
+
 												        <div className="form-group  row">
 												            <label className="col-sm-3 col-form-label">Keterangan</label>
 												            <div className="col-sm-9">
@@ -335,33 +335,6 @@ export default class Form_add_staff extends Component {
 												                    	this.setState({kepala_cabang})
 												                    }}
 												                    />
-												            </div>
-												        </div>
-												        <div className="hr-line-dashed"></div>
-												        <div className="form-group  row">
-												            <label className="col-sm-3 col-form-label">Kampus</label>
-												            <div className="col-sm-9">
-												                <select 
-												                    id="agama" 
-												                    name="agama" 
-												                    className="form-control required"
-												                    value={this.state.kepala_cabang.Kampus}
-												                    onChange={(e) => {
-												                    	let kepala_cabang = {}
-												                    	kepala_cabang = this.state.kepala_cabang
-												                    	kepala_cabang.kampus = e.target.value
-												                    	this.setState({kepala_cabang})
-												                    }}
-												                    >
-												                    <option value="">Pilih</option>
-												                    {
-												                    	this.state.kampus.map((data, key) => {
-												                    		return(
-												                    			<option key={key} value={data.id}>{data.nama}</option>
-												                    		)
-												                    	})
-												                    }
-												                </select>
 												            </div>
 												        </div>
 												        

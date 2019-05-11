@@ -49,10 +49,7 @@ class Registrasi extends Component {
         },
         body: JSON.stringify(self.state.pendaftar)
       }).then(function(response) {
-        return response.json();
-        toastr.warning("Gagal mendaftar secara online", "Error ! ")
-      }).then(function(data) {
-        if (data.non_field_errors == null) {
+        if (response.status == 201) {
             self.setState({
                 loading: !self.state.loading,
             })
@@ -63,6 +60,8 @@ class Registrasi extends Component {
             })
             toastr.warning("Gagal mendaftar secara online", "Error ! ")
         }
+      }).then(function(data) {
+        
     });
   }
   render() {

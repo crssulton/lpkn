@@ -261,49 +261,43 @@ class Administrator extends Component {
 
     addDosen = ()=> {
 		const self = this
-		swal({
-			title: "Lanjut menambah dosen ?",
-			icon: "warning",
-			buttons: true,
-			dangerMode: true,
-		})
-		.then((willTerima) => {
-			if (willTerima) {
-				let addButton = document.getElementsByClassName("btn-add")
-				addButton[0].setAttribute("disabled", "disabled")
-				
+		let addButton = document.getElementsByClassName("btn-add")
+		addButton[0].setAttribute("disabled", "disabled")
+		
+		console.log(JSON.stringify(self.state.dosenBaru))
+		fetch(BASE_URL + '/api/dosen/', {
+			method: 'post',
+			headers: {
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+				'Content-Type': 'application/json',
+				'Accept': 'application/json'
+			},
+			body: JSON.stringify(self.state.dosenBaru)
+		}).then(function(response) {
+			addButton[0].removeAttribute("disabled")
+			if (response.status == 201) {
+				let dosens = [...self.state.dosens]
+				dosens.push(self.state.dosenBaru)
+				let dosenBaru = {...self.state.dosenBaru}
+				dosenBaru.nama = null
+				dosenBaru.email = null
+				dosenBaru.alamat = null
+				dosenBaru.tempat_lahir = null
+				dosenBaru.tgl_lahir = null
+				dosenBaru.no_hp = null
 
-				fetch(BASE_URL + '/api/dosen/', {
-					method: 'post',
-					headers: {
-						'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
-						'Content-Type': 'application/json',
-						'Accept': 'application/json'
-					},
-					body: JSON.stringify(self.state.dosenBaru)
-				}).then(function(response) {
-					addButton[0].removeAttribute("disabled")
-				}).then(function(data) {
-					addButton[0].removeAttribute("disabled")
-					fetch(BASE_URL + '/api/dosen/', {
-						method: 'get',
-						headers: {
-							'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
-							'Content-Type': 'application/json',
-							'Accept': 'application/json'
-						}
-					}).then(function(response) {
-						return response.json();
-					}).then(function(data) {
-						self.setState({
-							dosens: data.results,
-							dosenBaru: {}
-						})
-					});
-					toastr.success("Dosen berhasil ditambahkan", "Sukses ! ")
+				self.setState({
+					dosens,
+					dosenBaru
 				})
-			}	
-		});
+				toastr.success("Dosen berhasil ditambahkan", "Sukses ! ")
+			}else{
+				toastr.warning("Dosen gagal ditambahkan", "Gagal ! ")
+			}
+		}).then(function(data) {
+			
+			
+		})
     }
 
     handleDeletedosen = (id, key)=> {
@@ -322,36 +316,55 @@ class Administrator extends Component {
 					'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
 				}
 			}).then(function(response) {
-				let dosens = []
-	        	dosens = self.state.dosens
-	        	delete dosens[key]
-				self.setState({
-					dosens
-				})
-				swal("Sukses! Dosen telah dihapus!", {
-			      icon: "success",
-			    });
+				if (response.status == 204) {
+					self.setState({
+						dosens: self.state.dosens.filter(data => data.id != id)
+					})
+					toastr.success("Dosen berhasil dihapus", "Sukses ! ")
+				}else{
+					toastr.warning("Dosen gagal dihapus", "Gagal ! ")
+				}
 			}).then(function(data) {
-				let dosens = []
-	        	dosens = self.state.dosens
-	        	delete dosens[key]
-				self.setState({
-					dosens
-				})
-				swal("Sukses! Dosen telah dihapus!", {
-			      icon: "success",
-			    });
+
 			});
 		  }
 		});
     }
 
+    exportData(){
+        printJS({
+            printable: 'print_data',
+            type: 'html',
+            modalMessage:"Sedang memuat data...",
+            showModal:true,
+            maxWidth:'1300',
+            font_size:'8pt',
+            documentTitle:'DATA DOSEN',
+            targetStyles: ['*']
+        })
+     }
+
     render() {
+    	const styletb = {
+            borderCollapse:'collapse',
+            borderSpacing:0,
+            borderStyle:'solid',
+            width:'100%',
+            fontSize:'12px'
+        }
         return (
             <div >
                 <div className="row wrapper border-bottom white-bg page-heading">
 		            <div className="col-lg-8">
 		                <h2>Daftar Dosen</h2>
+		                <ol className="breadcrumb">
+                            <li className="breadcrumb-item">
+                               Dashboard
+                            </li>
+                            <li className="breadcrumb-item active">
+                                <strong>Dosen</strong>
+                            </li>
+                        </ol>
 		            </div>
 		            <div className="col-lg-4">
 		            </div>
@@ -364,6 +377,19 @@ class Administrator extends Component {
                                     <h5> <i className="fa fa-list "></i> Daftar Dosen</h5>
                                 </div>
                                 <div className="ibox-content">
+                                	<div className="row">
+	                                    <div className="col-lg-10">
+	                                    </div>
+	                                    
+	                                    <div className="col-lg-2">
+	                                    	<div className="col-sm-12">
+			                                    <button className="btn btn-primary" onClick={() => this.exportData()}>
+			                                    	<i className="fa fa-print"></i> Cetak
+			                                    </button>
+		                                    </div>
+	                                    </div>
+	                                </div>
+	                                <br/>
                                     {
 			                    		this.state.loading?
 			                    		<div className="spiner-example">
@@ -581,24 +607,6 @@ class Administrator extends Component {
                                             </div>
                                         </div>
 
-	                                    <div className="form-group  row">
-                                            <label className="col-sm-3 col-form-label">Kampus</label>
-                                            <div className="col-sm-9">
-												<select 
-                                                    value={this.state.dosenBaru.kampus}
-                                                    onChange={this.addDosenKampus}
-                                                    id="kampus" 
-                                                    name="kampus" 
-                                                    className="form-control required">
-                                                    <option value="">Pilih Kampus</option>
-                                                    {
-                                                        this.state.kampus.map((kampus,i) => 
-                                                            <option key={i} value={kampus.id}>{kampus.nama}</option>
-                                                        )
-                                                    }
-                                                </select>
-                                            </div>
-                                        </div>
 
 										<button
 											style={{'margin':'0 3%'}}
@@ -758,24 +766,6 @@ class Administrator extends Component {
                                             </div>
                                         </div>
 
-	                                    <div className="form-group  row">
-                                            <label className="col-sm-3 col-form-label">Kampus</label>
-                                            <div className="col-sm-9">
-												<select 
-                                                    value={this.state.dosens[this.state.selected].kampus}
-                                                    onChange={this.handleChangeKampus}
-                                                    id="kampus" 
-                                                    name="kampus" 
-                                                    className="form-control required">
-                                                    <option value="">Pilih Kampus</option>
-                                                    {
-                                                        this.state.kampus.map((kampus,i) => 
-                                                            <option key={i} value={kampus.id}>{kampus.nama}</option>
-                                                        )
-                                                    }
-                                                </select>
-                                            </div>
-                                        </div>
 
 										<button
 											style={{'margin':'0 3%'}}
@@ -797,6 +787,41 @@ class Administrator extends Component {
                             </div>
                         </div>
                     </div>
+
+                    <div style={{'backgroundColor': 'white', 'display' : 'none'}}>
+						<table border="1" align="left" style={styletb} id="print_data" width="100%" style={{fontSize:'12px'}}>
+		                    <thead>
+		                    <tr>
+		                    	<th align="left" style={{background:'#e5e5e5',padding:'10px'}}>NO.</th>
+		                        <th align="left" style={{background:'#e5e5e5',padding:'10px'}}>NAMA</th>
+		                        <th align="left" style={{background:'#e5e5e5',padding:'10px'}}>ALAMAT</th>
+		                        <th align="left" style={{background:'#e5e5e5',padding:'10px'}}>TMPT LAHIR</th>
+		                        <th align="left" style={{background:'#e5e5e5',padding:'10px'}}>TGL LAHIR</th>
+		                        <th align="left" style={{background:'#e5e5e5',padding:'10px'}}>JK</th>
+		                        <th align="left" style={{background:'#e5e5e5',padding:'10px'}}>AGAMA</th>
+		                        <th align="left" style={{background:'#e5e5e5',padding:'10px'}}>HP</th>
+		                        <th align="left" style={{background:'#e5e5e5',padding:'10px'}}>PENDIDIKAN</th>
+		                    </tr>
+		                    </thead>
+		                    <tbody>
+		                    {
+		                    	this.state.dosens.map((data, key) =>
+		                    		<tr >
+		                    			<td style={{padding:'7px',textAlign:'left'}}>{key+1}</td>
+		                                <td style={{padding:'7px',textAlign:'left'}}>{data.nama}</td>
+		                                <td style={{padding:'7px',textAlign:'left'}}>{data.alamat}</td>
+		                                <td style={{padding:'7px',textAlign:'left'}}>{data.tempat_lahir}</td>
+		                                <td style={{padding:'7px',textAlign:'left'}}>{data.tgl_lahir}</td>
+		                                <td style={{padding:'7px',textAlign:'left'}}>{data.jenis_kelamin}</td>
+		                                <td style={{padding:'7px',textAlign:'left'}}>{data.agama}</td>
+		                                <td style={{padding:'7px',textAlign:'left'}}>{data.no_hp}</td>
+		                                <td style={{padding:'7px',textAlign:'center'}}>{data.pendidikan_terakhir.toUpperCase()}</td>
+		                            </tr>
+		                    	)
+		                    }
+		                    </tbody>
+		                </table>
+					</div>
                     
                     
                 </div>
