@@ -36,7 +36,7 @@ import Status from '../views/user/admin/Status';
 import Dosen from '../views/user/admin/dosen';
 import CalonMahasiswa from '../views/user/admin/Calon_Mahasiswa';
 import MahasiswaAdmin from '../views/user/admin/Mahasiswa';
-import TagihanAdmin from '../views/user/admin/Tagihan';
+import Tagihan from '../views/user/admin/Tagihan';
 import PengajuanAdmin from '../views/user/admin/pengajuan';
 
 // Folder Keuangan (Role 4)
@@ -163,7 +163,7 @@ if(window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStor
             <Route path="dosen" component={Dosen}> </Route>
             <Route path="calon-mahasiswa" component={CalonMahasiswa}> </Route>
             <Route path="mahasiswa" component={MahasiswaAdmin}> </Route>
-            <Route path="tagihan" component={TagihanAdmin}> </Route>
+            <Route path="tagihan" component={Tagihan}> </Route>
             <Route path="pengajuan" component={PengajuanAdmin}> </Route>
         </Route>
     </Router> )
@@ -266,6 +266,7 @@ if(window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStor
             <Route path="mahasiswa" component={MahasiswaOwner}> </Route>
             <Route path="dosen" component={DosenOwner}> </Route>
             <Route path="staff" component={StaffOwner}> </Route>
+            <Route path="tagihan" component={Tagihan}> </Route>
         </Route>
     </Router> )
 }

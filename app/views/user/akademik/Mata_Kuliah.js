@@ -107,7 +107,6 @@ class Mata_Kuliah extends Component {
     	let editMatkul = {...this.state.editMatkul}
     	editMatkul.jurusan = this.state.editMatkul.jurusan_info.id
 
-    	console.log(JSON.stringify(editMatkul))
     	fetch(BASE_URL + '/api/mata-kuliah/'+ this.state.selected+'/', {
 			method: 'put',
 			body: JSON.stringify(editMatkul),

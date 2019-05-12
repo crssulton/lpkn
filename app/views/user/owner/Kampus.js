@@ -63,15 +63,32 @@ class Kampus extends Component {
         	editKampus: kampus.filter(data => data.id == this.state.selected)[0]
         })
     }
+    handleChangeFacebook = e => {
+        let kampus = []
+        kampus = this.state.kampus
+        kampus.filter(data => data.id == this.state.selected)[0].fb = e.target.value
+        this.setState({
+        	kampus,
+        	editKampus: kampus.filter(data => data.id == this.state.selected)[0]
+        })
+    }
+    handleChangeEmail = e => {
+        let kampus = []
+        kampus = this.state.kampus
+        kampus.filter(data => data.id == this.state.selected)[0].email = e.target.value
+        this.setState({
+        	kampus,
+        	editKampus: kampus.filter(data => data.id == this.state.selected)[0]
+        })
+    }
 
     editKampus = () => {
     	const self = this
     	let editKampus = this.state.editKampus
-    	delete editKampus.id
-    	self.setState({editKampus})
+
     	console.log(JSON.stringify(this.state.editKampus))
     	fetch(BASE_URL + '/api/kampus/'+ this.state.selected+'/', {
-			method: 'put',
+			method: 'patch',
 			body: JSON.stringify(this.state.editKampus),
 			headers: {
 				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
@@ -88,7 +105,7 @@ class Kampus extends Component {
 				toastr.warning("Gagal mengubah kampus", "Gagal ! ")
 			}
 		}).then(function(data) {
-			
+			console.log(data)
 		});
     }
 
@@ -110,11 +127,23 @@ class Kampus extends Component {
         kampusBaru.alamat = e.target.value
         this.setState({kampusBaru})	
     }
+    addKampusFacebook = (e) => {
+    	let kampusBaru = {}
+        kampusBaru = this.state.kampusBaru
+        kampusBaru.fb = e.target.value
+        this.setState({kampusBaru})	
+    }
+    addKampusEmail = (e) => {
+    	let kampusBaru = {}
+        kampusBaru = this.state.kampusBaru
+        kampusBaru.email = e.target.value
+        this.setState({kampusBaru})	
+    }
 
     addKampus = ()=> {
     	const self = this
     	let addButton = document.getElementsByClassName("btn-add")
-    	console.log(JSON.stringify(this.state.kampusBaru))
+
     	addButton[0].setAttribute("disabled", "disabled")
 
     	fetch(BASE_URL + '/api/kampus/', {
@@ -141,6 +170,8 @@ class Kampus extends Component {
 	    		kampusBaru.kode = null
 				kampusBaru.nama = null
 				kampusBaru.alamat = null
+				kampusBaru.email = null
+				kampusBaru.fb = null
 
 				self.setState({
 					addForm: true,
@@ -250,6 +281,8 @@ class Kampus extends Component {
 					                                <th style={{'width':'5%'}}>KODE</th>
 					                                <th style={{'width':'15%'}}>NAMA</th>
 					                                <th style={{'width':'5%'}}>ALAMAT</th>
+					                                <th style={{'width':'10%'}}>FACEBOOK</th>
+					                                <th style={{'width':'10%'}}>EMAIL</th>
 					                                <th style={{'width':'13%', 'textAlign':'center'}}>AKSI</th>
 					                            </tr>
 					                            </thead>
@@ -260,6 +293,8 @@ class Kampus extends Component {
 							                                <td>{data.kode}</td>
 							                                <td>{data.nama}</td>
 							                                <td>{data.alamat}</td>
+							                                <td>{data.fb}</td>
+							                                <td>{data.email}</td>
 							                                <td>
 						                                		<center>
 						                                			<button 
@@ -340,12 +375,37 @@ class Kampus extends Component {
 	                                        </div>
 	                                    </div>
 
+	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Facebook</label>
+	                                        <div className="col-lg-9">
+	                                            <input 
+	                                            	type="text" 
+	                                            	className="form-control m-b" 
+	                                            	name="account"
+	                                            	value={this.state.kampusBaru.fb}
+						                            onChange={this.addKampusFacebook}
+	                                            	/>
+	                                        </div>
+	                                    </div>
+
+	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Email</label>
+	                                        <div className="col-lg-9">
+	                                            <input 
+	                                            	type="email" 
+	                                            	className="form-control m-b" 
+	                                            	name="account"
+	                                            	value={this.state.kampusBaru.email}
+						                            onChange={this.addKampusEmail}
+	                                            	/>
+	                                        </div>
+	                                    </div>
+
 	                                    <button
 	                                		className="btn btn-primary btn-sm btn-add" 
 	                                		type="button"
 	                                		onClick={this.addKampus}>
 	                                		Tambah
 	                                	</button>
+
 	                                </div>
 	                                :
 	                                <div className="ibox-content">
@@ -381,6 +441,30 @@ class Kampus extends Component {
 	                                            	name="account"
 	                                            	value={this.state.kampus.filter(data => data.id === this.state.selected)[0].alamat}
 					                                onChange={this.handleChangeAlamat}
+						                            />
+	                                        </div>
+	                                    </div>
+
+	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Facebook</label>
+	                                        <div className="col-lg-9">
+	                                            <input 
+	                                            	type="text" 
+	                                            	className="form-control m-b" 
+	                                            	name="account"
+	                                            	value={this.state.kampus.filter(data => data.id === this.state.selected)[0].fb}
+					                                onChange={this.handleChangeFacebook}
+						                            />
+	                                        </div>
+	                                    </div>
+
+	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Email</label>
+	                                        <div className="col-lg-9">
+	                                            <input 
+	                                            	type="text" 
+	                                            	className="form-control m-b" 
+	                                            	name="account"
+	                                            	value={this.state.kampus.filter(data => data.id === this.state.selected)[0].email}
+					                                onChange={this.handleChangeEmail}
 						                            />
 	                                        </div>
 	                                    </div>

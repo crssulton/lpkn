@@ -54,7 +54,7 @@ class Nilai extends Component {
             documentTitle:'JADWAL MAHASISWA',
             targetStyles: ['*']
         })
-     }
+    }
 
     render() {
         return (

@@ -16,13 +16,13 @@ class Navigation extends Component {
         return this.props.location.pathname.indexOf(routeName) > -1 ? "nav nav-second-level collapse in" : "nav nav-second-level collapse";
     }
 
-    handleLogout= () =>{
+    handleLogout = () => {
         window.sessionStorage.removeItem('role')
         window.sessionStorage.removeItem('user_id')
         window.sessionStorage.removeItem('access')
         setTimeout(() => {
             window.location = "/";
-        },0);
+        }, 0);
     }
 
     render() {
@@ -64,9 +64,8 @@ class Navigation extends Component {
                     <li>
                         <a><i className="fa fa-database"></i> <span className="nav-label">View Cabang</span> <span className="fa arrow"></span></a>
                         <ul className="nav nav-second-level collapse">
-                            <li className={this.activeRoute("/pendaftaran")}>
-                                <Link to="/mahasiswa">Mahasiswa</Link>
-                            </li>
+                            <li><Link to="/mahasiswa">Mahasiswa</Link></li>
+                            <li><Link to="/tagihan">Tagihan Mahasiswa</Link></li>
                             <li><Link to="/dosen">Dosen</Link></li>
                             <li><Link to="/staff">Staff</Link></li>
                         </ul>

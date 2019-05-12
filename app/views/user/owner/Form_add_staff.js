@@ -8,12 +8,24 @@ export default class Form_add_staff extends Component {
         super(props);
         this.state = {
             kepala_cabang: {},
+            kampus: [],
+            jurusans: [],
             kampus: []
         }
     }
 
     componentWillMount(){
     	const self = this
+
+    	fetch(BASE_URL + '/api/jurusan/', {
+	        method: 'get'
+	    }).then(function(response) {
+	        return response.json();
+	    }).then(function(data) {
+	        self.setState({
+	            jurusans: data.results
+	        })
+	    });
 		
 		fetch(BASE_URL + '/api/kampus/', {
 			method: 'get',
@@ -313,7 +325,7 @@ export default class Form_add_staff extends Component {
 												                    />
 												            </div>
 												        </div>
-
+												        
 												        <div className="form-group  row">
 												            <label className="col-sm-3 col-form-label">Keterangan</label>
 												            <div className="col-sm-9">
@@ -321,15 +333,39 @@ export default class Form_add_staff extends Component {
 												                    id="wa_or_line" 
 												                    name="wa_or_line" 
 												                    type="text" 
+												                    value={this.state.kepala_cabang.keterangan}
 												                    className="form-control required"
 												                    onChange={(e) => {
 												                    	let kepala_cabang = {}
-												                    	kepala_cabang = this.state.keterangan
+												                    	kepala_cabang = this.state.kepala_cabang
 												                    	kepala_cabang.keterangan = e.target.value
 												                    	this.setState({kepala_cabang})
 												                    }}
 												                    />
 												            </div>
+												        </div>
+
+												        <div className="form-group row">
+												            <label>Kampus</label>
+					                                        <select 
+					                                              value={this.state.kepala_cabang.kampus}
+												                    className="form-control required"
+												                    onChange={(e) => {
+												                    	let kepala_cabang = {}
+												                    	kepala_cabang = this.state.kepala_cabang
+												                    	kepala_cabang.kampus = e.target.value
+												                    	this.setState({kepala_cabang})
+												                    }}
+					                                              id="kampus" 
+					                                              name="kampus" 
+					                                              className="form-control required">
+					                                              <option value="">Pilih Kampus</option>
+					                                              {
+					                                                  this.state.kampus.map((kampus,i) => 
+					                                                    <option key={i} value={kampus.id}>{kampus.nama}</option>
+					                                                  )
+					                                              }
+					                                        </select>
 												        </div>
 												        
 												    </div>
