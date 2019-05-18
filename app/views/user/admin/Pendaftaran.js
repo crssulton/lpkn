@@ -1,9 +1,14 @@
 import React, { Component } from "react";
 import { BASE_URL } from "../../../config/config.js";
 import CurrencyInput from "react-currency-input";
-import logo from "../../../../public/assets/assets 1/img/laptop4.png";
+import logo from "../../../../public/assets/assets 1/img/logo_bw.png";
 import print from "print-js";
 import moment from "moment";
+import Select from "react-select";
+import "react-select/dist/react-select.css";
+
+let account = [];
+let accountTujuan = [];
 
 class Pendaftaran extends Component {
   constructor(props) {
@@ -17,7 +22,10 @@ class Pendaftaran extends Component {
       kampus: [],
       namaKwintansi: "",
       pendaftar,
-      loading: false
+      check: false,
+      kwitansi: [],
+      loading: false,
+      account: []
     };
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -36,6 +44,23 @@ class Pendaftaran extends Component {
       .then(function(data) {
         self.setState({
           jurusans: data.results
+        });
+      });
+
+    fetch(BASE_URL + "/api/account/", {
+      method: "get",
+      headers: {
+        Authorization: "JWT " + window.sessionStorage.getItem("token"),
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      }
+    })
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(data) {
+        self.setState({
+          account: data
         });
       });
   }
@@ -77,7 +102,9 @@ class Pendaftaran extends Component {
       loading: !this.state.loading
     });
     let pendaftar = { ...this.state.pendaftar };
-    pendaftar.biaya_pendaftaran_nominal = 250000;
+    if (pendaftar.biaya_pendaftaran == true) {
+      pendaftar.biaya_pendaftaran_nominal = 250000;
+    }
 
     console.log(JSON.stringify(pendaftar));
     fetch(BASE_URL + "/api/pendaftaran/", {
@@ -104,16 +131,12 @@ class Pendaftaran extends Component {
           pendaftar.keterangan = null;
 
           toastr.success("Data mahasiswa berhasil ditambahkan", "Sukses ! ");
-          self.setState(
-            {
-              loading: !self.state.loading,
-              alert: !self.state.alert,
-              pendaftar
-            },
-            () => {
-              self.exportData();
-            }
-          );
+          self.setState({
+            check: false,
+            loading: !self.state.loading,
+            alert: !self.state.alert,
+            pendaftar
+          });
         } else {
           toastr.error("Data mahasiswa gagal ditambahkan", "Error ! ");
           self.setState({
@@ -123,11 +146,38 @@ class Pendaftaran extends Component {
         return response.json();
       })
       .then(function(data) {
-        console.log(data);
+        console.log(JSON.stringify(data))
+        if (data.id != null) {
+          self.setState(
+            {
+              kwitansi: data
+            },
+            () => {
+              if (typeof(data.transaksi[0]) !== 'undefined'){
+                self.setState({check: true})
+                setTimeout(() => {
+                  self.exportData()
+                }, 100)
+              }
+            }
+          );
+        }
       });
   };
 
   render() {
+    account = [...this.state.account];
+    this.state.account.map((data, key) => {
+      account[key].value = data.id;
+      account[key].label = data.nama;
+    });
+
+    accountTujuan = [...this.state.account];
+    this.state.account.map((data, key) => {
+      account[key].value = data.id;
+      account[key].label = data.nama;
+    });
+
     return (
       <div>
         <div className="row wrapper border-bottom white-bg page-heading">
@@ -188,13 +238,22 @@ class Pendaftaran extends Component {
                           </td>
                           <td style={{ border: "1px solid black" }}>
                             <h2 className="text-center">KWITANSI BUKTI</h2>
-                            <h2 className="text-center">BIAYA PENDIDIKAN</h2>
+                            <h2 className="text-center">
+                              {this.state.check
+                                ? this.state.kwitansi.transaksi[0].kwitansi[0].judul.toUpperCase()
+                                : null}
+                            </h2>
                           </td>
                           <td
                             style={{ width: "20%", border: "1px solid black" }}
                             className="text-center"
                           >
-                            <h2>No. 12121</h2>
+                            <h2>
+                              No.{" "}
+                              {this.state.check
+                                ? this.state.kwitansi.transaksi[0].kwitansi[0].kode
+                                : null}
+                            </h2>
                           </td>
                         </tr>
 
@@ -216,7 +275,10 @@ class Pendaftaran extends Component {
                               padding: "8px 0px"
                             }}
                           >
-                            : {this.state.pendaftar.namaKwintansi}
+                            :{" "}
+                            {this.state.check
+                              ? this.state.kwitansi.nama
+                              : null}
                           </td>
                         </tr>
                         <tr>
@@ -252,7 +314,10 @@ class Pendaftaran extends Component {
                               padding: "8px 0px"
                             }}
                           >
-                            : {this.state.pendaftar.nama_jurusan}
+                            :{" "}
+                            {this.state.check
+                              ? this.state.kwitansi.jurusan_info.nama
+                              : null}
                           </td>
                         </tr>
                         <tr>
@@ -264,7 +329,10 @@ class Pendaftaran extends Component {
                               padding: "8px 0px"
                             }}
                           >
-                            : Biaya Pendaftaran
+                            :{" "}
+                            {this.state.check
+                              ? this.state.kwitansi.transaksi[0].kwitansi[0].keterangan
+                              : null}
                           </td>
                         </tr>
                       </table>
@@ -450,6 +518,24 @@ class Pendaftaran extends Component {
                         </select>
                       </div>
 
+                      <label className="col-lg-4 col-form-label">
+                        Email
+                      </label>
+                      <div className="text-right col-lg-8">
+                        <input
+                          value={this.state.pendaftar.email}
+                          onChange={e => {
+                            let pendaftar = [];
+                            pendaftar = this.state.pendaftar;
+                            pendaftar.email = e.target.value;
+                            this.setState({ pendaftar });
+                          }}
+                          type="email"
+                          className="form-control m-b"
+                          name="tgl_lahir"
+                        />
+                      </div>
+
                       <label className="col-lg-4 col-form-label">No. Hp</label>
                       <div className="text-right col-lg-8">
                         <input
@@ -465,21 +551,7 @@ class Pendaftaran extends Component {
                           name="no_hp"
                         />
                       </div>
-                      <label className="col-lg-4 col-form-label">Email</label>
-                      <div className="text-right col-lg-8">
-                        <input
-                          value={this.state.pendaftar.email}
-                          onChange={e => {
-                            let pendaftar = [];
-                            pendaftar = this.state.pendaftar;
-                            pendaftar.email = e.target.value;
-                            this.setState({ pendaftar });
-                          }}
-                          type="email"
-                          className="form-control m-b"
-                          name="email"
-                        />
-                      </div>
+
                       <label className="col-lg-4 col-form-label">
                         Asal Sekolah
                       </label>
@@ -580,7 +652,51 @@ class Pendaftaran extends Component {
                             />
                           </div>
                         </div>
-                      ) : null}
+                      ) : (
+                        <div>
+                          <label className="col-lg-4 col-form-label">
+                            Akun Sumber
+                          </label>
+                          <div className="text-right col-lg-8">
+                            <Select
+                              name="form-field-name"
+                              value={this.state.pendaftar.account}
+                              onChange={selectedOption => {
+                                let pendaftar = [];
+                                pendaftar = this.state.pendaftar;
+                                pendaftar.account = selectedOption.value;
+                                this.setState({ pendaftar });
+                              }}
+                              options={account}
+                            />
+                          </div>
+
+                          <label className="col-lg-4 col-form-label" />
+                          <div className="text-right col-lg-8">
+                            <input
+                              style={{ visibility: "hidden" }}
+                              type="text"
+                            />
+                          </div>
+
+                          <label className="col-lg-4 col-form-label">
+                            Akun Tujuan
+                          </label>
+                          <div className="text-right col-lg-8">
+                            <Select
+                              name="form-field-name"
+                              value={this.state.pendaftar.account_tujuan}
+                              onChange={selectedOption => {
+                                let pendaftar = [];
+                                pendaftar = this.state.pendaftar;
+                                pendaftar.account_tujuan = selectedOption.value;
+                                this.setState({ pendaftar });
+                              }}
+                              options={accountTujuan}
+                            />
+                          </div>
+                        </div>
+                      )}
                     </div>
                     <div className="col-lg-9" />
                     <div className="text-right col-lg-3">

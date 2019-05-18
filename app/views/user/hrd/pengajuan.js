@@ -175,7 +175,7 @@ class Pengajuan extends Component {
             <div >
                 <div className="row wrapper border-bottom white-bg page-heading">
 		            <div className="col-lg-8">
-		                <h2>Pengajuan Gaji SPV HRD</h2>
+		                <h2>Pengajuan Gaji Pegawai</h2>
 		                <ol className="breadcrumb">
                             <li className="breadcrumb-item">
                                 Dashboard

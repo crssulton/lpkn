@@ -263,8 +263,8 @@ class Calon_Mahasiswa extends Component {
 												
 												{
 													(this.state.mahasiswa.aktif !== true)? 
-													<p style={{'textAlign': 'center'}}><span className="badge badge-danger">TIDAK AKTIF</span></p> : 
-													<p style={{'textAlign': 'center'}}><span className="badge badge-secondary">AKTIF</span></p>
+													<p style={{'textAlign': 'center'}}><span className="badge badge-secondary">TIDAK AKTIF</span></p> : 
+													<p style={{'textAlign': 'center'}}><span className="badge badge-primary">AKTIF</span></p>
 												}
 				                             </div>
 				                             <div className="tabs-container">
@@ -355,18 +355,6 @@ class Calon_Mahasiswa extends Component {
 											            <div className="panel-body">
 											                <table className="table">
 															<tbody>
-															    <tr>
-															        <td><b>Rencana Kerja</b> </td>
-																	<td>: {this.state.mahasiswa.rencana_kerja}</td>
-															    </tr>
-															    <tr>
-															        <td><b>Rencana Kerja Lain</b></td>
-																	<td>: {this.state.mahasiswa.rencana_kerja_lainnya}</td>
-															    </tr>
-															    <tr>
-															        <td><b>Informasi LPKN dari</b></td>
-																	<td>: {this.state.mahasiswa.informasi_ttg_lpkn}</td>
-															    </tr>
 															    <tr>
 															        <td><b>Jurusan</b></td>
 																	<td>: {

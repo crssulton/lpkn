@@ -95,6 +95,47 @@ export default class Form_add_staff extends Component {
 												        </div>
 
 												        <div className="form-group  row">
+												            <label className="col-sm-3 col-form-label">NIK</label>
+												            <div className="col-sm-9">
+												                <input 
+												                    id="userName" 
+												                    name="userName" 
+												                    type="text" 
+												                    className="form-control required"
+												                    value={this.state.pegawai.nama}
+												                    onChange={(e) => {
+												                    	let pegawai = {}
+												                    	pegawai = this.state.pegawai
+												                    	pegawai.nama = e.target.value
+												                    	this.setState({pegawai})
+												                    }}
+												                    />
+												            </div>
+												        </div>
+
+												        <div className="form-group  row">
+												            <label className="col-sm-3 col-form-label">Jabatan</label>
+												            <div className="col-sm-9">
+												                <select 
+												                    id="jenis_kelamin" 
+												                    name="jenis_kelamin" 
+												                    className="form-control required"
+												                    value={this.state.pegawai.jenis_kelamin}
+												                    onChange={(e) => {
+												                    	let pegawai = {}
+												                    	pegawai = this.state.pegawai
+												                    	pegawai.jenis_kelamin = e.target.value
+												                    	this.setState({pegawai})
+												                    }}
+												                    >
+												                    <option value="">Pilih Jenis Kelamin</option>
+												                    <option value="L">Laki - Laki</option>
+												                    <option value="P">Perempuan</option>
+												                </select>
+												            </div>
+												        </div>
+
+												        <div className="form-group  row">
 												            <label className="col-sm-3 col-form-label">Alamat</label>
 												            <div className="col-sm-9">
 												                <input 
@@ -173,7 +214,9 @@ export default class Form_add_staff extends Component {
 												            </div>
 												        </div>
 
-												        <div className="form-group  row">
+												    </div>
+												    <div className="col-lg-6">
+												    	<div className="form-group  row">
 												            <label className="col-sm-3 col-form-label">Agama</label>
 												            <div className="col-sm-9">
 												                <select 
@@ -198,9 +241,6 @@ export default class Form_add_staff extends Component {
 												                </select>
 												            </div>
 												        </div>
-
-												    </div>
-												    <div className="col-lg-6">
 												        <div className="form-group  row">
 												            <label className="col-sm-3 col-form-label">Email</label>
 												            <div className="col-sm-9">

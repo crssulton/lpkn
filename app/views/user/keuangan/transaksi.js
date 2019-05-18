@@ -84,9 +84,9 @@ class Transaksi extends Component {
 		}).then(function(response) {
 			return response.json();
 		}).then(function(data) {
+			console.log(data.results.length)
 			self.setState({
-				account: data,
-				loading: !self.state.loading
+				account: data
 			})
 		});
 
@@ -309,6 +309,7 @@ class Transaksi extends Component {
 	}
 
     render() {
+    	
     	account = [...this.state.account]
     	const { selectedOption } = this.state;
     	this.state.account.map((data, key) => {
@@ -374,7 +375,7 @@ class Transaksi extends Component {
 					                            			<td>{data.kode}</td>
 							                                <td>{data.uraian}</td>
 							                                <td>{data.tanggal}</td>
-							                                <td>{this.state.account.find((account) => (account.id == data.account)).nama}</td>
+							                                <td>{this.state.account.length != 0 ? this.state.account.find((account) => (account.id == data.account)).nama : null}</td>
 							                                <td>{this.formatNumber(data.nominal)}</td>
 							                                <td>
 						                                		<center>
@@ -466,22 +467,6 @@ class Transaksi extends Component {
 						                            />
 	                                        </div>
 	                                    </div>
-
-	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Jurusan</label>
-	                                        <div className="col-lg-9">
-	                                            <select
-			                                    	value={this.state.transaksiBaru.jurusan}
-			                                    	onChange={this.addtransaksiJurusan}
-			                                        className="form-control">
-			                                        {
-			                                        	this.state.jurusans.map((jurusan, key) => 
-			                                        		<option key={key} value={jurusan.id}>{jurusan.nama}</option>
-			                                        	)
-			                                        }
-			                                    </select>
-	                                        </div>
-	                                    </div>
-	                                    
 
 	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Nominal</label>
 	                                        <div className="col-lg-9">

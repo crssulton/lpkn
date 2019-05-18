@@ -43,9 +43,6 @@ class Navigation extends Component {
                                 LPKN
                             </div>
                         </li>
-                        <li className={this.activeRoute("/dashboard")}>
-                            <Link to="/dashboard"><i className="fa fa-th-large"></i> <span className="nav-label">Dashboard</span></Link>
-                        </li>
                         <li className={this.activeRoute("/jurusan")}>
                             <Link to="/jurusan"><i className="fa fa-graduation-cap"></i> <span className="nav-label">Jurusan</span></Link>
                         </li>
@@ -58,17 +55,50 @@ class Navigation extends Component {
                         <li className={this.activeRoute("/keuangan")}>
                             <Link to="/keuangan"><i className="fa fa-credit-card-alt"></i> <span className="nav-label">Keuangan</span></Link>
                         </li>
-                        <li className={this.activeRoute("/pengajuan")}>
-                            <Link to="/pengajuan"><i className="fa fa-check"></i> <span className="nav-label">Approve Anggaran</span></Link>
-                        </li>
                         <li>
                             <a><i className="fa fa-database"></i> <span className="nav-label">View Kampus</span> <span className="fa arrow"></span></a>
                             <ul className="nav nav-second-level collapse">
                                 <li className={this.activeRoute("/pendaftaran")}>
                                     <Link to="/mahasiswa">Mahasiswa</Link>
                                 </li>
+                                <li><Link to="/tagihan">Pembayaran Mahasiswa</Link></li>
                                 <li><Link to="/dosen">Dosen</Link></li>
                                 <li><Link to="/staff">Staff</Link></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a><i className="fa fa-book"></i> <span className="nav-label">Report Keuangan</span> <span className="fa arrow"></span></a>
+                            <ul className="nav nav-second-level collapse">
+                                <li className={this.activeRoute("/neraca_saldo_awal")}>
+                                    <Link to="/neraca_saldo_awal"><span className="nav-label">Neraca Saldo Awal</span></Link>
+                                </li>
+                                <li className={this.activeRoute("/jurnal-umum")}>
+                                    <Link to="/jurnal-umum"><span className="nav-label">Jurnal Umum</span></Link>
+                                </li>
+                                <li className={this.activeRoute("/ayat_jurnal_penyesuaian")}>
+                                    <Link to="/ayat_jurnal_penyesuaian"><span className="nav-label">Ayat Jurnal Penyesuaian</span></Link>
+                                </li>
+                                <li className={this.activeRoute("/penutup_jurnal")}>
+                                    <Link to="/penutup_jurnal"><span className="nav-label">Jurnal Penutup</span></Link>
+                                </li>
+                                <li className={this.activeRoute("/buku_besar")}>
+                                    <Link to="/buku_besar"><span className="nav-label">Buku Besar</span></Link>
+                                </li>
+                                <li className={this.activeRoute("/saldo_sementara")}>
+                                    <Link to="/saldo_sementara"><span className="nav-label">Neraca Saldo Sementara</span></Link>
+                                </li>
+                                <li className={this.activeRoute("/neraca_lanjut")}>
+                                    <Link to="/neraca_lanjut"><span className="nav-label">Neraca Lajur</span></Link>
+                                </li>
+                                <li className={this.activeRoute("/rugi_laba")}>
+                                    <Link to="/rugi_laba"><span className="nav-label">Rugi/Laba</span></Link>
+                                </li>
+                                <li className={this.activeRoute("/perubahan_modal")}>
+                                    <Link to="/perubahan_modal"><span className="nav-label">Perubahan Modal</span></Link>
+                                </li>
+                                <li className={this.activeRoute("/neraca_akhir")}>
+                                    <Link to="/neraca_akhir"><span className="nav-label">Neraca Akhir</span></Link>
+                                </li>
                             </ul>
                         </li>
                     </ul>

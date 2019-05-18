@@ -31,6 +31,7 @@ class Pengajuan extends Component {
 		}).then(function(response) {
 			return response.json();
 		}).then(function(data) {
+			console.log(data.results)
 			self.setState({
 				pengajuan: data.results,
 				loading: !self.state.loading
@@ -43,28 +44,24 @@ class Pengajuan extends Component {
     	let status = e.target.value
     	const self = this
     	swal({
-		  title: e.target.value + " Pengajuan ?",
+		  title: "Terima Pengajuan ?",
 		  icon: "warning",
 		  buttons: true,
 		  dangerMode: true,
 		})
 		.then((change) => {
 		  if (change) {
-		  	fetch(BASE_URL + '/api/pengajuan/' + id + '/' + status +'/', {
+		  	fetch(BASE_URL + '/api/pengajuan/' + id + '/verify/', {
 				method: 'post',
 				headers: {
 					'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
 				}
 			}).then(function(response) {
 				if(response.status == 200){
-				toastr.success("Pengajuan berhasil di" + status	, "Sukses ! ")
-				let pengajuan_sgv = [...self.state.pengajuan_sgv]
-				if (status == 'verify') {
-					pengajuan.find(data => data.id == id).status = 'verified'
-				}else{
-					pengajuan.find(data => data.id == id).status = 'rejected'
-				}
-				self.setState({pengajuan_sgv})
+				toastr.success("Pengajuan berhasil di terima", "Sukses ! ")
+				let pengajuan = [...self.state.pengajuan]
+				pengajuan.find(data => data.id == id).status = 'verified'
+				self.setState({pengajuan})
 			}else{
 				toastr.warning("Mohon maaf,terjadi kesalahan", "Gagal ! ")
 			}
@@ -132,11 +129,22 @@ class Pengajuan extends Component {
 							                                <td>{key+1}</td>
 							                                <td>{data.nama}</td>
 							                                <td>{data.kampus_info.nama}</td>
-							                                <td>{data.status}</td>
+							                                <td>{data.status.toUpperCase()}</td>
 							                                <td>
 						                                		<center>
 						                                			<form className="form-inline">
-						                                				<Link to={{ pathname: 'anggaran', state: { pengajuan: data} }}>
+									                                    {
+									                                    	data.status == "pending" ?
+									                                    	<button 
+										                                    	onClick={(e) => this.handleChangeStatus(e, data.id)}
+								                                				style={{'margin' : '0 0 0 5px'}}
+								                                				className="btn btn-primary btn-sm" 
+								                                				type="button"
+								                                				><i className="fa fa-check"></i></button>
+								                                				:
+								                                				null
+									                                    }
+							                                			<Link to={{ pathname: 'anggaran', state: { pengajuan: data} }}>
 								                                			<button 
 								                                				style={{'margin' : '0 0 0 5px'}}
 								                                				className="btn btn-info btn-sm" 
@@ -144,7 +152,6 @@ class Pengajuan extends Component {
 								                                				><i className="fa fa-eye"></i></button>
 							                                			</Link>
 						                                			</form>
-
 						                                		</center>
 							                                </td>
 							                            </tr>

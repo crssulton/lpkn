@@ -67,10 +67,18 @@ class Navigation extends Component {
                         <li className={this.activeRoute("/broadcast")}>
                             <Link to="/broadcast"><i className="fa fa-bullhorn"></i> <span className="nav-label">Broadcast</span></Link>
                         </li>
+                        <li className={this.activeRoute("/pembayaran")}>
+                            <Link to="/pembayaran"><i className="fa fa-credit-card-alt"></i> <span className="nav-label">Pembayaran</span></Link>
+                        </li>
+                        <li className={this.activeRoute("/tagihan")}>
+                            <Link to="/tagihan"><i className="fa fa-book"></i> <span className="nav-label">Tagihan Mahasiswa</span></Link>
+                        </li>
                         <li className={this.activeRoute("/approve")}>
                             <Link to="/approve"><i className="fa fa-check"></i> <span className="nav-label">Approve</span></Link>
                         </li>
-                        
+                        <li className={this.activeRoute("/aset")}>
+                            <Link to="/aset"><i className="fa fa-home"></i> <span className="nav-label">Aset</span></Link>
+                        </li>
                         <li className={this.activeRoute("/pengajuan")}>
                             <Link to="/pengajuan"><i className="fa fa-book"></i> <span className="nav-label">Anggaran</span></Link>
                         </li>

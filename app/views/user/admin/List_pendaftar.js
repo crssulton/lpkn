@@ -24,7 +24,7 @@ class List_pendaftar extends Component {
 
   componentDidMount() {
     const self = this;
-    fetch(BASE_URL + "/api/pendaftaran/", {
+    fetch(BASE_URL + "/api/pendaftaran/?search=0", {
       method: "get",
       headers: {
         Authorization: "JWT " + window.sessionStorage.getItem("token")
@@ -34,6 +34,7 @@ class List_pendaftar extends Component {
         return response.json();
       })
       .then(function(data) {
+        console.log(data)
         self.setState({
           pendaftars: data.results,
           numPage: data.num_pages,
@@ -271,6 +272,7 @@ class List_pendaftar extends Component {
                             <th>NO.</th>
                             <th>NAMA</th>
                             <th>JURUSAN</th>
+                            <th>BIAYA REGISTRASI</th>
                             <th style={{ textAlign: "center" }}>AKSI</th>
                           </tr>
                         </thead>
@@ -283,7 +285,6 @@ class List_pendaftar extends Component {
                             </tr>
                           )}
                           {this.state.pendaftars
-                            .filter(pendaftar => pendaftar.approved == false)
                             .map((pendaftar, key) => (
                               <tr key={key}>
                                 <td>{key + 1}</td>
@@ -296,6 +297,7 @@ class List_pendaftar extends Component {
                                           jurusan.id == pendaftar.jurusan
                                       ).nama}
                                 </td>
+                                <td>{pendaftar.biaya_pendaftaran ? "Ya" : "Tidak"}</td>
                                 <td>
                                   <center>
                                     <button
@@ -514,35 +516,6 @@ class List_pendaftar extends Component {
                                 <tbody>
                                   <tr>
                                     <td>
-                                      <b>Rencana Kerja</b>{" "}
-                                    </td>
-                                    <td>
-                                      : {this.state.pendaftar.rencana_kerja}
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>
-                                      <b>Rencana Kerja Lain</b>
-                                    </td>
-                                    <td>
-                                      :{" "}
-                                      {
-                                        this.state.pendaftar
-                                          .rencana_kerja_lainnya
-                                      }
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>
-                                      <b>Informasi LPKN dari</b>
-                                    </td>
-                                    <td>
-                                      :{" "}
-                                      {this.state.pendaftar.informasi_ttg_lpkn}
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>
                                       <b>Jurusan</b>
                                     </td>
                                     <td>
@@ -558,9 +531,19 @@ class List_pendaftar extends Component {
                                   </tr>
                                   <tr>
                                     <td>
-                                      <b>Pesan</b>
+                                      <b>Biaya Registrasi</b>
                                     </td>
-                                    <td>: {this.state.pendaftar.pesan}</td>
+                                    <td>
+                                      {this.state.pendaftar.biaya_pendaftaran ? "Rp. 250.000" : "Rp. 0"}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>
+                                      <b>Keterangan</b>
+                                    </td>
+                                    <td>
+                                      : {this.state.pendaftar.keterangan}
+                                    </td>
                                   </tr>
                                 </tbody>
                               </table>

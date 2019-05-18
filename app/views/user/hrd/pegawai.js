@@ -106,6 +106,14 @@ class Pegawai extends Component {
 				    			<td> : {data.nama}</td>
 				    		</tr>
 				    		<tr>
+				    			<td>NIK</td>
+				    			<td> : NIK</td>
+				    		</tr>
+				    		<tr>
+				    			<td>Jabatan</td>
+				    			<td> : Jabatan</td>
+				    		</tr>
+				    		<tr>
 				    			<td>Alamat</td>
 				    			<td> : {data.alamat}</td>
 				    		</tr>

@@ -274,7 +274,7 @@ class Kampus extends Component {
 			                                </div>
 			                            </div> :
 										
-			                            <div>
+			                            <div className="table-responsive">
 											<table className="table table-striped" align="right">
 					                            <thead>
 					                            <tr>

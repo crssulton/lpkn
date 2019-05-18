@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link} from 'react-router';
 import {BASE_URL} from '../../../config/config.js'
+import CurrencyInput from "react-currency-input";
 
 class Anggaran extends Component {
 
@@ -34,6 +35,7 @@ class Anggaran extends Component {
         }).then(function(response) {
             return response.json();
         }).then(function(data) {
+            console.log(data.results)
             self.setState({
                 pengajuan_anggaran: data.results,
                 loading: !self.state.loading
@@ -149,7 +151,10 @@ class Anggaran extends Component {
           }
         });
     }
-    
+
+    formatNumber = (num) => {
+        return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+    }
 
     render() {
         return (
@@ -172,13 +177,19 @@ class Anggaran extends Component {
                 <div className="wrapper wrapper-content">
                     <div className="row animated fadeInRight">
                         <div className="row">
-                            <div className="col-lg-8">
+                            <div className={this.state.pengajuan.status ==  "pending" ? "col-lg-8" : "col-lg-12"}>
                                 <div className="ibox ">
                                     <div className="ibox-title" style={{'backgroundColor':'#1ab394', 'color':'white'}}>
                                         <h5> <i className="fa fa-list "></i> List Pengajuan</h5>
                                     </div>
 
                                      <div className="ibox-content">
+                                        <div className="row">
+                                            <div className="col-lg-2">
+                                                <button className="btn btn-info" onClick={() => this.props.history.goBack() }> <i className="fa fa-arrow-left "></i> Kembali </button>
+                                            </div>
+                                        </div>
+                                        <br/>
                                         <div className="table-responsive">
                                             <table className="table table-striped" align="right">
                                                 <thead>
@@ -188,7 +199,7 @@ class Anggaran extends Component {
                                                     <th>SPESIFIKASI</th>
                                                     <th>JUMLAH</th>
                                                     <th>HARGA</th>
-                                                    <th>AKSI</th>
+                                                    {this.state.pengajuan.status == "pending" ? <th>AKSI</th> : null}
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -200,24 +211,29 @@ class Anggaran extends Component {
                                                                 <td>{data.nama_barang}</td>
                                                                 <td>{data.spesifikasi}</td>
                                                                 <td>{data.jumlah}</td>
-                                                                <td>{data.harga}</td>
-                                                                <td>
-                                                                    <center>
-                                                                        <button 
-                                                                            style={{'margin' : '0 5px'}} 
-                                                                            className="btn btn-info btn-sm" 
-                                                                            type="button"
-                                                                            onClick={ () => {this.setState({ selected: data.id, addForm: false})} }
-                                                                            >
-                                                                            <i className="fa fa-edit"></i></button>
+                                                                <td>Rp. {this.formatNumber(data.harga)}</td>
+                                                                {
+                                                                    this.state.pengajuan.status == "pending" ?
+                                                                    <td>
+                                                                        <center>
+                                                                            <button 
+                                                                                style={{'margin' : '0 5px'}} 
+                                                                                className="btn btn-info btn-sm" 
+                                                                                type="button"
+                                                                                onClick={ () => {this.setState({ selected: data.id, addForm: false})} }
+                                                                                >
+                                                                                <i className="fa fa-edit"></i></button>
 
-                                                                        <button 
-                                                                            onClick={() => this.handleDeleteItem( data.id, key )}
-                                                                            className="btn btn-danger btn-sm" 
-                                                                            type="button"
-                                                                            ><i className="fa fa-trash"></i></button>
-                                                                    </center>
-                                                                </td>
+                                                                            <button 
+                                                                                onClick={() => this.handleDeleteItem( data.id, key )}
+                                                                                className="btn btn-danger btn-sm" 
+                                                                                type="button"
+                                                                                ><i className="fa fa-trash"></i></button>
+                                                                        </center>
+                                                                    </td>
+                                                                    :
+                                                                    null
+                                                                }
                                                             </tr>
                                                         )
                                                     }
@@ -229,6 +245,8 @@ class Anggaran extends Component {
 
                                 </div>
                             </div>
+                            {
+                            this.state.pengajuan.status == "pending" ?
                             <div className="col-lg-4">
                                 <div className="ibox ">
                                     {
@@ -293,16 +311,17 @@ class Anggaran extends Component {
 
                                                 <div className="form-group row"><label className="col-lg-3 col-form-label">Harga</label>
                                                 <div className="col-lg-9">
-                                                    <input 
+                                                    <CurrencyInput 
+                                                        precision="0" 
+                                                        className="form-control m-b" 
+                                                        prefix="Rp "
                                                         value={this.state.newPengajuan.harga}
-                                                        onChange={(e) => {
+                                                        onChangeEvent={(e, maskedvalue, floatvalue) => {
                                                             let newPengajuan = {...this.state.newPengajuan}
-                                                            newPengajuan.harga = e.target.value
+                                                            newPengajuan.harga = floatvalue
                                                             this.setState({newPengajuan})
                                                         }}
-                                                        type="number" 
-                                                        className="form-control m-b" 
-                                                        />
+                                                    />
                                                 </div>
                                                 </div>
 
@@ -378,20 +397,21 @@ class Anggaran extends Component {
 
                                                 <div className="form-group row"><label className="col-lg-3 col-form-label">Harga</label>
                                                 <div className="col-lg-9">
-                                                    <input 
+                                                    <CurrencyInput 
+                                                        precision="0" 
+                                                        className="form-control m-b" 
+                                                        prefix="Rp "
                                                         value={this.state.pengajuan_anggaran.filter(data => data.id === this.state.selected)[0].harga}
-                                                        onChange={(e) => {
+                                                        onChangeEvent={(e, maskedvalue, floatvalue) => {
                                                             let pengajuan_anggaran = []
                                                             pengajuan_anggaran = this.state.pengajuan_anggaran
-                                                            pengajuan_anggaran.filter(data => data.id == this.state.selected)[0].harga = e.target.value
+                                                            pengajuan_anggaran.filter(data => data.id == this.state.selected)[0].harga = floatvalue
                                                             this.setState({
                                                                 pengajuan_anggaran,
                                                                 edit_pengajuan_anggaran: pengajuan_anggaran.filter(data => data.id == this.state.selected)[0]
                                                             })
                                                         }}
-                                                        type="number" 
-                                                        className="form-control m-b" 
-                                                        />
+                                                    />
                                                 </div>
                                                 </div>
 
@@ -415,6 +435,9 @@ class Anggaran extends Component {
 
                                 </div>
                             </div>
+                            :
+                            null
+                            }
                         </div>
                     </div>
                 </div>

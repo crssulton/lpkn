@@ -152,116 +152,39 @@ class NeracaSaldoAwal extends Component {
                                             <table style={{'width':'100%'}}>
                                                 <thead style={{'borderTop': '2px solid black', 'borderBottom': '2px solid black'}}>
                                                 <tr>
-                                                    <th style={{'padding' : '10px 0px', 'width' : '15%'}}>No Perkiraan</th>
-                                                    <th style={{'padding' : '10px 0px', 'width' : '40%'}}>Nama Perkiraan</th>
-                                                    <th style={{'padding' : '10px 0px', 'width' : '40%'}}>Jumlah</th>
+                                                    <th style={{'padding' : '10px 0px', 'width' : '60%'}}></th>
+                                                    <th style={{'padding' : '10px 0px', 'width' : '20%'}}>DEBET</th>
+                                                    <th style={{'padding' : '10px 0px', 'width' : '20%'}}>KREDIT</th>
                                                 </tr>
                                                 </thead>
                                             </table>
                                             <br/>
-                                            <p><b>AKTIVA</b></p>
                                             
-                                            {
-                                                this.state.neraca_saldo.filter(x => x.nama != "HUTANG" && x.nama != "MODAL" && x.nama != "UTANG" && x.nama != "UTANG LANCAR").map((data, key) => 
-                                                    <table style={{'width':'100%'}}>
-                                                        <tr><td style={{'padding' : '10px 0px 0px 10px', 'width' : '100%'}} colSpan="3"><u>{data.nama}</u></td></tr>
-                                                        
-                                                        {
-                                                            data.account.map(account =>
-                                                                <tr>
-                                                                    <td style={{'padding' : '10px 0px 10px 10px', 'width' : '15%'}}>{account.kode}</td>
-                                                                    <td style={{'padding' : '10px 0px', 'width' : '40%'}}>{account.nama}</td>
-                                                                    <td style={{'padding' : '10px 0px', 'width' : '40%'}}>
-                                                                    {
-                                                                        account.neracaSaldo.filter(data => data.bulan == 5).map(akun => {
-                                                                            return(this.formatNumber(akun.debet))
-                                                                        })
-                                                                    }
-                                                                    </td>
-                                                                </tr>
-                                                            )
-                                                        }
-                                                        <tr>
-                                                            <td style={{'padding' : '10px 0px 10px 10px', 'width' : '15%'}}></td>
-                                                            <td style={{'padding' : '10px 0px', 'width' : '40%'}}></td>
-                                                            <td style={{'padding' : '10px 0px', 'width' : '40%', 'borderTop': '2px dashed black'}}>
-                                                            {
-                                                                data.account.map(account =>
-                                                                    account.neracaSaldo.filter(data => data.bulan == 5).map(akun => {
-                                                                        sumAktiva+=akun.debet
-                                                                        total+=akun.debet
-                                                                    })
-                                                                )
-                                                            }
-                                                            <b>{this.formatNumber(total)}</b>
-                                                            {this.setNull()}
-
-                                                            </td>
-                                                        </tr>
-
-                                                    </table>
-                                                )
-                                            }
                                             <table style={{'width':'100%'}}>
-                                                <thead style={{'borderTop': '2px solid black', 'borderBottom': '2px solid black'}}>
+                                                <tbody>
                                                 <tr>
-                                                    <th style={{'padding' : '10px 0px', 'width' : '10%'}}></th>
-                                                    <th style={{'padding' : '10px 0px', 'width' : '45%'}}>TOTAL AKTIVA</th>
-                                                    <th style={{'padding' : '10px 0px', 'width' : '40%'}}>{this.formatNumber(sumAktiva)}</th>
+                                                    <td style={{'padding' : '10px 0px', 'width' : '60%'}}>
+                                                        <b>PEMASUKAN | BIAYA PENDAFTARAN</b>
+                                                    </td>
+                                                    <td style={{'padding' : '10px 0px', 'width' : '20%'}}></td>
+                                                    <td style={{'padding' : '10px 0px', 'width' : '20%'}}></td>
                                                 </tr>
-                                                </thead>
+                                                <tr>
+                                                    <td style={{'padding' : '10px 0px 10px 20px', 'width' : '60%'}}>
+                                                        2/5/2019 | Entri Jurnal | 1 | PENDAPATAN BIAYA PENDAFTARAN KAMPUS 1
+                                                    </td>
+                                                    <td style={{'padding' : '10px 0px', 'width' : '20%'}}></td>
+                                                    <td style={{'padding' : '10px 0px', 'width' : '20%'}}>121212</td>
+                                                </tr>
+                                                </tbody>
                                             </table>
 
-                                            <br/>
-                                            <p><b>PASIVA</b></p>
-                                            
-                                            {
-                                                this.state.neraca_saldo.filter(x => x.nama == "HUTANG" || x.nama == "MODAL" || x.nama == "UTANG" || x.nama == "UTANG LANCAR").map((data, key) => 
-                                                    <table style={{'width':'100%'}}>
-                                                        <tr><td style={{'padding' : '10px 0px 0px 10px', 'width' : '100%'}} colSpan="3"><u>{data.nama}</u></td></tr>
-                                                        
-                                                        {
-                                                            data.account.map(account =>
-                                                                <tr>
-                                                                    <td style={{'padding' : '10px 0px 10px 10px', 'width' : '15%'}}>{account.kode}</td>
-                                                                    <td style={{'padding' : '10px 0px', 'width' : '40%'}}>{account.nama}</td>
-                                                                    <td style={{'padding' : '10px 0px', 'width' : '40%'}}>
-                                                                    {
-                                                                        account.neracaSaldo.filter(data => data.bulan == 4).map(akun => {
-                                                                            return(akun.kredit)
-                                                                        })
-                                                                    }
-                                                                    </td>
-                                                                </tr>
-                                                            )
-                                                        }
-                                                        <tr>
-                                                            <td style={{'padding' : '10px 0px 10px 10px', 'width' : '15%'}}></td>
-                                                            <td style={{'padding' : '10px 0px', 'width' : '40%'}}></td>
-                                                            <td style={{'padding' : '10px 0px', 'width' : '40%', 'borderTop': '2px dashed black'}}>
-                                                            {
-                                                                data.account.map(account =>
-                                                                    account.neracaSaldo.filter(data => data.bulan == 4).map(akun => {
-                                                                        sumPasiva+=akun.kredit
-                                                                        totalPasiva+=akun.kredit
-                                                                    })
-                                                                )
-                                                            }
-                                                            <b>{this.formatNumber(totalPasiva)}</b>
-                                                            {this.setNullPasiva()}
-
-                                                            </td>
-                                                        </tr>
-
-                                                    </table>
-                                                )
-                                            }
                                             <table style={{'width':'100%'}}>
                                                 <thead style={{'borderTop': '2px solid black', 'borderBottom': '2px solid black'}}>
                                                 <tr>
                                                     <th style={{'padding' : '10px 0px', 'width' : '10%'}}></th>
                                                     <th style={{'padding' : '10px 0px', 'width' : '45%'}}>TOTAL PASIVA</th>
-                                                    <th style={{'padding' : '10px 0px', 'width' : '40%'}}>{this.formatNumber(sumPasiva)}</th>
+                                                    <th style={{'padding' : '10px 0px', 'width' : '40%'}}></th>
                                                 </tr>
                                                 </thead>
                                             </table>

@@ -18,13 +18,15 @@ class staff extends Component {
         super(props);
         this.state = {
             staffs: [],
+            staffsTmp: [],
             staff: [],
             loading: true,
-            selectedJurusan: 1,
+            selectedJurusan: 0,
+      		selectedKampus:0,
             selectedNama: '',
             key: null,
             profil: false,
-            jurusans: [],
+      		kampus: [],
             selectedStatus: ''
         }
     }
@@ -43,6 +45,7 @@ class staff extends Component {
 			console.log(data.results)
 			self.setState({
 				staffs: data.results,
+				staffsTmp: data.results,
 				loading: !self.state.loading,
 			})
 		});
@@ -56,8 +59,7 @@ class staff extends Component {
 			return response.json();
 		}).then(function(data) {
 			self.setState({
-				selectedJurusan: data.results[0].id,
-				jurusans: data.results
+				kampus: data.results
 			})
 		});
 
@@ -110,32 +112,58 @@ class staff extends Component {
                                 </div>
                                 <div className="ibox-content">
                                 	<div className="row">
-                                        <div className="col-lg-6">
-                                        	<label className="col-sm-3 col-form-label">Filter </label>
-                                        	<div className="col-sm-9">
-			                                    <select
-			                                    	value={this.state.selectedJurusan}
-			                                    	onChange={(e) => this.setState({selectedJurusan: e.target.value}) }
-			                                        className="form-control">
-			                                        {
-			                                        	this.state.jurusans.map((jurusan, key) => 
-			                                        		<option key={key} value={jurusan.id}>{jurusan.nama}</option>
-			                                        	)
-			                                        }
-			                                    </select>
-		                                    </div>
-                                        </div>
-                                        <div className="col-lg-6">
-                                        	<label className="col-sm-3 col-form-label">Cari :</label>
-                                        	<div className="col-sm-9">
-			                                    <input 
-		                                    		type="text" 
-		                                    		disabled="" 
-		                                    		placeholder="Nama staff"
-		                                    		className="form-control"/>
-		                                    </div>
-                                        </div>
-                                    </div>
+					                    <div className="col-lg-4">
+					                      <label className="form-label">Filter Kampus : </label>
+					                    </div>
+					                    <div className="col-lg-4">
+					             
+					                    </div>
+					                    <div className="col-lg-4">
+					                      <label className="form-label">Pencarian : </label>
+					                    </div>
+					                  </div>
+
+					                  <div className="row">
+					                    <div className="col-lg-4">
+					                      <select
+					                          value={this.state.selectedKampus}
+					                          onChange={e => {
+					                            if (e.target.value !=  "0") {
+					                              this.setState({ 
+					                                staffsTmp: this.state.staffs.filter(data => data.kampus_info.id == e.target.value),
+					                                selectedKampus: e.target.value
+					                              })
+					                            }else{
+					                              let staffs = this.state.staffs
+					                              this.setState({ 
+					                                staffsTmp: staffs,
+					                                selectedKampus: e.target.value
+					                              })
+					                            }
+
+					                          }}
+					                          className="form-control"
+					                        >
+					                          <option value="0">Semua Kampus</option>
+					                          {this.state.kampus.map((kampus, key) => (
+					                            <option key={key} value={kampus.id}>
+					                              {kampus.nama}
+					                            </option>
+					                          ))}
+					                        </select>
+					                    </div>
+					                    <div className="col-lg-4">
+					                     
+					                    </div>
+					                    <div className="col-lg-4">
+					                      <input
+					                          type="text"
+					                          disabled=""
+					                          placeholder="Nama Staff"
+					                          className="form-control"
+					                        />
+					                    </div>
+					                 </div>
 
                             		<div className="hr-line-dashed"></div>
                                     {
@@ -161,7 +189,7 @@ class staff extends Component {
 										        </thead>
 										        <tbody>
 										        {
-										        	this.state.staffs.filter(staff => staff.kampus_info.id == this.state.selectedJurusan)
+										        	this.state.staffsTmp
 										        	.map((staff, key) => 
 
 										        		<tr key={key}>

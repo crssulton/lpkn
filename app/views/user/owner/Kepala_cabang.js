@@ -151,10 +151,7 @@ class Kepala_Cabang extends Component {
 				    		</tr>
 				    		<tr>
 				    			<td>Kampus</td>
-				    			<td> : {
-									(this.state.kampus.length === 0)? null:
-									this.state.kampus.find((kampus) => (kampus.id == data.kampus)).nama
-								}</td>
+				    			<td> : {data.kampus_info.nama}</td>
 				    		</tr>
 						</tbody>
 				    	</table>
@@ -240,10 +237,7 @@ class Kepala_Cabang extends Component {
 							                                <td>{data.nama.toUpperCase()}</td>
 							                                <td>{data.jenis_kelamin}</td>
 							                                <td>{data.pendidikan_terakhir.toUpperCase()}</td>
-							                                 <td>{
-																 (this.state.kampus.length === 0)? null:
-																 this.state.kampus.find((kampus) => (kampus.id == data.kampus)).nama
-															 }</td>
+							                                 <td>{data.kampus_info.nama}</td>
 							                                <td style={{'width': '30%'}}>
 						                                		<center>
 						                                			<Link to={{ pathname: 'edit-staff', state: { staf: data} }}>

@@ -104,28 +104,7 @@ class Jadwal extends Component {
 
     addJadwal = () => {
         const self = this
-        // console.log(JSON.stringify(this.state.jadwalBaru))
-        // let x = [
-        //     {date: "2019-05-17"},
-        //     {date: "2019-05-18"}
-        // ]
-
-        // let events      = {...self.state.events}
-        //     events = Object.assign([], events)
-        // x.map(data => {
-        //     let jadwalBaru = {}
-        //     // jadwalBaru = this.state.jadwalBaru
-        //     jadwalBaru.title = "BERAKKKKKKKKK"
-        //     jadwalBaru.start = data.date
-            
-        //     console.log(jadwalBaru)
-        //     events.push(jadwalBaru)
-
-        //     self.setState({
-        //         events
-        //     })
-        // })
-
+        let toggle = 0
         let addButton = document.getElementsByClassName("btn-add")
         addButton[0].setAttribute("disabled", "disabled")
 
@@ -152,6 +131,7 @@ class Jadwal extends Component {
                     toastr.warning("Jadwal gagal ditambahkan", "Gagal ! ")
                     addButton[0].removeAttribute("disabled")
                 }else{
+                    toggle+=1
                     let events      = {...self.state.events}
                     let jadwalBaru  = {...self.state.jadwalBaru}
                     events = Object.assign([], events)
@@ -165,13 +145,19 @@ class Jadwal extends Component {
                         events,
                         jadwalBaru
                     })
+                    
+                    if (toggle == self.state.listDay.length) {
+                        self.setState({listDay : []})
+                        toastr.success("Jadwal berhasil ditambahkan", "Sukses ! ")
+                    } 
 
                     addButton[0].removeAttribute("disabled")
-                    toastr.success("Jadwal berhasil ditambahkan", "Sukses ! ")
+                    
                 }
             }).then(function(data) {
                 
-            });
+            })
+            
         })
     }
 

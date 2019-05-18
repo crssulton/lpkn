@@ -325,49 +325,31 @@ export default class Form_add_staff extends Component {
 												                    />
 												            </div>
 												        </div>
-												        
+
 												        <div className="form-group  row">
-												            <label className="col-sm-3 col-form-label">Keterangan</label>
+												            <label className="col-sm-3 col-form-label">Kampus</label>
 												            <div className="col-sm-9">
-												                <input 
-												                    id="wa_or_line" 
-												                    name="wa_or_line" 
-												                    type="text" 
-												                    value={this.state.kepala_cabang.keterangan}
-												                    className="form-control required"
-												                    onChange={(e) => {
-												                    	let kepala_cabang = {}
-												                    	kepala_cabang = this.state.kepala_cabang
-												                    	kepala_cabang.keterangan = e.target.value
-												                    	this.setState({kepala_cabang})
-												                    }}
-												                    />
+												                <select 
+						                                              value={this.state.kepala_cabang.kampus}
+													                    className="form-control required"
+													                    onChange={(e) => {
+													                    	let kepala_cabang = {}
+													                    	kepala_cabang = this.state.kepala_cabang
+													                    	kepala_cabang.kampus = e.target.value
+													                    	this.setState({kepala_cabang})
+													                    }}
+						                                              id="kampus" 
+						                                              name="kampus" 
+						                                              className="form-control required">
+						                                              <option value="">Pilih Kampus</option>
+						                                              {
+						                                                  this.state.kampus.map((kampus,i) => 
+						                                                    <option key={i} value={kampus.id}>{kampus.nama}</option>
+						                                                  )
+						                                              }
+						                                        </select>
 												            </div>
 												        </div>
-
-												        <div className="form-group row">
-												            <label>Kampus</label>
-					                                        <select 
-					                                              value={this.state.kepala_cabang.kampus}
-												                    className="form-control required"
-												                    onChange={(e) => {
-												                    	let kepala_cabang = {}
-												                    	kepala_cabang = this.state.kepala_cabang
-												                    	kepala_cabang.kampus = e.target.value
-												                    	this.setState({kepala_cabang})
-												                    }}
-					                                              id="kampus" 
-					                                              name="kampus" 
-					                                              className="form-control required">
-					                                              <option value="">Pilih Kampus</option>
-					                                              {
-					                                                  this.state.kampus.map((kampus,i) => 
-					                                                    <option key={i} value={kampus.id}>{kampus.nama}</option>
-					                                                  )
-					                                              }
-					                                        </select>
-												        </div>
-												        
 												    </div>
 												</div>
 												<center>

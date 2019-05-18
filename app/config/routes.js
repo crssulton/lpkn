@@ -38,6 +38,8 @@ import CalonMahasiswa from '../views/user/admin/Calon_Mahasiswa';
 import MahasiswaAdmin from '../views/user/admin/Mahasiswa';
 import Tagihan from '../views/user/admin/Tagihan';
 import PengajuanAdmin from '../views/user/admin/pengajuan';
+import PembayaranAdmin from '../views/user/admin/pembayaran';
+import AsetAdmin from '../views/user/admin/aset';
 
 // Folder Keuangan (Role 4)
 import MainKeuangan from '../components/layouts/MainKeuangan';
@@ -48,6 +50,7 @@ import NeracaSaldoAwal from '../views/user/keuangan/neraca_saldo_awal';
 import NeracaSaldoAkhir from '../views/user/keuangan/neraca_saldo_akhir';
 import JurnalUmum from '../views/user/keuangan/jurnal_umum';
 import BukuBesar from '../views/user/keuangan/buku_besar';
+import InvoicePrint from '../views/user/keuangan/invoice_print';
 // import Ajp from '../views/user/keuangan/ajp';
 // import JurnalPenutup from '../views/user/keuangan/jurnal_penutup';
 
@@ -85,6 +88,7 @@ import StaffKepalaCabang from '../views/user/kepala_cabang/staff';
 // Folder HRD (Role 7)
 import MainHRD from '../components/layouts/MainHrd';
 import PegawaiHRD from '../views/user/hrd/pegawai';
+import JabatanHRD from '../views/user/hrd/jabatan';
 import PengajuanHRD from '../views/user/hrd/pengajuan';
 import addPegawaiHRD from '../views/user/hrd/add_pegawai';
 import editPegawaiHRD from '../views/user/hrd/edit_pegawai';
@@ -105,6 +109,14 @@ import ApproveGajiOwner from '../views/user/owner/approve_gaji';
 import PengajuanOwner from '../views/user/owner/pengajuan';
 import AnggaranOwner from '../views/user/owner/Anggaran';
 import StaffOwner from '../views/user/owner/staff';
+
+// REPORT
+import ReportMahasiswaAkademik from '../views/user/report/mahasiswa_akademik';
+import ReportMahasiswa from '../views/user/report/mahasiswa';
+// import ReportDosen from '../views/user/report/dosen';
+// import ReportStaff from '../views/user/report/staff';
+// import ReportPegawai from '../views/user/report/pegawai';
+// import ReportPegawaiGaji from '../views/user/report/pegawai_gaji';
 
 let komponen= null;
 
@@ -161,11 +173,14 @@ if(window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStor
             <Route path="anggaran" component={Anggaran}> </Route>
             <Route path="cetak" component={Cetak_kuitansi}> </Route>
             <Route path="dosen" component={Dosen}> </Route>
+            <Route path="aset" component={AsetAdmin}> </Route>
             <Route path="calon-mahasiswa" component={CalonMahasiswa}> </Route>
             <Route path="mahasiswa" component={MahasiswaAdmin}> </Route>
             <Route path="tagihan" component={Tagihan}> </Route>
             <Route path="pengajuan" component={PengajuanAdmin}> </Route>
+            <Route path="pembayaran" component={PembayaranAdmin}> </Route>
         </Route>
+        <Route path="invoice-print" component={InvoicePrint}> </Route>
     </Router> )
 }
 
@@ -187,7 +202,9 @@ if(window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStor
             <Route path="rugi_laba" component={Laporan}> </Route>
             <Route path="perubahan_modal" component={Laporan}> </Route>
             <Route path="neraca_akhir" component={NeracaSaldoAkhir}> </Route>
+            <Route path="tagihan" component={Tagihan}> </Route>
         </Route>
+        <Route path="invoice-print" component={InvoicePrint}> </Route>
     </Router> )
 }
 
@@ -209,6 +226,7 @@ if(window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStor
             <Route path="kehadiran" component={KehadiranAkademik}> </Route>
             <Route path="nilai" component={NilaiMahasiswaAkademik}> </Route>
         </Route>
+        <Route path="cetak-mahasiswa-akademik" component={ReportMahasiswaAkademik}> </Route>
     </Router> )
 }
 
@@ -216,7 +234,7 @@ if(window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStor
     komponen = (
     <Router history={browserHistory}>
         <Route path="/" component={MainKepalaCabang}>
-            <IndexRedirect to="/dashboard" />
+            <IndexRedirect to="/jurusan" />
             <Route path="dashboard" component={DashboardKepalaCabang}> </Route>
             <Route path="akademik" component={AkademikKepalaCabang}> </Route>
             <Route path="admin" component={AdministratorKepalaCabang}> </Route>
@@ -230,6 +248,17 @@ if(window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStor
             <Route path="mahasiswa" component={MahasiswaKepalaCabang}> </Route>
             <Route path="dosen" component={DosenKepalaCabang}> </Route>
             <Route path="staff" component={StaffKepalaCabang}> </Route>
+            <Route path="tagihan" component={Tagihan}> </Route>
+            <Route path="neraca_saldo_awal" component={NeracaSaldoAwal}> </Route>
+            <Route path="jurnal-umum" component={JurnalUmum}> </Route>
+            <Route path="ayat_jurnal_penyesuaian" component={Laporan}> </Route>
+            <Route path="penutup_jurnal" component={Laporan}> </Route>
+            <Route path="buku_besar" component={BukuBesar}> </Route>
+            <Route path="saldo_sementara" component={Laporan}> </Route>
+            <Route path="neraca_lanjut" component={Laporan}> </Route>
+            <Route path="rugi_laba" component={Laporan}> </Route>
+            <Route path="perubahan_modal" component={Laporan}> </Route>
+            <Route path="neraca_akhir" component={NeracaSaldoAkhir}> </Route>
         </Route>
     </Router> )
 }
@@ -243,6 +272,7 @@ if(window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStor
             <Route path="pengajuan" component={PengajuanHRD}> </Route>
             <Route path="add-pegawai" component={addPegawaiHRD}> </Route>
             <Route path="edit-pegawai" component={editPegawaiHRD}> </Route>
+            <Route path="jabatan" component={JabatanHRD}> </Route>
         </Route>
         <Route path="cetak-pegawai" component={CetakPegawaiHRD}> </Route>
     </Router> )
@@ -267,6 +297,16 @@ if(window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStor
             <Route path="dosen" component={DosenOwner}> </Route>
             <Route path="staff" component={StaffOwner}> </Route>
             <Route path="tagihan" component={Tagihan}> </Route>
+            <Route path="neraca_saldo_awal" component={NeracaSaldoAwal}> </Route>
+            <Route path="jurnal-umum" component={JurnalUmum}> </Route>
+            <Route path="ayat_jurnal_penyesuaian" component={Laporan}> </Route>
+            <Route path="penutup_jurnal" component={Laporan}> </Route>
+            <Route path="buku_besar" component={BukuBesar}> </Route>
+            <Route path="saldo_sementara" component={Laporan}> </Route>
+            <Route path="neraca_lanjut" component={Laporan}> </Route>
+            <Route path="rugi_laba" component={Laporan}> </Route>
+            <Route path="perubahan_modal" component={Laporan}> </Route>
+            <Route path="neraca_akhir" component={NeracaSaldoAkhir}> </Route>
         </Route>
     </Router> )
 }

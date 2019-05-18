@@ -8,12 +8,15 @@ class dosen extends Component {
         this.state = {
             dosens: [],
             dosen: [],
+            dosensTmp: [],
             loading: true,
-            selectedJurusan: 1,
+            selectedJurusan: 0,
+      		selectedKampus:0,
+      		jurusans: [],
+      		kampus: [],
             selectedNama: '',
             key: null,
             profil: false,
-            jurusans: [],
             selectedStatus: ''
         }
     }
@@ -32,23 +35,25 @@ class dosen extends Component {
 			console.log(data.results)
 			self.setState({
 				dosens: data.results,
+				dosensTmp: data.results,
 				loading: !self.state.loading,
 			})
 		});
 
-		fetch(BASE_URL + '/api/kampus/', {
-			method: 'get',
-			headers: {
-				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
-			}
-		}).then(function(response) {
-			return response.json();
-		}).then(function(data) {
-			self.setState({
-				selectedJurusan: data.results[0].id,
-				jurusans: data.results
-			})
-		});
+		fetch(BASE_URL + "/api/kampus/", {
+	      method: "get",
+	      headers: {
+	        Authorization: "JWT " + window.sessionStorage.getItem("token")
+	      }
+	    })
+	      .then(function(response) {
+	        return response.json();
+	      })
+	      .then(function(data) {
+	        self.setState({
+	          kampus: data.results
+	        });
+	      });
 
     }
 
@@ -99,32 +104,58 @@ class dosen extends Component {
                                 </div>
                                 <div className="ibox-content">
                                 	<div className="row">
-                                        <div className="col-lg-6">
-                                        	<label className="col-sm-3 col-form-label">Filter </label>
-                                        	<div className="col-sm-9">
-			                                    <select
-			                                    	value={this.state.selectedJurusan}
-			                                    	onChange={(e) => this.setState({selectedJurusan: e.target.value}) }
-			                                        className="form-control">
-			                                        {
-			                                        	this.state.jurusans.map((jurusan, key) => 
-			                                        		<option key={key} value={jurusan.id}>{jurusan.nama}</option>
-			                                        	)
-			                                        }
-			                                    </select>
-		                                    </div>
-                                        </div>
-                                        <div className="col-lg-6">
-                                        	<label className="col-sm-3 col-form-label">Cari :</label>
-                                        	<div className="col-sm-9">
-			                                    <input 
-		                                    		type="text" 
-		                                    		disabled="" 
-		                                    		placeholder="Nama dosen"
-		                                    		className="form-control"/>
-		                                    </div>
-                                        </div>
-                                    </div>
+					                    <div className="col-lg-4">
+					                      <label className="form-label">Filter Kampus : </label>
+					                    </div>
+					                    <div className="col-lg-4">
+					             
+					                    </div>
+					                    <div className="col-lg-4">
+					                      <label className="form-label">Pencarian : </label>
+					                    </div>
+					                  </div>
+
+					                  <div className="row">
+					                    <div className="col-lg-4">
+					                      <select
+					                          value={this.state.selectedKampus}
+					                          onChange={e => {
+					                            if (e.target.value !=  "0") {
+					                              this.setState({ 
+					                                dosensTmp: this.state.dosens.filter(data => data.kampus_info.id == e.target.value),
+					                                selectedKampus: e.target.value
+					                              })
+					                            }else{
+					                              let dosens = this.state.dosens
+					                              this.setState({ 
+					                                dosensTmp: dosens,
+					                                selectedKampus: e.target.value
+					                              })
+					                            }
+
+					                          }}
+					                          className="form-control"
+					                        >
+					                          <option value="0">Semua Kampus</option>
+					                          {this.state.kampus.map((kampus, key) => (
+					                            <option key={key} value={kampus.id}>
+					                              {kampus.nama}
+					                            </option>
+					                          ))}
+					                        </select>
+					                    </div>
+					                    <div className="col-lg-4">
+					                     
+					                    </div>
+					                    <div className="col-lg-4">
+					                      <input
+					                          type="text"
+					                          disabled=""
+					                          placeholder="Nama Dosen"
+					                          className="form-control"
+					                        />
+					                    </div>
+					                 </div>
 
                             		<div className="hr-line-dashed"></div>
                                     {
@@ -150,7 +181,7 @@ class dosen extends Component {
 										        </thead>
 										        <tbody>
 										        {
-										        	this.state.dosens.filter(dosen => dosen.kampus_info.id == this.state.selectedJurusan)
+										        	this.state.dosensTmp
 										        	.map((dosen, key) => 
 
 										        		<tr key={key}>

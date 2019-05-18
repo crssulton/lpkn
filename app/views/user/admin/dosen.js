@@ -588,26 +588,6 @@ class Administrator extends Component {
 	                                        </div>
 	                                    </div>
 
-										<div className="form-group  row">
-                                            <label className="col-sm-3 col-form-label">Jurusan</label>
-                                            <div className="col-sm-9">
-												<select 
-                                                    value={this.state.dosenBaru.jurusan}
-                                                    onChange={this.addDosenJurusan}
-                                                    id="jurusan" 
-                                                    name="jurusan" 
-                                                    className="form-control required">
-                                                    <option value="">Pilih Jurusan</option>
-                                                    {
-                                                        this.state.jurusans.map((jurusan, i) => 
-                                                            <option key={i} value={jurusan.id}>{jurusan.nama}</option>
-                                                        )
-                                                    }
-                                                </select>
-                                            </div>
-                                        </div>
-
-
 										<button
 											style={{'margin':'0 3%'}}
 											className="btn btn-primary btn-sm btn-add" 

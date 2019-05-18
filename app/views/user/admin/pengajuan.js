@@ -64,7 +64,8 @@ class Pengajuan extends Component {
 
 				self.setState({
 					addForm: true,
-					pengajuan
+					pengajuan,
+					newPengajuan: {}
 					
 				})
 				toastr.success("pengajuan berhasil ditambahkan", "Sukses ! ")
@@ -159,6 +160,7 @@ class Pengajuan extends Component {
 					                            <tr>
 					                                <th style={{'width':'5%'}}>NO</th>
 					                                <th style={{'width':'15%'}}>KETERANGAN</th>
+					                                <th style={{'width':'15%'}}>STATUS</th>
 					                                <th style={{'width':'13%', 'textAlign':'center'}}>AKSI</th>
 					                            </tr>
 					                            </thead>
@@ -168,15 +170,20 @@ class Pengajuan extends Component {
 					                            		<tr key={key}>
 							                                <td>{key+1}</td>
 							                                <td>{data.nama}</td>
+							                                <td>{data.status.toUpperCase()}</td>
 							                                <td>
 						                                		<center>
-						                                			<button 
-						                                				style={{'margin' : '0 5px'}} 
-						                                				onClick={() => this.handleDeleteMatkul( data.id, key )}
-						                                				className="btn btn-danger btn-sm" 
-						                                				type="button"
-						                                				><i className="fa fa-trash"></i></button>
-
+						                                			{
+						                                				data.status == "pending"?
+						                                				<button 
+							                                				style={{'margin' : '0 5px'}} 
+							                                				onClick={() => this.handleDeleteMatkul( data.id, key )}
+							                                				className="btn btn-danger btn-sm" 
+							                                				type="button"
+							                                				><i className="fa fa-trash"></i></button>
+							                                				:
+							                                				null
+						                                			}
 						                                			<Link to={{ pathname: 'anggaran', state: { pengajuan: data} }}>
 							                                			<button 
 							                                				style={{'margin' : '0 0 0 5px'}}
@@ -214,7 +221,7 @@ class Pengajuan extends Component {
                                 {
                                 	this.state.addForm?
                                 	<div className="ibox-content">
-	                                	<div className="form-group row"><label className="col-lg-3 col-form-label">Keterngan</label>
+	                                	<div className="form-group row"><label className="col-lg-3 col-form-label">Uraian Pengajuan</label>
 	                                        <div className="col-lg-9">
                                                 <input 
                                                 	onChange={(e) => {

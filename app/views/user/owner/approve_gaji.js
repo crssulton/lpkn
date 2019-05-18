@@ -3,7 +3,7 @@ import swal from 'sweetalert';
 import {BASE_URL} from '../../../config/config.js'
 import $ from 'jquery'
 import Select from 'react-select';
-
+import CurrencyInput from "react-currency-input";
 
 class Approve_Gaji extends Component {
 
@@ -14,6 +14,7 @@ class Approve_Gaji extends Component {
             loading: true,
             form: false,
             selected: null,
+            gajiPegawai: null,
             pegawaiBaru: {},
             add: true,
             addForm: true,
@@ -63,14 +64,14 @@ class Approve_Gaji extends Component {
     	let status = e.target.value
     	const self = this
     	swal({
-		  title: e.target.value + " pengajuan SGV ?",
+		  title: "Terima Pengajuan ?",
 		  icon: "warning",
 		  buttons: true,
 		  dangerMode: true,
 		})
 		.then((change) => {
 		  if (change) {
-		  	fetch(BASE_URL + '/api/pengajuan-sgv/' + id + '/' + status +'/', {
+		  	fetch(BASE_URL + '/api/pengajuan-sgv/' + id + '/verify/', {
 				method: 'post',
 				headers: {
 					'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
@@ -79,11 +80,7 @@ class Approve_Gaji extends Component {
 				if(response.status == 200){
 				toastr.success("Pengajuan berhasil di" + status	, "Sukses ! ")
 				let pengajuan_sgv = [...self.state.pengajuan_sgv]
-				if (status == 'verify') {
-					pengajuan_sgv.find(data => data.id == id).status = 'verified'
-				}else{
-					pengajuan_sgv.find(data => data.id == id).status = 'rejected'
-				}
+				pengajuan_sgv.find(data => data.id == id).status = 'verified'
 				self.setState({pengajuan_sgv})
 			}else{
 				toastr.warning("Mohon maaf,terjadi kesalahan", "Gagal ! ")
@@ -92,6 +89,37 @@ class Approve_Gaji extends Component {
 
 			});
 		  }
+		});
+    }
+
+    simpanGaji = () => {
+    	let gajiBaru = {
+    		pegawai: this.state.selected.pegawai_info.id,
+    		gaji: this.state.gajiPegawai
+    	}
+
+    	const self = this
+    	fetch(BASE_URL + '/api/pengajuan-sgv/', {
+			method: 'patch',
+			body: JSON.stringify(gajiBaru),
+			headers: {
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+				'Content-Type': 'application/json'
+			}
+		}).then(function(response) {
+			if(response.status == 200){
+				self.getPegawaiPengajuan()
+				self.setState({
+					pengajuan_sgv: self.state.pengajuan_sgv.find(data => data.pegawai_info.id == this.state.selected.pegawai_info.id).gaji = this.state.gajiPegawai,
+					gajiPegawai: null,
+					selected: null
+				})
+				toastr.success("Gaji Pegawai berhasil diubah", "Sukses ! ")
+			}else{
+				toastr.warning("Gagal mengubah Data", "Gagal ! ")
+			}
+		}).then(function(data) {
+
 		});
     }
 
@@ -104,7 +132,7 @@ class Approve_Gaji extends Component {
             <div >
                 <div className="row wrapper border-bottom white-bg page-heading">
 		            <div className="col-lg-8">
-		                <h2>Approve Pengajuan Gaji SPV</h2>
+		                <h2>Approve Pengajuan Gaji Pegawai</h2>
 		                <ol className="breadcrumb">
                             <li className="breadcrumb-item">
                                Dashboard
@@ -186,14 +214,28 @@ class Approve_Gaji extends Component {
 							                                <td>{data.status.toUpperCase()}</td>
 							                                <td style={{'width': '10%'}}>
 						                                		<center>
-						                                			<select
-						                                				onChange={(e) => this.handleChangeStatus(e, data.id)}
-								                                    	className="form-control"
-								                                    >
-								                                    	<option value="">Aksi</option>
-								                                    	<option value="verify">Verify</option>
-								                                    	<option value="reject">Reject</option>
-								                                    </select>
+						                                			<form className="form-inline">
+									                                    {
+									                                    	data.status == "pending" ?
+									                                    	<button 
+										                                    	onClick={(e) => this.handleChangeStatus(e, data.id)}
+								                                				style={{'margin' : '0 0 0 5px'}}
+								                                				className="btn btn-primary btn-sm" 
+								                                				type="button"
+								                                				><i className="fa fa-check"></i></button>
+								                                				:
+								                                				null
+									                                    }
+							                                			<button 
+							                                				style={{'margin' : '0 0 0 5px'}}
+							                                				onClick={ () => {
+							                                					this.setState({selected: data})
+							                                					$('#ModalEditGajiPegawai').modal('show')
+							                                				}}
+							                                				className="btn btn-info btn-sm" 
+							                                				type="button"
+							                                				><i className="fa fa-pencil"></i></button>
+						                                			</form>
 						                                		</center>
 							                                </td>
 							                            </tr>
@@ -207,6 +249,56 @@ class Approve_Gaji extends Component {
                                 </div>
                             </div>
                         </div>
+
+                        <div id="ModalEditGajiPegawai" className="modal fade">
+	                        <div className="modal-dialog">
+	                            <div className="modal-content">
+	                                <div className="modal-header">
+	                                    <button type="button" className="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span className="sr-only">close</span></button>
+	                                    <h4 id="modalTitle" className="modal-title">Ubah Gaji Pegawai</h4>
+	                                </div>
+	                                <div className="modal-body">
+	                                	{
+	                                    	this.state.tempPegawai != null ?
+	                                    	<div>
+	                                    		<div className="form-group row"><label className="col-lg-3 col-form-label">Nama</label>
+			                                        <div className="col-lg-9">
+			                                            <input 
+			                                            	type="text"
+			                                            	className="form-control m-b" 
+			                                            	disabled="disabled"
+			                                            	value={this.state.selected != null ? this.state.selected.pegawai_info.nama : null}
+			                                            />
+			                                        </div>
+			                                    </div>
+
+			                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Gaji</label>
+			                                        <div className="col-lg-9">
+			                                        	<CurrencyInput 
+                                                            precision="0" 
+                                                            className="form-control m-b" 
+                                                            prefix="Rp "
+                                                            value={this.state.gajiPegawai}
+                                                            onChangeEvent={(e, maskedvalue, floatvalue) => {
+			                                            		this.setState({gajiPegawai: floatvalue})
+                                                            }}
+                                                        />
+			                                        </div>
+			                                    </div>
+	                                    	</div>
+	                                    	:
+	                                    	null
+	                                    }
+	                                    
+	                                    
+	                                </div>
+	                                <div className="modal-footer">
+	                                    <button type="button" className="btn btn-default" data-dismiss="modal" onClick={() => this.setState({gajiPegawai: null})}>Tutup</button>
+	                                    <button type="button" className="btn btn-primary" data-dismiss="modal" onClick={this.simpanGaji}>Ubah</button>
+	                                </div> 
+	                            </div>
+	                        </div>
+	                    </div>
                         
                     </div>
                     

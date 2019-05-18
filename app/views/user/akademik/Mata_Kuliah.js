@@ -47,8 +47,7 @@ class Mata_Kuliah extends Component {
 			return response.json();
 		}).then(function(data) {
 			self.setState({
-				jurusans: data.results,
-				selectedJurusan: data.results[0].id
+				jurusans: data.results
 			})
 		});
 
@@ -288,6 +287,7 @@ class Mata_Kuliah extends Component {
 			                                    	value={this.state.selectedJurusan}
 			                                    	onChange={(e) => this.setState({selectedJurusan: e.target.value}) }
 			                                        className="form-control">
+			                                        <option value="0">Semua Jurusan</option>
 			                                        {
 			                                        	this.state.jurusans.map((jurusan, key) => 
 			                                        		<option key={key} value={jurusan.id}>{jurusan.nama}</option>
@@ -332,7 +332,10 @@ class Mata_Kuliah extends Component {
 					                            </thead>
 					                            <tbody>
 					                            {
-					                            	this.state.matkuls.filter(matkul => matkul.jurusan_info.id == this.state.selectedJurusan).map((matkul, key) =>
+					                            	this.state.matkuls
+					                            	.filter(matkul => 
+					                            		this.state.selectedJurusan == 0 ? true : matkul.jurusan_info.id == this.state.selectedJurusan)
+					                            	.map((matkul, key) =>
 					                            		<tr key={key}>
 							                                <td>{matkul.kode}</td>
 							                                <td>{matkul.nama}</td>

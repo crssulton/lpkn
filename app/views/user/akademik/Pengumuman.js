@@ -233,27 +233,6 @@ class Pengumuman extends Component {
                                                         </select>
                                                     </div>
                                                 </div>
-                                                {
-                                                    (this.state.selectedJurusan === "0" || this.state.selectedJurusan === "" || this.state.selectedJurusan === undefined)? null:
-                                                    <div className="col-lg-6">
-                                                        <label className="col-sm-2 col-form-label">Kelas </label>
-                                                        <div className="col-sm-8">
-                                                            <select
-                                                                value={this.state.selectedKelas}
-                                                                onChange={(e) => 
-                                                                    this.setState({selectedKelas: e.target.value})}
-                                                                className="form-control">
-                                                                <option value="">Pilih</option>
-                                                                <option value="0">Semua Kelas</option>
-                                                                {
-                                                                    this.state.kelas.filter(kel => kel.jurusan == this.state.selectedJurusan).map((kelas, key) =>
-                                                                        <option key={key} value={kelas.id}>Kelas {kelas.nama}</option>
-                                                                    )
-                                                                }
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                }
                                             </div>
                                             : null
                                         }

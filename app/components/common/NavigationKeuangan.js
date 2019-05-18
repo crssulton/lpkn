@@ -46,6 +46,9 @@ class Navigation extends Component {
                         <li className={this.activeRoute("/akun")}>
                             <Link to="/akun"><i className="fa fa-book"></i> <span className="nav-label">Akun</span></Link>
                         </li>
+                        <li className={this.activeRoute("/tagihan")}>
+                            <Link to="/tagihan"><i className="fa fa-book"></i> <span className="nav-label">Pembayaran Mahasiswa</span></Link>
+                        </li>
                         <li className={this.activeRoute("/transaksi")}>
                             <Link to="/transaksi"><i className="fa fa-calendar"></i> <span className="nav-label">Transaksi</span></Link>
                         </li>

@@ -9,7 +9,7 @@ class Mahasiswa extends Component {
             mahasiswas: [],
             mahasiswa: [],
             loading: true,
-            selectedJurusan: 1,
+            selectedJurusan: 0,
             selectedNama: '',
             key: null,
             profil: false,
@@ -36,7 +36,7 @@ class Mahasiswa extends Component {
 			})
 		});
 
-		fetch(BASE_URL + '/api/kampus/', {
+		fetch(BASE_URL + '/api/jurusan/', {
 			method: 'get',
 			headers: {
 				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
@@ -45,7 +45,6 @@ class Mahasiswa extends Component {
 			return response.json();
 		}).then(function(data) {
 			self.setState({
-				selectedJurusan: data.results[0].id,
 				jurusans: data.results
 			})
 		});
@@ -99,17 +98,41 @@ class Mahasiswa extends Component {
                                 </div>
                                 <div className="ibox-content">
                                 	<div className="row">
-                                        <div className="col-lg-6">
-                                        	<label className="col-sm-3 col-form-label">Cari :</label>
-                                        	<div className="col-sm-9">
-			                                    <input 
-		                                    		type="text" 
-		                                    		disabled="" 
-		                                    		placeholder="Nama Mahasiswa"
-		                                    		className="form-control"/>
-		                                    </div>
-                                        </div>
-                                    </div>
+					                    <div className="col-lg-8">
+					                      <label className="col-sm-3 col-form-label">Filter </label>
+					                      <div className="col-sm-9">
+					                        <select
+					                          value={this.state.selectedJurusan}
+					                          onChange={e =>
+					                            this.setState({ selectedJurusan: e.target.value })
+					                          }
+					                          className="form-control"
+					                        >
+					                          <option value="0">Semua Jurusan</option>
+					                          {this.state.jurusans.map((jurusan, key) => (
+					                            <option key={key} value={jurusan.id}>
+					                              {jurusan.nama}
+					                            </option>
+					                          ))}
+					                        </select>
+					                      </div>
+					                    </div>
+					                    <div className="col-lg-4">
+					                      <div className="col-sm-12">
+					                        <input
+					                          type="text"
+					                          disabled=""
+					                          placeholder="Nama Mahasiswa"
+					                          className="form-control"
+					                        />
+					                      </div>
+					                    </div>
+					                    <div className="col-lg-3">
+					                      <div className="col-sm-12">
+					                        
+					                      </div>
+					                    </div>
+					                  </div>
 
                             		<div className="hr-line-dashed"></div>
                                     {
@@ -135,7 +158,7 @@ class Mahasiswa extends Component {
 										        <tbody>
 										        {
 										        	this.state.mahasiswas.filter(mahasiswa => mahasiswa.calon == false && 
-										        		mahasiswa.kampus_info.id == this.state.selectedJurusan)
+										        		this.state.selectedJurusan == 0 ? true : mahasiswa.jurusan == this.state.selectedJurusan)
 										        	.map((mahasiswa, key) => 
 
 										        		<tr key={key}>
