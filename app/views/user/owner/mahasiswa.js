@@ -68,10 +68,9 @@ class Mahasiswa extends Component {
         return response.json();
       })
       .then(function(data) {
-        console.log(data.results);
         self.setState({
-          mahasiswas: data.results,
-          mahasiswasTmp: data.results,
+          mahasiswas: data,
+          mahasiswasTmp: data,
           loading: !self.state.loading
         });
       });

@@ -1,9 +1,14 @@
 import React, { Component } from 'react';	
 import swal from 'sweetalert';
+import Select from 'react-select';
+import 'react-select/dist/react-select.css';
 import {BASE_URL} from '../../../config/config.js'
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
 import CurrencyInput from 'react-currency-input';
+
+let transaksi = []
+let account = []
 
 class DataJurnal extends Component {
 
@@ -54,8 +59,7 @@ class DataJurnal extends Component {
 			return response.json();
 		}).then(function(data) {
 			self.setState({
-				transaksi: data.results,
-				loading: !self.state.loading
+				transaksi: data
 			})
 		});
 
@@ -70,8 +74,7 @@ class DataJurnal extends Component {
 			return response.json();
 		}).then(function(data) {
 			self.setState({
-				account: data,
-				loading: !self.state.loading
+				account: data
 			})
 		});
 
@@ -203,16 +206,16 @@ class DataJurnal extends Component {
         jurnalBaru.jenis = e.target.value
         this.setState({jurnalBaru})	
     }
-    addjurnalAkun = (e) => {
+    addjurnalAkun = (selectedOption) => {
     	let jurnalBaru = {}
         jurnalBaru = this.state.jurnalBaru
-        jurnalBaru.account = e.target.value
+        jurnalBaru.account = selectedOption.value
         this.setState({jurnalBaru})	
     }
-    addjurnalKode = (e) => {
+    addjurnalKode = (selectedOption) => {
     	let jurnalBaru = {}
         jurnalBaru = this.state.jurnalBaru
-        jurnalBaru.kode = e.target.value
+        jurnalBaru.kode = selectedOption.value
         this.setState({jurnalBaru})	
     }
 
@@ -245,6 +248,8 @@ class DataJurnal extends Component {
 	    		jurnalBaru.jumlah_kredit = null
 	    		jurnalBaru.jumlah_debet = null
 				jurnalBaru.tanggal = null
+				jurnalBaru.kode = null
+				jurnalBaru.account = null
 
 				self.setState({
 					addForm: true,
@@ -300,6 +305,20 @@ class DataJurnal extends Component {
     }
 
     render() {
+
+    	account = [...this.state.account]
+    	const { selectedOption } = this.state;
+    	this.state.account.map((data, key) => {
+			account[key].value = data.id
+			account[key].label = data.nama
+		})
+
+		transaksi = [...this.state.transaksi]
+    	this.state.transaksi.map((data, key) => {
+			transaksi[key].value = data.id
+			transaksi[key].label = data.kode + " | " + data.uraian
+		})
+
         return (
             <div >
                 <div className="row wrapper border-bottom white-bg page-heading">
@@ -338,7 +357,14 @@ class DataJurnal extends Component {
 	                                </div>
 	                                <div className="hr-line-dashed"></div>
                                     {
-
+                                    	this.state.loading ?
+                                		<div className="spiner-example">
+						                    <div className="sk-spinner sk-spinner-double-bounce">
+						                      <div className="sk-double-bounce1" />
+						                      <div className="sk-double-bounce2" />
+						                    </div>
+						                  </div>
+						                :
 			                            <div>
 											<table className="table table-striped" align="right">
 					                            <thead>
@@ -410,20 +436,12 @@ class DataJurnal extends Component {
                                 	<div className="ibox-content">
                                 		<div className="form-group row"><label className="col-lg-3 col-form-label">Kode Transaksi</label>
 		                                    <div className="col-lg-9">
-		                                    <select
-		                                    	className="form-control m-b" 
-		                                    	value={this.state.jurnalBaru.kode}
-							                    onChange={this.addjurnalKode}
-		                                    >
-		                                    	<option>Kode Transaksi</option>
-		                                    	{
-		                                    		this.state.transaksi.map(data =>{
-		                                    			return(
-		                                    				<option value={data.id}>{data.kode} - {data.uraian}</option>
-		                                    			)
-		                                    		})
-		                                    	}
-		                                    </select>
+		                                    	<Select
+											        name="form-field-name"
+											        value={this.state.jurnalBaru.kode} 
+											        onChange={this.addjurnalKode}
+											        options={transaksi}
+											      />
 		                                    </div>
 	                                    </div>
 
@@ -495,20 +513,12 @@ class DataJurnal extends Component {
 	                                    
 	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Akun</label>
 		                                    <div className="col-lg-9">
-		                                    <select
-		                                    	className="form-control m-b" 
-		                                    	value={this.state.jurnalBaru.account}
-							                    onChange={this.addjurnalAkun}
-		                                    >
-		                                    	<option>Jenis Akun</option>
-		                                    	{
-		                                    		this.state.account.map(data =>{
-		                                    			return(
-		                                    				<option value={data.id}>{data.nama}</option>
-		                                    			)
-		                                    		})
-		                                    	}
-		                                    </select>
+		                                    	<Select
+											        name="form-field-name"
+											        value={this.state.jurnalBaru.account} 
+											        onChange={this.addjurnalAkun}
+											        options={account}
+											      />
 		                                    </div>
 	                                    </div>
 

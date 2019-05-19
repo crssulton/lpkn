@@ -319,11 +319,11 @@ class List_pendaftar extends Component {
                     </div>
                   )}
                   <div className="text-center">
-				    <div className="btn-group">
-				        <button disabled={ this.state.previous == null ? "disabled" : null} onClick={this.getPreviousData} className="btn btn-white" type="button"><i className="fa fa-chevron-left"></i></button>
-				        <button disabled={ this.state.next == null ? "disabled" : null} onClick={this.getNextData} className="btn btn-white" type="button"><i className="fa fa-chevron-right"></i> </button>
-				    </div>
-				</div>
+        				    <div className="btn-group">
+        				        <button disabled={ this.state.previous == null ? "disabled" : null} onClick={this.getPreviousData} className="btn btn-white" type="button"><i className="fa fa-chevron-left"></i></button>
+        				        <button disabled={ this.state.next == null ? "disabled" : null} onClick={this.getNextData} className="btn btn-white" type="button"><i className="fa fa-chevron-right"></i> </button>
+        				    </div>
+				          </div>
                 </div>
               </div>
             </div>

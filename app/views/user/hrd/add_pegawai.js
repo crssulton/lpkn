@@ -102,36 +102,14 @@ export default class Form_add_staff extends Component {
 												                    name="userName" 
 												                    type="text" 
 												                    className="form-control required"
-												                    value={this.state.pegawai.nama}
+												                    value={this.state.pegawai.nik}
 												                    onChange={(e) => {
 												                    	let pegawai = {}
 												                    	pegawai = this.state.pegawai
-												                    	pegawai.nama = e.target.value
+												                    	pegawai.nik = e.target.value
 												                    	this.setState({pegawai})
 												                    }}
 												                    />
-												            </div>
-												        </div>
-
-												        <div className="form-group  row">
-												            <label className="col-sm-3 col-form-label">Jabatan</label>
-												            <div className="col-sm-9">
-												                <select 
-												                    id="jenis_kelamin" 
-												                    name="jenis_kelamin" 
-												                    className="form-control required"
-												                    value={this.state.pegawai.jenis_kelamin}
-												                    onChange={(e) => {
-												                    	let pegawai = {}
-												                    	pegawai = this.state.pegawai
-												                    	pegawai.jenis_kelamin = e.target.value
-												                    	this.setState({pegawai})
-												                    }}
-												                    >
-												                    <option value="">Pilih Jenis Kelamin</option>
-												                    <option value="L">Laki - Laki</option>
-												                    <option value="P">Perempuan</option>
-												                </select>
 												            </div>
 												        </div>
 

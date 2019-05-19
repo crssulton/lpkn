@@ -4,14 +4,17 @@ import {BASE_URL} from '../../../config/config.js'
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
 
-let saldoAwal = 0
+let total_pemasukan = 0
+let total_pengeluaran = 0
+let total_debet = 0
+let total_kredit = 0
 
-class BukuBesar extends Component {
+class NeracaSaldoAwal extends Component {
 
     constructor(props){
         super(props);
         this.state = {
-            data_jurnal: [],
+            buku_besar: [],
             account:[],
             kelompok_account: [],
             loading: true
@@ -26,7 +29,7 @@ class BukuBesar extends Component {
     componentDidMount(){
         const self = this
         
-        fetch(BASE_URL + '/api/data-jurnal/', {
+        fetch(BASE_URL + '/api/buku-besar/', {
             method: 'get',
             headers: {
                 'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
@@ -37,19 +40,50 @@ class BukuBesar extends Component {
             return response.json();
         }).then(function(data) {
             self.setState({
-                data_jurnal: data.results,
+                buku_besar: data,
                 loading: !self.state.loading
             })
         });
 
     }
 
+
+    exportData(){
+        printJS({
+            printable: 'print_data',
+            type: 'html',
+            modalMessage:"Sedang memuat data...",
+            showModal:true,
+            maxWidth:'1300',
+            font_size:'12pt',
+            targetStyles: ['*']
+        })
+     }
+
     render() {
+
+        this.state.buku_besar.map((data, key) => {
+            data.account.map((account, key) => {
+                if (data.role == 4) {
+                    total_pemasukan += account.total_nominal_account_sumber.account_sumber_transaksi__nominal__sum + account.total_nominal_account_tujuan.account_tujuan_transaksi__nominal__sum
+                }
+                if (data.role == 5) {
+                    total_pengeluaran += account.total_nominal_account_sumber.account_sumber_transaksi__nominal__sum + account.total_nominal_account_tujuan.account_tujuan_transaksi__nominal__sum
+                }
+
+                if (data.role == 1 || data.role == 2) {
+                    total_debet += account.total_nominal_account_sumber.account_sumber_transaksi__nominal__sum + account.total_nominal_account_tujuan.account_tujuan_transaksi__nominal__sum
+                }else if(data.role == 3){
+                    total_kredit += account.total_nominal_account_sumber.account_sumber_transaksi__nominal__sum + account.total_nominal_account_tujuan.account_tujuan_transaksi__nominal__sum
+                }
+            }) 
+        })
+
         return (
             <div >
                 <div className="row wrapper border-bottom white-bg page-heading">
                     <div className="col-lg-8">
-                        <h2>Report Buku Besar</h2>
+                        <h2>Report Ringkasan Buku Besar</h2>
                     </div>
                     <div className="col-lg-4">
                     </div>
@@ -59,7 +93,7 @@ class BukuBesar extends Component {
                         <div className="col-lg-12">
                             <div className="ibox ">
                                 <div className="ibox-title" style={{'backgroundColor':'#1ab394', 'color':'white'}}>
-                                    <h5> <i className="fa fa-list "></i> Report Buku Besar</h5>
+                                    <h5> <i className="fa fa-list "></i> Report Ringkasan Buku Besar</h5>
                                 </div>
                                 <div className="ibox-content">
                                     <div className="row">
@@ -74,46 +108,180 @@ class BukuBesar extends Component {
                                         </div>
                                     </div>
                                     <div className="hr-line-dashed"></div>
-                                    <table>
-                                        <tr>
-                                            <td>Jenis Laporan </td>
-                                            <td> : LAPORAN HISTORI PERKIRAAN </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Periode Laporan </td>
-                                            <td> : 2019-05</td>
-                                        </tr>
-                                    </table>
-                                    <br/>
-                                    <table style={{'width':'100%'}}>
-                                        <tr style={{'borderTop': '1px solid black', 'borderBottom': '1px solid black', 'widtd':'100%'}}>
-                                            <td style={{'padding' : '10px 0px', 'width':'5%'}}>No</td>
-                                            <td style={{'padding' : '10px 0px', 'width':'10%'}}>Tanggal</td>
-                                            <td style={{'padding' : '10px 0px', 'width':'10%'}}>Kode</td>
-                                            <td style={{'padding' : '10px 0px', 'width':'15%'}}>Keterangan</td>
-                                            <td style={{'padding' : '10px 0px', 'width':'10%'}}>Jumlah Debet</td>
-                                            <td style={{'padding' : '10px 0px', 'width':'10%'}}>Jumlah Kredit</td>
-                                            <td style={{'padding' : '10px 0px', 'width':'10%'}}>Saldo</td>
-                                        </tr>
-                                    </table>
-                                    {
-                                        this.state.data_jurnal.map((jurnal, key) =>
-                                            <tr>
-                                                <td style={{'padding' : '10px 0px', 'width':'5%'}}>{key+1}</td>
-                                                <td style={{'padding' : '10px 0px', 'width':'10%'}}>{jurnal.tanggal}</td>
-                                                <td style={{'padding' : '10px 0px', 'width':'10%'}}>{jurnal.account_info.kode}</td>
-                                                <td style={{'padding' : '10px 0px', 'width':'15%'}}>{jurnal.kode_info.uraian}</td>
-                                                <td style={{'padding' : '10px 0px', 'width':'10%'}}>{this.formatNumber(jurnal.jumlah_debet)}</td>
-                                                <td style={{'padding' : '10px 0px', 'width':'10%'}}>{this.formatNumber(jurnal.jumlah_kredit)}</td>
-                                                <td style={{'padding' : '10px 0px', 'width':'10%'}}>
+                                       
+                                        <div className="table-responsive">
+                                            <center>
+                                                <h3>LAPORAN KEUANGAN LPKN PER 20 MEI 2019</h3>
+                                                <h3>RINGKASAN BUKU BESAR</h3>
+                                                <h3>Per Tanggal 31 Mei 2019</h3>
+                                            </center>
+                                            <br/>
+                                            <br/>
+                                            <table style={{'width':'100%'}}>
+                                                <thead style={{'borderTop': '2px solid black', 'borderBottom': '2px solid black'}}>
+                                                <tr>
+                                                    <th style={{'padding' : '10px 0px', 'width' : '30%'}}></th>
+                                                    <th style={{'padding' : '10px 0px', 'width' : '15%'}}>Saldo Awal</th>
+                                                    <th style={{'padding' : '10px 0px', 'width' : '15%'}}>Total Debet</th>
+                                                    <th style={{'padding' : '10px 0px', 'width' : '15%'}}>Total Kredit</th>
+                                                    <th style={{'padding' : '10px 0px', 'width' : '15%'}}>Mutasi Bersih</th>
+                                                    <th style={{'padding' : '10px 0px', 'width' : '10%'}}>Saldo Akhir</th>
+                                                </tr>
+                                                </thead>
+                                            </table>
+                                            <table style={{'width':'100%'}}>
                                                 {
-                                                    this.formatNumber(saldoAwal += parseInt(jurnal.jumlah_debet) - parseInt(jurnal.jumlah_kredit))
+                                                    this.state.buku_besar.filter(role => role.role == 4 || role.role == 5).map((data, key) => 
+                                                        <tbody>
+                                                        <tr>
+                                                            <td colSpan="6"><b>{data.nama}</b></td>
+                                                        </tr>
+                                                        {
+                                                            data.account.map((account, key) => 
+                                                                <tr>
+                                                                    <td style={{'padding' : '10px 35px', 'width' : '30%', fontSize:'8pt'}}>
+                                                                        {account.nama}
+                                                                    </td>
+                                                                    <td>
+                                                                    </td>
+                                                                    <td>
+                                                                        {data.role == 1 || data.role == 5 ? 
+                                                                            account.total_nominal_account_sumber.account_sumber_transaksi__nominal__sum +
+                                                                            account.total_nominal_account_tujuan.account_tujuan_transaksi__nominal__sum
+                                                                            : 
+                                                                            "-"
+                                                                        }
+                                                                    </td>
+                                                                    <td>
+                                                                        {data.role == 2 || data.role == 3 || data.role == 4 ?  
+                                                                            account.total_nominal_account_sumber.account_sumber_transaksi__nominal__sum +
+                                                                            account.total_nominal_account_tujuan.account_tujuan_transaksi__nominal__sum
+                                                                            : 
+                                                                            "-"
+                                                                        }
+                                                                    </td>
+                                                                    <td>
+                                                                        {data.role == 1 || data.role == 5 ? 
+                                                                            `${account.total_nominal_account_sumber.account_sumber_transaksi__nominal__sum +
+                                                                            account.total_nominal_account_tujuan.account_tujuan_transaksi__nominal__sum} Db`
+                                                                            : 
+                                                                            null
+                                                                        }
+                                                                        {data.role == 2 || data.role == 3 || data.role == 4 ?  
+                                                                            `${account.total_nominal_account_sumber.account_sumber_transaksi__nominal__sum +
+                                                                            account.total_nominal_account_tujuan.account_tujuan_transaksi__nominal__sum} Kr`
+                                                                            : 
+                                                                            null
+                                                                        }
+                                                                    </td>
+                                                                    <td>
+                                                                    </td>
+                                                                </tr>
+                                                            )
+                                                        }  
+                                                        </tbody> 
+                                                    )
                                                 }
-                                                </td>
-                                            </tr>
-                                        )
-                                    }
-                                        
+                                                    <tr style={{'borderTop' : '1px solid black', 'borderBottom' : '1px solid black'}}>
+                                                        <td style={{'padding' : '10px 0px', 'width' : '30%'}}>
+                                                            <b>Laba Bersih</b>
+                                                        </td>
+                                                        <td style={{'padding' : '10px 0px', 'width' : '15%'}}>
+                                                            
+                                                        </td>
+                                                        <td style={{'padding' : '10px 0px', 'width' : '15%'}}>
+                                                            <b>{total_pemasukan - total_pengeluaran < 0 ? `(${total_pemasukan  - total_pengeluaran})` : total_pemasukan - total_pengeluaran}</b>
+                                                        </td>
+                                                        <td style={{'padding' : '10px 0px', 'width' : '15%'}}>
+                                                            
+                                                        </td>
+                                                        <td style={{'padding' : '10px 0px', 'width' : '15%'}}>
+                                                           
+                                                        </td>
+                                                        <td style={{'padding' : '10px 0px', 'width' : '15%'}}>
+                                                            
+                                                        </td>
+                                                    </tr>
+                                            </table>
+                                            <br/>
+                                            <table style={{'width':'100%'}}>
+                                                {
+                                                    this.state.buku_besar.filter(role => role.role == 1 || role.role == 2 || role.role == 3).map((data, key) => 
+                                                        <tbody>
+                                                            <tr>
+                                                                <td colSpan="6"><b>{data.nama}</b></td>
+                                                            </tr>
+                                                        {
+                                                            data.account.map((account, key) => 
+                                                                <tr>
+                                                                    <td style={{'padding' : '10px 35px', 'width' : '30%'}}>
+                                                                        {account.nama}
+                                                                    </td>
+                                                                    <td style={{'padding' : '10px 35px', 'width' : '15%'}}>
+                                                                       
+                                                                    </td>
+                                                                    <td style={{'padding' : '10px 0px', 'width' : '15%'}}>
+                                                                        {data.role == 1 || data.role == 5 ? 
+                                                                            account.total_nominal_account_sumber.account_sumber_transaksi__nominal__sum +
+                                                                            account.total_nominal_account_tujuan.account_tujuan_transaksi__nominal__sum
+                                                                            : 
+                                                                            "-"
+                                                                        }
+                                                                    </td>
+                                                                    <td style={{'padding' : '10px 0px', 'width' : '15%'}}>
+                                                                        {data.role == 2 || data.role == 3 || data.role == 4 ?  
+                                                                            account.total_nominal_account_sumber.account_sumber_transaksi__nominal__sum +
+                                                                            account.total_nominal_account_tujuan.account_tujuan_transaksi__nominal__sum
+                                                                            : 
+                                                                            "-"
+                                                                        }
+                                                                    </td>
+                                                                    <td style={{'padding' : '10px 35px', 'width' : '15%'}}>
+                                                                        {data.role == 1 || data.role == 5 ? 
+                                                                            `${account.total_nominal_account_sumber.account_sumber_transaksi__nominal__sum +
+                                                                            account.total_nominal_account_tujuan.account_tujuan_transaksi__nominal__sum} Db`
+                                                                            : 
+                                                                            null
+                                                                        }
+                                                                        {data.role == 2 || data.role == 3 || data.role == 4 ?  
+                                                                            `${account.total_nominal_account_sumber.account_sumber_transaksi__nominal__sum +
+                                                                            account.total_nominal_account_tujuan.account_tujuan_transaksi__nominal__sum} Kr`
+                                                                            : 
+                                                                            null
+                                                                        }
+                                                                    </td>
+                                                                    <td style={{'padding' : '10px 35px', 'width' : '15%'}}>
+                                                                    
+                                                                    </td>
+                                                                </tr>
+                                                            ) 
+                                                        } 
+                                                        </tbody> 
+                                                    )
+                                                }
+                                                    <tr style={{'borderTop' : '1px solid black', 'borderBottom' : '1px solid black'}}>
+                                                        <td style={{'padding' : '10px 0px', 'width' : '30%'}}>
+                                                            
+                                                        </td>
+                                                        <td style={{'padding' : '10px 0px', 'width' : '15%'}}>
+                                                            
+                                                        </td>
+                                                        <td style={{'padding' : '10px 0px', 'width' : '15%'}}>
+                                                          <b>{total_debet}</b>
+                                                        </td>
+                                                        <td style={{'padding' : '10px 0px', 'width' : '15%'}}>
+                                                            <b>{total_kredit}</b>
+                                                        </td>
+                                                        <td style={{'padding' : '10px 0px', 'width' : '15%'}}>
+                                                           
+                                                        </td>
+                                                        <td style={{'padding' : '10px 0px', 'width' : '15%'}}>
+                                                            
+                                                        </td>
+                                                    </tr>
+                                            </table>
+                                           
+                                        </div>
                                     </div>
                             </div>
                         </div>  
@@ -127,4 +295,4 @@ class BukuBesar extends Component {
 
 }
 
-export default BukuBesar
+export default NeracaSaldoAwal

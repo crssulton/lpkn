@@ -9,7 +9,9 @@ class Pembayaran extends Component {
         this.state = {
             pembayaran: {},
             mahasiswa: [],
-            riwayat: []
+            riwayat: [],
+            tagihan: [],
+            loading: true
         }
     }
 
@@ -44,6 +46,22 @@ class Pembayaran extends Component {
 				riwayat: data.results
 			})
 		});
+
+		fetch(BASE_URL + '/api/tagihan/', {
+	      method: 'get',
+	      headers: {
+	        'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+	        'Content-Type': 'application/json',
+	                'Accept': 'application/json'
+	      }
+	    }).then(function(response) {
+	      return response.json();
+	    }).then(function(data) {
+	      self.setState({
+	        tagihan: data,
+	        loading: false
+	      })
+	    });
 
     }
 
@@ -133,23 +151,16 @@ class Pembayaran extends Component {
 
 		                                <div className="panel-body">
 		                                	<div className="ibox-content">
-				                                <div className="form-group row"><label className="col-lg-2 col-form-label">NO AKUN</label>
-				                                    <div className="col-lg-4">
-				                                    	<input 
-				                                    		type="text" 
-				                                    		disabled="" 
-				                                    		name="nama_ayah"
-				                                    		value={this.state.pembayaran.judul}
-				                                    		onChange={(e) => {
-				                                    			let pembayaran = {...this.state.pembayaran}
-				                                    			pembayaran.judul = e.target.value
-				                                    			this.setState({pembayaran})
-				                                    		}}
-				                                    		className="form-control"/>
-				                                    </div>
-				                                </div>
-				                                
-				                                <div className="hr-line-dashed"></div>
+		                                		{
+		                                		this.state.loading ?
+		                                		<div className="spiner-example">
+								                    <div className="sk-spinner sk-spinner-double-bounce">
+								                      <div className="sk-double-bounce1" />
+								                      <div className="sk-double-bounce2" />
+								                    </div>
+								                  </div>
+								                 :
+		                                		<div>
 				                                <div className="form-group row"><label className="col-lg-2 col-form-label">TANGGAL TRANSFER</label>
 				                                    <div className="col-lg-4">
 				                                    	<input 
@@ -200,22 +211,24 @@ class Pembayaran extends Component {
 				                                </div>
 				                                
 				                                <div className="hr-line-dashed"></div>
-				                                <div className="form-group row"><label className="col-lg-2 col-form-label">REKENING</label>
-				                                    <div className="col-lg-4">
-			                                            <div className="form-check">
-														  <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1"/>
-														  <label className="form-check-label" htmlFor="exampleRadios1" style={{'margin':'0 20px'}}>
-														    BCA - 72301281912
-														  </label>
-														</div>
-														<div className="form-check">
-														  <input className="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2"/>
-														  <label className="form-check-label" htmlFor="exampleRadios2" style={{'margin':'0 20px'}}>
-														    MANDIRI - 82361812987
-														  </label>
-														</div>
-			                                        </div>
-				                                </div>
+				                                <div className="form-group row">
+								                    <label className="col-lg-2 col-form-label">Masa Tagihan</label>
+								                    <div className="col-lg-4">
+								                      <select
+								                          
+								                          className="form-control m-b"
+								                        >
+								                        <option value="">Pilih Masa Tagihan</option>
+								                        {
+								                          this.state.tagihan
+								                          .filter(data => data.mahasiswa == this.state.mahasiswa.id && data.status == false)
+								                          .map((tagihan, key) =>
+								                            <option value={tagihan.id}>Bulan {moment(tagihan.tanggal).format("MM-YYYY")}</option>
+								                          )
+								                        }
+								                      </select>
+								                    </div>
+								                  </div>
 
 				                                <div className="hr-line-dashed"></div>
 				                                <div className="form-group row">
@@ -223,7 +236,8 @@ class Pembayaran extends Component {
 				                                        <button onClick={this.addPembayaran} className="btn btn-primary btn-sm" type="submit">KIRIM</button>
 				                                    </div>
 				                                </div>
-					                           
+					                           	</div>
+					                           }
 					                        </div>
 		                                </div>
 		                            </div>
@@ -235,9 +249,9 @@ class Pembayaran extends Component {
 												    <thead>
 												    <tr>
 												        <th>#</th>
-												        <th>NO AKUN</th>
+												        <th>NAMA</th>
 												        <th>TANGGAL</th>
-												        <th>NILAI (Rp.)</th>
+												        <th>NOMINAL (Rp.)</th>
 												        <th>STATUS</th>
 												    </tr>
 												    </thead>
@@ -249,7 +263,7 @@ class Pembayaran extends Component {
 												    		return(
 												    			<tr key={key}>
 															        <td>{key+1}</td>
-															        <td>14001</td>
+															        <td>{data.mahasiswa_info.nama}</td>
 															        <td>{data.tanggal_pembayaran}</td>
 															        <td>{this.formatNumber(data.nominal)}</td>
 															        <td style={{'align': "center"}}>
@@ -284,7 +298,7 @@ class Pembayaran extends Component {
 												    <thead>
 												    	<tr>
 											    	    	<th colSpan="3">Sisa</th>
-											    	    	<th colSpan="2">{this.formatNumber(parseFloat(this.state.mahasiswa.total_bayar))}</th>
+											    	    	<th colSpan="2">{this.formatNumber(parseFloat(this.state.mahasiswa.total_bayar - total))}</th>
 
 												    	</tr>
 												    </thead>

@@ -8,6 +8,8 @@ import 'react-day-picker/lib/style.css';
 import CurrencyInput from 'react-currency-input';
 
 let account = []
+let account_tujuan = []
+let kelompok_account = []
 
 class Transaksi extends Component {
 
@@ -15,11 +17,12 @@ class Transaksi extends Component {
         super(props);
 
         let transaksiBaru = {}
-        transaksiBaru.saldo_awal = "true"
+        transaksiBaru.saldo_awal = "false"
 
         this.state = {
             transaksi: [],
             account: [],
+            kelompok_account: [],
             loading: true,
             form: false,
             selected: null,
@@ -54,25 +57,11 @@ class Transaksi extends Component {
 			return response.json();
 		}).then(function(data) {
 			self.setState({
-				transaksi: data.results,
+				transaksi: data,
 				loading: !self.state.loading
 			})
 		});
 
-		fetch(BASE_URL + '/api/jurusan/', {
-			method: 'get',
-			headers: {
-				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
-				'Content-Type': 'application/json',
-                'Accept': 'application/json'
-			}
-		}).then(function(response) {
-			return response.json();
-		}).then(function(data) {
-			self.setState({
-				jurusans: data.results
-			})
-		});
 
 		fetch(BASE_URL + '/api/account/', {
 			method: 'get',
@@ -84,9 +73,23 @@ class Transaksi extends Component {
 		}).then(function(response) {
 			return response.json();
 		}).then(function(data) {
-			console.log(data.results.length)
 			self.setState({
 				account: data
+			})
+		});
+
+		fetch(BASE_URL + '/api/kelompok-account/', {
+			method: 'get',
+			headers: {
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+				'Content-Type': 'application/json',
+                'Accept': 'application/json'
+			}
+		}).then(function(response) {
+			return response.json();
+		}).then(function(data) {
+			self.setState({
+				kelompok_account: data.results
 			})
 		});
 
@@ -194,6 +197,14 @@ class Transaksi extends Component {
 	        this.setState({transaksiBaru})	
     	}
     }
+    addtransaksiKelompokAkun = (selectedOption) => {
+    	if (selectedOption) {
+    		let transaksiBaru = {}
+	        transaksiBaru = this.state.transaksiBaru
+	        transaksiBaru.kelompok_account = selectedOption.value
+	        this.setState({transaksiBaru})	
+    	}
+    }
     addtransaksiKode = (e) => {
     	let transaksiBaru = {}
         transaksiBaru = this.state.transaksiBaru
@@ -285,20 +296,15 @@ class Transaksi extends Component {
 					'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
 				}
 			}).then(function(response) {
-
-				self.setState({
-					transaksi: self.state.transaksi.filter(data => data.id !== id)
-				})
-				swal("Sukses! transaksi telah dihapus!", {
-			      icon: "success",
-			    });
+				if (response.status == 204) {
+					self.setState({
+						transaksi: self.state.transaksi.filter(data => data.id !== id)
+					})
+					swal("Sukses! transaksi telah dihapus!", {
+				      icon: "success",
+				    });
+				}
 			}).then(function(data) {
-				self.setState({
-					transaksi: self.state.transaksi.filter(data => data.id !== id)
-				})
-				swal("Sukses! transaksi telah dihapus!", {
-			      icon: "success",
-			    });
 			});
 		  }
 		});
@@ -309,12 +315,24 @@ class Transaksi extends Component {
 	}
 
     render() {
+
+    	kelompok_account = [...this.state.kelompok_account]
+    	this.state.kelompok_account.map((data, key) => {
+			kelompok_account[key].value = data.id
+			kelompok_account[key].label = data.nama
+		})
     	
     	account = [...this.state.account]
     	const { selectedOption } = this.state;
-    	this.state.account.map((data, key) => {
+    	this.state.account.filter(x => x.kelompok_account ==  this.state.transaksiBaru.kelompok_account).map((data, key) => {
 			account[key].value = data.id
 			account[key].label = data.nama
+		})
+
+		account_tujuan = [...this.state.account]
+    	this.state.account.map((data, key) => {
+			account_tujuan[key].value = data.id
+			account_tujuan[key].label = data.nama
 		})
 
         return (
@@ -355,7 +373,14 @@ class Transaksi extends Component {
 	                                </div>
 	                                <div className="hr-line-dashed"></div>
                                     {
-
+                                    	this.state.loading ?
+                                		<div className="spiner-example">
+					                    <div className="sk-spinner sk-spinner-double-bounce">
+					                      <div className="sk-double-bounce1" />
+					                      <div className="sk-double-bounce2" />
+					                    </div>
+					                  </div>
+					                  :
 			                            <div>
 											<table className="table table-striped" align="right">
 					                            <thead>
@@ -375,8 +400,8 @@ class Transaksi extends Component {
 					                            			<td>{data.kode}</td>
 							                                <td>{data.uraian}</td>
 							                                <td>{data.tanggal}</td>
-							                                <td>{this.state.account.length != 0 ? this.state.account.find((account) => (account.id == data.account)).nama : null}</td>
-							                                <td>{this.formatNumber(data.nominal)}</td>
+							                                <td>{data.account_info.nama}</td>
+							                                <td>Rp. {this.formatNumber(data.nominal)}</td>
 							                                <td>
 						                                		<center>
 						                                			<button 
@@ -433,10 +458,22 @@ class Transaksi extends Component {
 	                                        </div>
 	                                    </div>
 
+	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Kelompok Akun</label>
+		                                    <div className="col-lg-9">
+		                                    <Select
+										        name="form-field-name"
+										        value={this.state.transaksiBaru.kelompok_account}
+										        onChange={this.addtransaksiKelompokAkun}
+										        options={kelompok_account}
+										      />
+		                                    </div>
+	                                    </div>
+
 	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Akun</label>
 		                                    <div className="col-lg-9">
 		                                    <Select
 										        name="form-field-name"
+										        disabled={this.state.transaksiBaru.kelompok_account == null ? "disabled" : null}
 										        value={this.state.transaksiBaru.account}
 										        onChange={this.addtransaksiAkun}
 										        options={account}
@@ -483,14 +520,13 @@ class Transaksi extends Component {
 	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Saldo Awal</label>
 	                                        <div className="col-lg-9">
 	                                            <select
-	                                            	defaultValue={true}
+	                                            	defaultValue={false}
                                 					value={this.state.transaksiBaru.saldo_awal}
 	                                				onChange={this.addtransaksiSaldoAwal}
 			                                    	className="form-control"
 			                                    >
-
-			                                    	<option value={true}>Ya</option>
 			                                    	<option value={false}>Tidak</option>
+			                                    	<option value={true}>Ya</option>
 			                                    </select>
 	                                        </div>
 	                                    </div>

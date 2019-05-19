@@ -32,7 +32,7 @@ class dosen extends Component {
 		}).then(function(response) {
 			return response.json();
 		}).then(function(data) {
-			console.log(data.results)
+			console.log(data)
 			self.setState({
 				dosens: data.results,
 				dosensTmp: data.results,

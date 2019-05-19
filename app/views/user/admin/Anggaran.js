@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import { Link} from 'react-router';
 import {BASE_URL} from '../../../config/config.js'
 import CurrencyInput from "react-currency-input";
+import Select from 'react-select';
+import 'react-select/dist/react-select.css';
+
+let account = []
 
 class Anggaran extends Component {
 
@@ -18,6 +22,7 @@ class Anggaran extends Component {
             selected: null,
             pengajuanBaru: {},
             add: true,
+            account: [],
             addForm: true,
             edit_pengajuan_anggaran : {},
             newPengajuan: {}
@@ -39,6 +44,21 @@ class Anggaran extends Component {
             self.setState({
                 pengajuan_anggaran: data.results,
                 loading: !self.state.loading
+            })
+        });
+
+        fetch(BASE_URL + '/api/account/', {
+            method: 'get',
+            headers: {
+                'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        }).then(function(response) {
+            return response.json();
+        }).then(function(data) {
+            self.setState({
+                account: data
             })
         });
 
@@ -156,7 +176,50 @@ class Anggaran extends Component {
         return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
     }
 
+    approveTransaksi = (id) => {
+        const self = this
+        swal({
+          title: "Buat Transaksi Item ?",
+          icon: "warning",
+          buttons: true,
+          dangerMode: true,
+        })
+        .then((willDelete) => {
+          if (willDelete) {
+            fetch(BASE_URL + '/api/pengajuan-anggaran/' + id + '/approve/', {
+                method: 'post',
+                headers: {
+                    'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            }).then(function(response) {
+                let pengajuan_anggaran =  [...self.state.pengajuan_anggaran]
+
+                if (response.status == 200 || response.status == 201) {
+                    pengajuan_anggaran.find(data => data.id == id).approved = true
+                    self.setState({
+                        pengajuan_anggaran
+                    })
+                    swal("Sukses! Item telah dimasukkan dalam Transaksi!", {
+                      icon: "success",
+                    });
+                }else{
+                    toastr.warning("Terjadi kesalahan", "Gagal ! ")
+                }
+            }).then(function(data) {
+            });
+          }
+        });
+    }
+
     render() {
+        account = [...this.state.account]
+        const { selectedOption } = this.state;
+        this.state.account.map((data, key) => {
+            account[key].value = data.id
+            account[key].label = data.nama
+        })
         return (
             <div>
                 <div className="row wrapper border-bottom white-bg page-heading">
@@ -197,9 +260,10 @@ class Anggaran extends Component {
                                                     <th>NO</th>
                                                     <th>NAMA BARANG</th>
                                                     <th>SPESIFIKASI</th>
+                                                    <th>SATUAN</th>
                                                     <th>JUMLAH</th>
                                                     <th>HARGA</th>
-                                                    {this.state.pengajuan.status == "pending" ? <th>AKSI</th> : null}
+                                                    <th><center>AKSI</center></th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -210,30 +274,41 @@ class Anggaran extends Component {
                                                                 <td>{key+1}</td>
                                                                 <td>{data.nama_barang}</td>
                                                                 <td>{data.spesifikasi}</td>
+                                                                <td>{data.satuan}</td>
                                                                 <td>{data.jumlah}</td>
                                                                 <td>Rp. {this.formatNumber(data.harga)}</td>
+                                                                <td>
                                                                 {
                                                                     this.state.pengajuan.status == "pending" ?
-                                                                    <td>
+                                                                    <center>
+                                                                        <button 
+                                                                            style={{'margin' : '0 5px'}} 
+                                                                            className="btn btn-info btn-sm" 
+                                                                            type="button"
+                                                                            onClick={ () => {this.setState({ selected: data.id, addForm: false})} }
+                                                                            >
+                                                                            <i className="fa fa-edit"></i></button>
+
+                                                                        <button 
+                                                                            onClick={() => this.handleDeleteItem( data.id, key )}
+                                                                            className="btn btn-danger btn-sm" 
+                                                                            type="button"
+                                                                            ><i className="fa fa-trash"></i></button>
+                                                                    </center>
+                                                                    :
+                                                                    data.approved == false ?
                                                                         <center>
                                                                             <button 
-                                                                                style={{'margin' : '0 5px'}} 
-                                                                                className="btn btn-info btn-sm" 
+                                                                                className="btn btn-primary btn-sm" 
                                                                                 type="button"
-                                                                                onClick={ () => {this.setState({ selected: data.id, addForm: false})} }
+                                                                                onClick={() => this.approveTransaksi(data.id)}
                                                                                 >
-                                                                                <i className="fa fa-edit"></i></button>
-
-                                                                            <button 
-                                                                                onClick={() => this.handleDeleteItem( data.id, key )}
-                                                                                className="btn btn-danger btn-sm" 
-                                                                                type="button"
-                                                                                ><i className="fa fa-trash"></i></button>
+                                                                                <i className="fa fa-check"></i></button>
                                                                         </center>
-                                                                    </td>
                                                                     :
                                                                     null
                                                                 }
+                                                                </td>
                                                             </tr>
                                                         )
                                                     }
@@ -294,6 +369,27 @@ class Anggaran extends Component {
                                                 </div>
                                                 </div>
 
+                                                <div className="form-group row"><label className="col-lg-3 col-form-label">Satuan</label>
+                                                <div className="col-lg-9">
+                                                    <select
+                                                      value={this.state.newPengajuan.satuan}
+                                                      onChange={(e) => {
+                                                            let newPengajuan = {...this.state.newPengajuan}
+                                                            newPengajuan.satuan = e.target.value
+                                                            this.setState({newPengajuan})
+                                                        }}
+                                                      className="form-control m-b"
+                                                    >
+                                                    <option value="">--Pilih Satuan--</option>
+                                                      <option value="buah">Buah</option>
+                                                      <option value="unit">Unit</option>
+                                                      <option value="lembar">Lembar</option>
+                                                      <option value="batang">Batang</option>
+                                                      <option value="bungkus">Bungkus</option>
+                                                    </select>
+                                                </div>
+                                                </div>
+
                                                 <div className="form-group row"><label className="col-lg-3 col-form-label">Jumlah</label>
                                                 <div className="col-lg-9">
                                                     <input 
@@ -322,6 +418,36 @@ class Anggaran extends Component {
                                                             this.setState({newPengajuan})
                                                         }}
                                                     />
+                                                </div>
+                                                </div>
+
+                                                <div className="form-group row"><label className="col-lg-3 col-form-label">Akun</label>
+                                                <div className="col-lg-9">
+                                                    <Select
+                                                        name="form-field-name"
+                                                        value={this.state.newPengajuan.account}
+                                                        onChange={(selectedOption) => {
+                                                            let newPengajuan = {...this.state.newPengajuan}
+                                                            newPengajuan.account = selectedOption.value
+                                                            this.setState({newPengajuan})
+                                                        }}
+                                                        options={account}
+                                                      />
+                                                </div>
+                                                </div>
+
+                                                <div className="form-group row"><label className="col-lg-3 col-form-label">Akun Tujuan</label>
+                                                <div className="col-lg-9">
+                                                    <Select
+                                                        name="form-field-name"
+                                                        value={this.state.newPengajuan.account_tujuan}
+                                                        onChange={(selectedOption) => {
+                                                            let newPengajuan = {...this.state.newPengajuan}
+                                                            newPengajuan.account_tujuan = selectedOption.value
+                                                            this.setState({newPengajuan})
+                                                        }}
+                                                        options={account}
+                                                      />
                                                 </div>
                                                 </div>
 
@@ -376,6 +502,31 @@ class Anggaran extends Component {
                                                 </div>
                                                 </div>
 
+                                                <div className="form-group row"><label className="col-lg-3 col-form-label">Satuan</label>
+                                                <div className="col-lg-9">
+                                                    <select
+                                                      value={this.state.pengajuan_anggaran.filter(data => data.id === this.state.selected)[0].satuan}
+                                                      onChange={(e) => {
+                                                            let pengajuan_anggaran = []
+                                                            pengajuan_anggaran = this.state.pengajuan_anggaran
+                                                            pengajuan_anggaran.filter(data => data.id == this.state.selected)[0].satuan = e.target.value
+                                                            this.setState({
+                                                                pengajuan_anggaran,
+                                                                edit_pengajuan_anggaran: pengajuan_anggaran.filter(data => data.id == this.state.selected)[0]
+                                                            })
+                                                        }}
+                                                      className="form-control m-b"
+                                                    >
+                                                    <option value="">--Pilih Satuan--</option>
+                                                      <option value="buah">Buah</option>
+                                                      <option value="unit">Unit</option>
+                                                      <option value="lembar">Lembar</option>
+                                                      <option value="batang">Batang</option>
+                                                      <option value="bungkus">Bungkus</option>
+                                                    </select>
+                                                </div>
+                                                </div>
+
                                                 <div className="form-group row"><label className="col-lg-3 col-form-label">Jumlah</label>
                                                 <div className="col-lg-9">
                                                     <input 
@@ -412,6 +563,44 @@ class Anggaran extends Component {
                                                             })
                                                         }}
                                                     />
+                                                </div>
+                                                </div>
+
+                                                <div className="form-group row"><label className="col-lg-3 col-form-label">Akun</label>
+                                                <div className="col-lg-9">
+                                                    <Select
+                                                        name="form-field-name"
+                                                        value={this.state.pengajuan_anggaran.filter(data => data.id === this.state.selected)[0].account}
+                                                        onChange={(selectedOption) => {
+                                                            let pengajuan_anggaran = []
+                                                            pengajuan_anggaran = this.state.pengajuan_anggaran
+                                                            pengajuan_anggaran.filter(data => data.id == this.state.selected)[0].account = selectedOption.value
+                                                            this.setState({
+                                                                pengajuan_anggaran,
+                                                                edit_pengajuan_anggaran: pengajuan_anggaran.filter(data => data.id == this.state.selected)[0]
+                                                            })
+                                                        }}
+                                                        options={account}
+                                                      />
+                                                </div>
+                                                </div>
+
+                                                <div className="form-group row"><label className="col-lg-3 col-form-label">Akun Tujuan</label>
+                                                <div className="col-lg-9">
+                                                    <Select
+                                                        name="form-field-name"
+                                                        value={this.state.pengajuan_anggaran.filter(data => data.id === this.state.selected)[0].account_tujuan}
+                                                        onChange={(selectedOption) => {
+                                                            let pengajuan_anggaran = []
+                                                            pengajuan_anggaran = this.state.pengajuan_anggaran
+                                                            pengajuan_anggaran.filter(data => data.id == this.state.selected)[0].account_tujuan = selectedOption.value
+                                                            this.setState({
+                                                                pengajuan_anggaran,
+                                                                edit_pengajuan_anggaran: pengajuan_anggaran.filter(data => data.id == this.state.selected)[0]
+                                                            })
+                                                        }}
+                                                        options={account}
+                                                      />
                                                 </div>
                                                 </div>
 

@@ -102,7 +102,7 @@ class Pendaftaran extends Component {
       loading: !this.state.loading
     });
     let pendaftar = { ...this.state.pendaftar };
-    if (pendaftar.biaya_pendaftaran == true) {
+    if (pendaftar.biaya_pendaftaran == "true") {
       pendaftar.biaya_pendaftaran_nominal = 250000;
     }
 
@@ -629,8 +629,8 @@ class Pendaftaran extends Component {
                           defaultValue={true}
                           className="form-control m-b"
                         >
-                          <option value={true}>Ya</option>
-                          <option value={false}>Tidak</option>
+                          <option value={"true"}>Ya</option>
+                          <option value={"false"}>Tidak</option>
                         </select>
                       </div>
                       {this.state.pendaftar.biaya_pendaftaran != "true" ? (

@@ -46,7 +46,7 @@ import MainKeuangan from '../components/layouts/MainKeuangan';
 import AkunKeuangan from '../views/user/keuangan/akun';
 import TransaksiKeuangan from '../views/user/keuangan/transaksi';
 import DataJurnalKeuangan from '../views/user/keuangan/data-jurnal';
-import NeracaSaldoAwal from '../views/user/keuangan/neraca_saldo_awal';
+import TransaksiBukuBesar from '../views/user/keuangan/transaksi_buku_besar';
 import NeracaSaldoAkhir from '../views/user/keuangan/neraca_saldo_akhir';
 import JurnalUmum from '../views/user/keuangan/jurnal_umum';
 import BukuBesar from '../views/user/keuangan/buku_besar';
@@ -89,6 +89,7 @@ import StaffKepalaCabang from '../views/user/kepala_cabang/staff';
 import MainHRD from '../components/layouts/MainHrd';
 import PegawaiHRD from '../views/user/hrd/pegawai';
 import JabatanHRD from '../views/user/hrd/jabatan';
+import PengajuanPegawaiHRD from '../views/user/hrd/pengajuan_pegawai';
 import PengajuanHRD from '../views/user/hrd/pengajuan';
 import addPegawaiHRD from '../views/user/hrd/add_pegawai';
 import editPegawaiHRD from '../views/user/hrd/edit_pegawai';
@@ -192,10 +193,10 @@ if(window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStor
             <Route path="akun" component={AkunKeuangan}> </Route>
             <Route path="transaksi" component={TransaksiKeuangan}> </Route>
             <Route path="jurnal" component={DataJurnalKeuangan}> </Route>
-            <Route path="neraca_saldo_awal" component={NeracaSaldoAwal}> </Route>
             <Route path="jurnal-umum" component={JurnalUmum}> </Route>
             <Route path="ayat_jurnal_penyesuaian" component={Laporan}> </Route>
             <Route path="penutup_jurnal" component={Laporan}> </Route>
+            <Route path="transaksi-buku-besar" component={TransaksiBukuBesar}> </Route>
             <Route path="buku_besar" component={BukuBesar}> </Route>
             <Route path="saldo_sementara" component={Laporan}> </Route>
             <Route path="neraca_lanjut" component={Laporan}> </Route>
@@ -248,12 +249,14 @@ if(window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStor
             <Route path="mahasiswa" component={MahasiswaKepalaCabang}> </Route>
             <Route path="dosen" component={DosenKepalaCabang}> </Route>
             <Route path="staff" component={StaffKepalaCabang}> </Route>
+            <Route path="transaksi-buku-besar" component={TransaksiBukuBesar}> </Route>
             <Route path="tagihan" component={Tagihan}> </Route>
-            <Route path="neraca_saldo_awal" component={NeracaSaldoAwal}> </Route>
+            <Route path="transaksi-buku-besar" component={TransaksiBukuBesar}> </Route>
             <Route path="jurnal-umum" component={JurnalUmum}> </Route>
             <Route path="ayat_jurnal_penyesuaian" component={Laporan}> </Route>
             <Route path="penutup_jurnal" component={Laporan}> </Route>
             <Route path="buku_besar" component={BukuBesar}> </Route>
+            <Route path="aset" component={AsetAdmin}> </Route>
             <Route path="saldo_sementara" component={Laporan}> </Route>
             <Route path="neraca_lanjut" component={Laporan}> </Route>
             <Route path="rugi_laba" component={Laporan}> </Route>
@@ -270,6 +273,7 @@ if(window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStor
             <IndexRedirect to="/pegawai" />
             <Route path="pegawai" component={PegawaiHRD}> </Route>
             <Route path="pengajuan" component={PengajuanHRD}> </Route>
+            <Route path="pengajuan-gaji" component={PengajuanPegawaiHRD}> </Route>
             <Route path="add-pegawai" component={addPegawaiHRD}> </Route>
             <Route path="edit-pegawai" component={editPegawaiHRD}> </Route>
             <Route path="jabatan" component={JabatanHRD}> </Route>
@@ -295,9 +299,10 @@ if(window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStor
             <Route path="approve-gaji" component={ApproveGajiOwner}> </Route>
             <Route path="mahasiswa" component={MahasiswaOwner}> </Route>
             <Route path="dosen" component={DosenOwner}> </Route>
+            <Route path="transaksi-buku-besar" component={TransaksiBukuBesar}> </Route>
+            <Route path="aset" component={AsetAdmin}> </Route>
             <Route path="staff" component={StaffOwner}> </Route>
             <Route path="tagihan" component={Tagihan}> </Route>
-            <Route path="neraca_saldo_awal" component={NeracaSaldoAwal}> </Route>
             <Route path="jurnal-umum" component={JurnalUmum}> </Route>
             <Route path="ayat_jurnal_penyesuaian" component={Laporan}> </Route>
             <Route path="penutup_jurnal" component={Laporan}> </Route>

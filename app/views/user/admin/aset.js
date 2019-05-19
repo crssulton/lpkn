@@ -8,6 +8,7 @@ import Select from 'react-select';
 import 'react-select/dist/react-select.css';
 
 let account = []
+let transaksi = []
 
 class DataJurnal extends Component {
 
@@ -58,8 +59,7 @@ class DataJurnal extends Component {
 			return response.json();
 		}).then(function(data) {
 			self.setState({
-				transaksi: data.results,
-				loading: !self.state.loading
+				transaksi: data
 			})
 		});
 
@@ -74,8 +74,7 @@ class DataJurnal extends Component {
 			return response.json();
 		}).then(function(data) {
 			self.setState({
-				account: data,
-				loading: !self.state.loading
+				account: data
 			})
 		});
 
@@ -207,10 +206,10 @@ class DataJurnal extends Component {
         asetBaru.account = selectedOption.value
         this.setState({asetBaru})	
     }
-    addasetTransaksi = (e) => {
+    addasetTransaksi = (selectedOption) => {
     	let asetBaru = {}
         asetBaru = this.state.asetBaru
-        asetBaru.transaksi = e.target.value
+        asetBaru.transaksi = selectedOption.value
         this.setState({asetBaru})	
     }
 
@@ -309,6 +308,12 @@ class DataJurnal extends Component {
 			account[key].label = data.nama
 		})
 
+		transaksi = [...this.state.transaksi]
+    	this.state.transaksi.map((data, key) => {
+			transaksi[key].value = data.id
+			transaksi[key].label = data.kode + " | " + data.uraian
+		})
+
         return (
             <div >
                 <div className="row wrapper border-bottom white-bg page-heading">
@@ -328,7 +333,7 @@ class DataJurnal extends Component {
 		        </div>
 		        <div className="wrapper wrapper-content">
                     <div className="row animated fadeInRight">
-                        <div className="col-lg-8">
+                        <div className={window.sessionStorage.getItem("role") == "6" || window.sessionStorage.getItem("role") == "8" ? "col-lg-12" : "col-lg-8"}>
                             <div className="ibox ">
                                 <div className="ibox-title" style={{'backgroundColor':'#1ab394', 'color':'white'}}>
                                     <h5> <i className="fa fa-list "></i> Daftar Aset</h5>
@@ -342,7 +347,7 @@ class DataJurnal extends Component {
 	                                <div className="hr-line-dashed"></div>
                                     {
 
-			                            <div>
+			                            <div className="table-responsive">
 											<table className="table table-striped" align="right">
 					                            <thead>
 					                            <tr>
@@ -351,22 +356,29 @@ class DataJurnal extends Component {
 					                                <th style={{'width':'5%'}}>TANGGAL</th>
 					                                <th style={{'width':'10%'}}>HARGA</th>
 					                                <th style={{'width':'10%'}}>PENYUSUTAN</th>
-					                                <th style={{'width':'10%'}}>TRANSAKSI</th>
 					                                <th style={{'width':'10%'}}>AKUN</th>
-					                                <th style={{'width':'15%', 'textAlign':'center'}}>AKSI</th>
+					                                <th style={{'width':'10%'}}>KAMPUS</th>
+					                                {
+					                                	window.sessionStorage.getItem("role") == "6" || window.sessionStorage.getItem("role") == "8" ? null :
+					                                	<th style={{'width':'15%', 'textAlign':'center'}}>AKSI</th>
+					                                }
+					                               
 					                            </tr>
 					                            </thead>
 					                            <tbody>
 					                            {
 					                            	this.state.aset.map((data, key) =>
 					                            		<tr key={key}>
-					                            			<td>{key+1}}</td>
+					                            			<td>{key+1}</td>
 							                                <td>{data.nama}</td>
 							                                <td>{data.tanggal}</td>
-							                                <td>{data.harga}</td>
-							                                <td>{data.jumlah_penyusutan}</td>
-							                                <td>{data.transaksi}</td>
-							                                <td>{this.state.account.find((account) => (account.id == data.account)).nama}</td>
+							                                <td>Rp. {this.formatNumber(data.harga)}</td>
+							                                <td>Rp. {this.formatNumber(data.jumlah_penyusutan)}</td>
+							                                <td>{data.account_info.nama}</td>
+							                                <td>{data.kampus_info.nama}</td>
+							                                {
+							                                window.sessionStorage.getItem("role") == "6" || window.sessionStorage.getItem("role") == "8" ? null
+							                                :
 							                                <td>
 						                                		<center>
 						                                			<button 
@@ -384,6 +396,7 @@ class DataJurnal extends Component {
 						                                				><i className="fa fa-trash"></i></button>
 						                                		</center>
 							                                </td>
+							                            	}
 							                            </tr>
 					                            	)
 					                            }
@@ -395,6 +408,9 @@ class DataJurnal extends Component {
                                 </div>
                             </div>
                         </div>
+                        {
+                        window.sessionStorage.getItem("role") == "6" || window.sessionStorage.getItem("role") == "8" ? null
+                        :
                         <div className="col-lg-4">
                             <div className="ibox ">
                                 {
@@ -413,20 +429,12 @@ class DataJurnal extends Component {
                                 	<div className="ibox-content">
                                 		<div className="form-group row"><label className="col-lg-3 col-form-label">Transaksi</label>
 		                                    <div className="col-lg-9">
-		                                    <select
-		                                    	className="form-control m-b" 
-		                                    	value={this.state.asetBaru.transaksi}
-							                    onChange={this.addasetTransaksi}
-		                                    >
-		                                    	<option>Pilih Transaksi</option>
-		                                    	{
-		                                    		this.state.transaksi.map(data =>{
-		                                    			return(
-		                                    				<option value={data.id}>{data.kode} - {data.uraian}</option>
-		                                    			)
-		                                    		})
-		                                    	}
-		                                    </select>
+		                                    	<Select
+											        name="form-field-name"
+											        value={this.state.asetBaru.transaksi} 
+											        onChange={this.addasetTransaksi}
+											        options={transaksi}
+											      />
 		                                    </div>
 	                                    </div>
 
@@ -595,6 +603,7 @@ class DataJurnal extends Component {
 
                             </div>
                         </div>
+                    	}
                     </div>
                     
                     

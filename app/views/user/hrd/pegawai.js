@@ -107,7 +107,7 @@ class Pegawai extends Component {
 				    		</tr>
 				    		<tr>
 				    			<td>NIK</td>
-				    			<td> : NIK</td>
+				    			<td> : {data.nik}</td>
 				    		</tr>
 				    		<tr>
 				    			<td>Jabatan</td>
