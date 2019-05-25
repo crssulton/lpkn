@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { BASE_URL } from "../../../config/config.js";
 import CurrencyInput from "react-currency-input";
+import { terbilang } from "../../../config/terbilang.js";
 import Select from "react-select";
 import logo from "../../../../public/assets/assets 1/img/logo_bw.png";
 import moment from "moment";
@@ -24,8 +25,12 @@ class Tagihan extends Component {
       mahasiswa: [],
       riwayat: [],
       account: [],
+      check: false,
+      kwitansi:[],
       tagihan: [],
-      loading: true
+      loading: true,
+      jurusan: null,
+      judul: null
     };
   }
 
@@ -43,7 +48,7 @@ class Tagihan extends Component {
 
   componentWillMount() {
     const self = this;
-    fetch(BASE_URL + "/api/mahasiswa/", {
+    fetch(BASE_URL + "/api/mahasiswa/?kampus=" + window.sessionStorage.getItem("kampus_id"), {
       method: "GET",
       headers: {
         Authorization: "JWT " + window.sessionStorage.getItem("token"),
@@ -56,7 +61,7 @@ class Tagihan extends Component {
       })
       .then(function(data) {
         self.setState({
-          mahasiswa: data.results.filter(data => data.calon == false),
+          mahasiswa: data.filter(x => x.calon == false),
           loading: false
         });
       });
@@ -81,6 +86,7 @@ class Tagihan extends Component {
 
   getTagihan = id => {
     const self = this;
+    this.setState({tagihan: []})
     fetch(BASE_URL + `/api/tagihan/?mahasiswa=${id}`, {
       method: "get",
       headers: {
@@ -93,7 +99,6 @@ class Tagihan extends Component {
         return response.json();
       })
       .then(function(data) {
-        console.log(data);
         self.setState({
           tagihan: data
         });
@@ -107,8 +112,11 @@ class Tagihan extends Component {
   addPembayaran = () => {
     const self = this;
     let pembayaran = { ...this.state.pembayaran };
-    pembayaran.judul = "Pembayaran SPP Mahasiswa";
-    console.log(JSON.stringify(pembayaran));
+
+    typeof pembayaran.judul == "undefined" ? pembayaran.judul = "-" : null
+    pembayaran.mahasiswa = this.state.mahasiswa.find(data => data.nim == pembayaran.mahasiswa).id
+    pembayaran.jurusan = this.state.mahasiswa.find(data => data.id == pembayaran.mahasiswa).jurusan_info.nama
+    self.setState({jurusan:  pembayaran.jurusan, judul: pembayaran.judul,})
     fetch(BASE_URL + "/api/pembayaran-mahasiswa/", {
       method: "post",
       headers: {
@@ -121,14 +129,33 @@ class Tagihan extends Component {
       .then(function(response) {
         if (response.status == 201) {
           toastr.success("Pembayaran telah dikirim", "Sukses ! ");
-          self.setState({ pembayaran: {} });
         } else {
           toastr.warning("Pembayaran gagal dikirim", "Gagal ! ");
         }
         return response.json();
       })
       .then(function(data) {
-        console.log(data)
+        if (data.id != null) {
+          self.setState(
+            {
+              kwitansi: data
+            },
+            () => {
+              if (typeof(data.transaksi[0]) !== 'undefined'){
+                self.setState({check: true})
+                setTimeout(() => {
+                  self.exportData()
+                }, 100)
+                setTimeout(() => {
+                  let pembayaran = {...self.state.pembayaran}
+                  pembayaran = {}
+                  pembayaran.bayar_kuliah = "false"
+                  self.setState({pembayaran})
+                }, 200)
+              }
+            }
+          );
+        }
       });
   };
 
@@ -148,10 +175,10 @@ class Tagihan extends Component {
     mahasiswa = [...this.state.mahasiswa];
     const { selectedOption } = this.state;
     this.state.mahasiswa.map((data, key) => {
-      mahasiswa[key].value = data.id;
+      mahasiswa[key].value = data.nim;
       mahasiswa[key].label = data.nim + " | " + data.nama;
     });
-
+    console.log(this.state.pembayaran)
     return (
       <div>
         <div className="row wrapper border-bottom white-bg page-heading">
@@ -215,7 +242,7 @@ class Tagihan extends Component {
                           <h2 className="text-center">
                             {this.state.check
                               ? this.state.kwitansi.transaksi[0].kwitansi[0].judul.toUpperCase()
-                              : null}
+                              : "null"}
                           </h2>
                         </td>
                         <td
@@ -250,7 +277,7 @@ class Tagihan extends Component {
                             padding: "8px 0px"
                           }}
                         >
-                          : {this.state.check ? this.state.kwitansi.nama : null}
+                          : {this.state.check ? this.state.kwitansi.mahasiswa_info.nama : null}
                         </td>
                       </tr>
                       <tr>
@@ -262,7 +289,12 @@ class Tagihan extends Component {
                             padding: "8px 0px"
                           }}
                         >
-                          : Rp. 250.000
+                          : Rp.{" "}
+                            {this.state.pembayaran.nominal != null
+                            ? this.formatNumber(
+                                this.state.pembayaran.nominal
+                              )
+                            : null}
                         </td>
                       </tr>
                       <tr>
@@ -274,7 +306,11 @@ class Tagihan extends Component {
                             padding: "8px 0px"
                           }}
                         >
-                          : Dua ratus lima puluh ribu rupiah
+                          :
+                            {this.state.pembayaran.nominal != null
+                              ? terbilang(this.state.pembayaran.nominal)
+                              : null}{" "}
+                            rupiah
                         </td>
                       </tr>
                       <tr>
@@ -286,10 +322,7 @@ class Tagihan extends Component {
                             padding: "8px 0px"
                           }}
                         >
-                          :{" "}
-                          {this.state.check
-                            ? this.state.kwitansi.jurusan_info.nama
-                            : null}
+                          : {this.state.check ? this.state.jurusan : null}
                         </td>
                       </tr>
                       <tr>
@@ -397,7 +430,7 @@ class Tagihan extends Component {
                           onChange={selectedOption => {
                             let pembayaran = { ...this.state.pembayaran };
                             pembayaran.mahasiswa =
-                              selectedOption != null ? selectedOption.id : null;
+                              selectedOption != null ? selectedOption.nim : null;
                             this.setState({ pembayaran });
                             this.getTagihan(pembayaran.mahasiswa);
                           }}
@@ -427,7 +460,7 @@ class Tagihan extends Component {
                         </select>
                       </div>
                     </div>
-                    {this.state.pembayaran.bayar_kuliah == "true" ? (
+                    {this.state.pembayaran.bayar_kuliah == "true" && this.state.pembayaran.mahasiswa != null ? (
                       <div>
                         <div className="form-group row">
                           <label className="col-lg-2 col-form-label">
@@ -438,15 +471,18 @@ class Tagihan extends Component {
                               type="text"
                               className="form-control m-b"
                               disabled="disabled"
-                              value={this.formatNumber(
+                              value={
+                                this.state.tagihan != 0 ?
+                                this.formatNumber(
                                 this.state.tagihan
                                   .find(
                                     data =>
-                                      data.mahasiswa ==
-                                      this.state.pembayaran.mahasiswa
+                                      data.mahasiswa_info.nim ==
+                                      this.state.pembayaran.mahasiswa && data.status == false
+                                  ).nominal.toFixed(2)
                                   )
-                                  .nominal.toFixed(2)
-                              )}
+                                  : "Mencari nilai tagihan..."
+                              }
                             />
                           </div>
                         </div>
@@ -475,7 +511,7 @@ class Tagihan extends Component {
                               {this.state.tagihan
                                 .filter(
                                   data =>
-                                    data.mahasiswa ==
+                                    data.mahasiswa_info.nim ==
                                       this.state.pembayaran.mahasiswa &&
                                     data.status == false
                                 )
@@ -489,7 +525,27 @@ class Tagihan extends Component {
                           </div>
                         </div>
                       </div>
-                    ) : null}
+                    ) : 
+                      <div className="form-group row">
+                      <label className="col-lg-2 col-form-label">Uraian</label>
+                      <div className="col-lg-4">
+                       <input
+                          type="text"
+                          disabled=""
+                          value={this.state.pembayaran.judul}
+                          onChange={e => {
+                            let pembayaran = { ...this.state.pembayaran };
+                            pembayaran.judul = e.target.value;
+                            this.setState({ pembayaran });
+                          }}
+                          name="pekerjaan_ayah"
+                          placeholder="Uraian transaksi"
+                          className="form-control"
+                        />
+                      </div>
+                    </div>
+
+                  }
 
                     <div className="form-group row">
                       <label className="col-lg-2 col-form-label">Tanggal</label>
@@ -525,25 +581,30 @@ class Tagihan extends Component {
                         />
                       </div>
                     </div>
-
-                    <div className="form-group row">
-                      <label className="col-lg-2 col-form-label">
-                        Akun Sumber
-                      </label>
-                      <div className="col-lg-4">
-                        <Select
-                          name="form-field-name"
-                          value={this.state.pembayaran.account}
-                          onChange={selectedOption => {
-                            let pembayaran = [];
-                            pembayaran = this.state.pembayaran;
-                            pembayaran.account = selectedOption.value;
-                            this.setState({ pembayaran });
-                          }}
-                          options={account}
-                        />
+                    {
+                      this.state.pembayaran.bayar_kuliah != "true" ?
+                      <div className="form-group row">
+                        <label className="col-lg-2 col-form-label">
+                          Akun Sumber
+                        </label>
+                        <div className="col-lg-4">
+                          <Select
+                            name="form-field-name"
+                            value={this.state.pembayaran.account}
+                            onChange={selectedOption => {
+                              let pembayaran = [];
+                              pembayaran = this.state.pembayaran;
+                              console.log(selectedOption.value)
+                              pembayaran.account = selectedOption.value;
+                              this.setState({ pembayaran });
+                            }}
+                            options={account}
+                          />
+                        </div>
                       </div>
-                    </div>
+                      :
+                      null
+                    }
 
                     <div className="form-group row">
                       <label className="col-lg-2 col-form-label">
@@ -557,6 +618,7 @@ class Tagihan extends Component {
                             let pembayaran = [];
                             pembayaran = this.state.pembayaran;
                             pembayaran.account_tujuan = selectedOption.value;
+                            this.state.pembayaran.bayar_kuliah == "true" ? pembayaran.account = 16 : null
                             this.setState({ pembayaran });
                           }}
                           options={accountTujuan}

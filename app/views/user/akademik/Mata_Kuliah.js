@@ -340,7 +340,7 @@ class Mata_Kuliah extends Component {
 							                                <td>{matkul.kode}</td>
 							                                <td>{matkul.nama}</td>
 							                                <td>{matkul.kategori}</td>
-							                                <td>{ this.state.jurusans.find((jurusan) => (jurusan.id == matkul.jurusan_info.id)).nama }</td>
+							                                <td>{ matkul.jurusan_info.id != null ? this.state.jurusans.find((jurusan) => (jurusan.id == matkul.jurusan_info.id)).nama : null}</td>
 							                                <td>{matkul.jumlah_jam}</td>
 							                                <td>{matkul.jumlah_pertemuan}</td>
 							                                <td>

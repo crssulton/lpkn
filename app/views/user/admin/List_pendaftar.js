@@ -24,7 +24,7 @@ class List_pendaftar extends Component {
 
   componentDidMount() {
     const self = this;
-    fetch(BASE_URL + "/api/pendaftaran/?search=0", {
+    fetch(BASE_URL + "/api/pendaftaran/?approved=0&online=0", {
       method: "get",
       headers: {
         Authorization: "JWT " + window.sessionStorage.getItem("token")
@@ -34,7 +34,6 @@ class List_pendaftar extends Component {
         return response.json();
       })
       .then(function(data) {
-        console.log(data)
         self.setState({
           pendaftars: data.results,
           numPage: data.num_pages,

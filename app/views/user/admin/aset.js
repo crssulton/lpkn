@@ -353,9 +353,9 @@ class DataJurnal extends Component {
 					                            <tr>
 					                            	<th style={{'width':'5%'}}>NO.</th>
 					                            	<th style={{'width':'5%'}}>NAMA</th>
-					                                <th style={{'width':'5%'}}>TANGGAL</th>
+					                                <th style={{'width':'5%'}}>TANGGAL PEMBELIAN</th>
 					                                <th style={{'width':'10%'}}>HARGA</th>
-					                                <th style={{'width':'10%'}}>PENYUSUTAN</th>
+					                                <th style={{'width':'10%'}}>JUMLAH TAHUN PENYUSUTAN</th>
 					                                <th style={{'width':'10%'}}>AKUN</th>
 					                                <th style={{'width':'10%'}}>KAMPUS</th>
 					                                {
@@ -373,7 +373,7 @@ class DataJurnal extends Component {
 							                                <td>{data.nama}</td>
 							                                <td>{data.tanggal}</td>
 							                                <td>Rp. {this.formatNumber(data.harga)}</td>
-							                                <td>Rp. {this.formatNumber(data.jumlah_penyusutan)}</td>
+							                                <td>{data.jumlah_penyusutan}</td>
 							                                <td>{data.account_info.nama}</td>
 							                                <td>{data.kampus_info.nama}</td>
 							                                {
@@ -463,20 +463,19 @@ class DataJurnal extends Component {
 	                                        </div>
 	                                    </div>
 
-	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Jumlah Penyusutan</label>
+	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Jumlah Tahun Penyusutan</label>
 	                                        <div className="col-lg-9">
-	                                        	<CurrencyInput 
-	                                        		precision="0" 
-	                                        		className="form-control m-b" 
-	                                        		prefix="Rp "
-	                                        		value={this.state.asetBaru.jumlah_penyusutan}
+	                                        	<input 
+	                                            	type="number" 
+	                                            	className="form-control m-b" 
+	                                            	name="aset"
+	                                            	value={this.state.asetBaru.jumlah_penyusutan}
 	                                        		onChangeEvent={this.addasetJumlahPenyusutan}
-	                                        		/>
-	                                            
+						                            />
 	                                        </div>
 	                                    </div>
 
-	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Tanggal</label>
+	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Tanggal Pembelian</label>
 	                                        <div className="col-lg-9">
 	                                            <input 
 	                                            	type="date" 

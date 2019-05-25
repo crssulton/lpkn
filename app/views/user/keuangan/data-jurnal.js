@@ -59,7 +59,7 @@ class DataJurnal extends Component {
 			return response.json();
 		}).then(function(data) {
 			self.setState({
-				transaksi: data
+				transaksi: data.results
 			})
 		});
 

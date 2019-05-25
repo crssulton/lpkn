@@ -399,12 +399,13 @@ class Administrator extends Component {
 			                                </div>
 			                            </div> :
 										
-			                            <div>
+			                            <div className="table-responsive">
 											<table className="table table-striped" align="right">
 					                            <thead>
 					                            <tr>
 					                            	<th style={{'width':'5%'}}>NO</th>
 					                                <th style={{'width':'20%'}}>NAMA</th>
+                                                    <th style={{'width':'20%'}}>EMAIL</th>
 					                                <th style={{'width':'5%'}}>JENIS KELAMIN</th>
 					                                <th style={{'width':'10%'}}>PENDIDIKAN</th>
 					                                <th style={{'width':'10%', 'textAlign':'center'}}>AKSI</th>
@@ -416,6 +417,7 @@ class Administrator extends Component {
 					                            		<tr key={key}>
 							                                <td>{key+1}</td>
 							                                <td>{dosen.nama}</td>
+                                                            <td>{dosen.email}</td>
 							                                <td>{
 																(dosen.jenis_kelamin === 'L')? "Laki-Laki": "Perempuan"
 															}</td>

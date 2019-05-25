@@ -88,22 +88,7 @@ class Kehadiran extends Component {
             maxWidth:'1300',
             documentTitle: "Daftar Hadir Mahasiswa",
             font_size:'17pt',
-            targetStyle: [
-                'margin',
-                'color',
-                'text-align',
-                'border-collapse',
-                'border-spacing',
-                'border-style',
-                'border',
-                'background-color',
-                'border-style',
-                'margin-bottom',
-                'padding',
-                'Label',
-                'width',
-                'background'
-            ]
+            targetStyles: ['*']
         })
      }
 

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';	
 import {BASE_URL} from '../../../config/config.js'
+import moment from 'moment'
 
 class Daftar_hadir extends Component {
 
@@ -88,22 +89,7 @@ class Daftar_hadir extends Component {
             maxWidth:'1300',
             documentTitle: "Daftar Hadir Mahasiswa",
             font_size:'17pt',
-            targetStyle: [
-                'margin',
-                'color',
-                'text-align',
-                'border-collapse',
-                'border-spacing',
-                'border-style',
-                'border',
-                'background-color',
-                'border-style',
-                'margin-bottom',
-                'padding',
-                'Label',
-                'width',
-                'background'
-            ]
+            targetStyles: ['*']
         })
      }
 
@@ -152,7 +138,7 @@ class Daftar_hadir extends Component {
                                         		</tr>
                                         		<tr>
                                         			<td>Tanggal </td>
-                                        			<td>: {this.state.jadwal.start}	</td>
+                                        			<td>: {moment(this.state.jadwal.start).format("DD/MM/YYYY")}</td>
                                         		</tr>
                                         		<tr>
                                         			<td>Dosen </td>
@@ -212,45 +198,47 @@ class Daftar_hadir extends Component {
                         </div>
                     </div>
 
-                    <div id="print_data" style={{'backgroundColor': 'white', 'display' : 'none'}}>
-                    	<table style={{'width' : '40%'}}>
-                    		<tr>
-                    			<td>Mata Kuliah </td>
-                    			<td>: {this.state.jadwal.mata_kuliah_info.nama}</td>
-                    		</tr>
-                    		<tr>
-                    			<td>Tanggal </td>
-                    			<td>: {this.state.jadwal.start}	</td>
-                    		</tr>
-                    		<tr>
-                    			<td>Dosen </td>
-                    			<td>: {this.state.jadwal.dosen_info.nama}</td>
-                    		</tr>
-                    	</table>
-                    	<br/>
-						<table border="1" align="left" style={styletb} width="100%" style={{fontSize:'12px'}}>
-		                    <thead>
-		                    <tr>
-		                    	<th align="left" style={{background:'#e5e5e5',padding:'12px'}}>NO.</th>
-		                        <th align="left" style={{background:'#e5e5e5',padding:'12px'}}>NIM</th>
-		                        <th align="left" style={{background:'#e5e5e5',padding:'12px'}}>NAMA</th>
-		                        <th align="left" style={{background:'#e5e5e5',padding:'12px'}}>STATUS</th>
-		                    </tr>
-		                    </thead>
-		                    <tbody>
-		                    {
-		                    	this.state.daftars.filter(data => data.absensi == this.state.selectedAbsensi && data.kehadiran.find(x => x.jadwal == this.state.jadwal.id)).map((daftar, key) => 
-		                    		<tr >
-		                    			<td style={{padding:'62px',textAlign:'left'}}>{key+1}</td>
-		                                <td style={{padding:'62px',textAlign:'left'}}>{daftar.mahasiswa_info.nim}</td>
-		                                <td style={{padding:'62px',textAlign:'left'}}>{daftar.mahasiswa_info.nama}</td>
-		                                <td style={{padding:'62px',textAlign:'left'}}>{daftar.kehadiran.find(x => x.jadwal == this.state.jadwal.id).status.toUpperCase()}</td>
-		                            </tr>
-		                    	)
-		                    }
-		                    </tbody>
-		                </table>
-					</div>
+                    <div style={{'backgroundColor': 'white', 'display':'none'}}>
+                        <div id="print_data">
+                        <table>
+                            <tr style={{'width' : '100%'}}>
+                                <td>Mata Kuliah </td>
+                                <td style={{'width' : '70%'}}>: {this.state.jadwal.mata_kuliah_info.nama}</td>
+                            </tr>
+                            <tr style={{'width' : '100%'}}>
+                                <td >Tanggal </td>
+                                <td style={{'width' : '70%'}}>: {this.state.jadwal.start}   </td>
+                            </tr>
+                            <tr style={{'width' : '100%'}}>
+                                <td >Dosen </td>
+                                <td style={{'width' : '70%'}}>: {this.state.jadwal.dosen_info.nama}</td>
+                            </tr>
+                        </table>
+                        <br/>
+                        <table className="table table-bordered">
+                            <thead>
+                            <tr>
+                                <th >NO.</th>
+                                <th >NIM</th>
+                                <th >NAMA</th>
+                                <th >STATUS</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {
+                                this.state.daftars.filter(data => data.absensi == this.state.selectedAbsensi && data.kehadiran.find(x => x.jadwal == this.state.jadwal.id)).map((daftar, key) => 
+                                    <tr >
+                                        <td>{key+1}</td>
+                                        <td>{daftar.mahasiswa_info.nim}</td>
+                                        <td>{daftar.mahasiswa_info.nama}</td>
+                                        <td>{daftar.kehadiran.find(x => x.jadwal == this.state.jadwal.id).status.toUpperCase()}</td>
+                                    </tr>
+                                )
+                            }
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
                     
                     
                 </div>

@@ -56,8 +56,9 @@ class Transaksi extends Component {
 		}).then(function(response) {
 			return response.json();
 		}).then(function(data) {
+			console.log(data.results)
 			self.setState({
-				transaksi: data,
+				transaksi: data.results,
 				loading: !self.state.loading
 			})
 		});
@@ -399,7 +400,7 @@ class Transaksi extends Component {
 					                            		<tr key={key}>
 					                            			<td>{data.kode}</td>
 							                                <td>{data.uraian}</td>
-							                                <td>{data.tanggal}</td>
+							                                <td>{moment(data.tanggal).format("DD/MM/YYYY")}</td>
 							                                <td>{data.account_info.nama}</td>
 							                                <td>Rp. {this.formatNumber(data.nominal)}</td>
 							                                <td>

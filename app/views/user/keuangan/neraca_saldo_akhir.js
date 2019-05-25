@@ -47,6 +47,10 @@ class NeracaSaldoAwal extends Component {
 
     }
 
+    formatNumber = (num) => {
+      return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
+    }
+
 
     exportData(){
         printJS({
@@ -113,7 +117,7 @@ class NeracaSaldoAwal extends Component {
                                             <center>
                                                 <h3>LAPORAN KEUANGAN LPKN PER 20 MEI 2019</h3>
                                                 <h3>NERACA SALDO</h3>
-                                                <h3>Per Tanggal 31 Mei 2019</h3>
+                                                <h3>Per Tanggal 25 Mei 2019</h3>
                                             </center>
                                             <br/>
                                             <br/>
@@ -141,16 +145,20 @@ class NeracaSaldoAwal extends Component {
                                                                     </td>
                                                                     <td style={{'padding' : '10px 0px', 'width' : '20%'}}>
                                                                         {data.role == 1 || data.role == 5 ? 
-                                                                            account.total_nominal_account_sumber.account_sumber_transaksi__nominal__sum +
-                                                                            account.total_nominal_account_tujuan.account_tujuan_transaksi__nominal__sum
+                                                                            this.formatNumber(
+                                                                                account.total_nominal_account_sumber.account_sumber_transaksi__nominal__sum +
+                                                                                account.total_nominal_account_tujuan.account_tujuan_transaksi__nominal__sum
+                                                                            )
                                                                             : 
                                                                             null
                                                                         }
                                                                     </td>
                                                                     <td style={{'padding' : '10px 0px', 'width' : '20%'}}>
                                                                         {data.role == 2 || data.role == 3 || data.role == 4 ?  
-                                                                            account.total_nominal_account_sumber.account_sumber_transaksi__nominal__sum +
-                                                                            account.total_nominal_account_tujuan.account_tujuan_transaksi__nominal__sum
+                                                                            this.formatNumber(
+                                                                                account.total_nominal_account_sumber.account_sumber_transaksi__nominal__sum +
+                                                                                account.total_nominal_account_tujuan.account_tujuan_transaksi__nominal__sum
+                                                                            )
                                                                             : 
                                                                             null
                                                                         }
@@ -189,16 +197,20 @@ class NeracaSaldoAwal extends Component {
                                                                     </td>
                                                                     <td style={{'padding' : '10px 0px', 'width' : '20%'}}>
                                                                         {data.role == 1 || data.role == 5 ? 
-                                                                            account.total_nominal_account_sumber.account_sumber_transaksi__nominal__sum +
-                                                                            account.total_nominal_account_tujuan.account_tujuan_transaksi__nominal__sum
+                                                                            this.formatNumber(
+                                                                                account.total_nominal_account_sumber.account_sumber_transaksi__nominal__sum +
+                                                                                account.total_nominal_account_tujuan.account_tujuan_transaksi__nominal__sum
+                                                                            )
                                                                             : 
                                                                             null
                                                                         }
                                                                     </td>
                                                                     <td style={{'padding' : '10px 0px', 'width' : '20%'}}>
                                                                         {data.role == 2 || data.role == 3 || data.role == 4 ?  
-                                                                            account.total_nominal_account_sumber.account_sumber_transaksi__nominal__sum +
-                                                                            account.total_nominal_account_tujuan.account_tujuan_transaksi__nominal__sum
+                                                                            this.formatNumber(
+                                                                                account.total_nominal_account_sumber.account_sumber_transaksi__nominal__sum +
+                                                                                account.total_nominal_account_tujuan.account_tujuan_transaksi__nominal__sum
+                                                                            )
                                                                             : 
                                                                             null
                                                                         }
@@ -214,10 +226,10 @@ class NeracaSaldoAwal extends Component {
                                                             <b></b>
                                                         </td>
                                                         <td style={{'padding' : '10px 0px', 'width' : '20%'}}>
-                                                            <b>{total_debet}</b>
+                                                            <b>{this.formatNumber(total_debet)}</b>
                                                         </td>
                                                         <td style={{'padding' : '10px 0px', 'width' : '20%'}}>
-                                                            <b>{total_kredit}</b>
+                                                            <b>{this.formatNumber(total_kredit)}</b>
                                                         </td>
                                                     </tr>
                                             </table>

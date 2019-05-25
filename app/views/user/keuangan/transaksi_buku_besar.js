@@ -114,7 +114,7 @@ class TransaksiBukuBesar extends Component {
                                        
                                         <div id="print_data">
                                             <center>
-                                                <h3>LAPORAN KEUANGAN LPKN PER 20 MEI 2019</h3>
+                                                <h3>LAPORAN KEUANGAN LPKN PER 25 MEI 2019</h3>
                                                 <h3>TRANSAKSI BUKU BESAR</h3>
                                             </center>
                                             <br/>
@@ -123,7 +123,7 @@ class TransaksiBukuBesar extends Component {
                                                 <thead style={{'borderTop': '2px solid black', 'borderBottom': '2px solid black'}}>
                                                 <tr>
                                                     <th style={{'padding' : '10px 0px', 'width' : '60%'}}></th>
-                                                    <th style={{'padding' : '10px 0px', 'width' : '20%'}}>DEBET</th>
+                                                <th style={{'padding' : '10px 0px', 'width' : '20%'}}>DEBET</th>
                                                     <th style={{'padding' : '10px 0px', 'width' : '20%'}}>KREDIT</th>
                                                 </tr>
                                                 </thead>
@@ -148,8 +148,8 @@ class TransaksiBukuBesar extends Component {
                                                                             <td style={{'padding' : '10px 0px 10px 20px', 'width' : '60%'}}>
                                                                                 {item.tanggal} | Entri Jurnal | {item.kode} | {item.uraian      }
                                                                             </td>
-                                                                            <td style={{'padding' : '10px 0px', 'width' : '20%'}}>{data.role == 1 || data.role == 5 ? item.nominal : null}</td>
-                                                                            <td style={{'padding' : '10px 0px', 'width' : '20%'}}>{data.role == 2 || data.role == 3 || data.role == 4 ? item.nominal : null}</td>
+                                                                            <td style={{'padding' : '10px 0px', 'width' : '20%'}}>{data.role == 1 || data.role == 5 ? this.formatNumber(item.nominal) : null}</td>
+                                                                            <td style={{'padding' : '10px 0px', 'width' : '20%'}}>{data.role == 2 || data.role == 3 || data.role == 4 ? this.formatNumber(item.nominal) : null}</td>
                                                                         </tr>
                                                                     )
                                                                 }
@@ -159,8 +159,8 @@ class TransaksiBukuBesar extends Component {
                                                                             <td style={{'padding' : '10px 0px 10px 20px', 'width' : '60%'}}>
                                                                                 {item.tanggal} | Entri Jurnal | {item.kode} | {item.uraian      }
                                                                             </td>
-                                                                            <td style={{'padding' : '10px 0px', 'width' : '20%'}}>{data.role == 1 || data.role == 5 ? item.nominal : null}</td>
-                                                                            <td style={{'padding' : '10px 0px', 'width' : '20%'}}>{data.role == 2 || data.role == 3 || data.role == 4 ? item.nominal : null}</td>
+                                                                            <td style={{'padding' : '10px 0px', 'width' : '20%'}}>{data.role == 1 || data.role == 5 ? this.formatNumber(item.nominal) : null}</td>
+                                                                            <td style={{'padding' : '10px 0px', 'width' : '20%'}}>{data.role == 2 || data.role == 3 || data.role == 4 ? this.formatNumber(item.nominal) : null}</td>
                                                                         </tr>
                                                                     )
                                                                 }
@@ -170,16 +170,20 @@ class TransaksiBukuBesar extends Component {
                                                                     </td>
                                                                     <td style={{'padding' : '10px 0px', 'width' : '20%'}}>
                                                                         <b>{data.role == 1 || data.role == 5 ? 
-                                                                            account.total_nominal_account_sumber.account_sumber_transaksi__nominal__sum +
-                                                                            account.total_nominal_account_tujuan.account_tujuan_transaksi__nominal__sum
+                                                                            this.formatNumber(
+                                                                                account.total_nominal_account_sumber.account_sumber_transaksi__nominal__sum +
+                                                                                account.total_nominal_account_tujuan.account_tujuan_transaksi__nominal__sum
+                                                                            )
                                                                             : 
                                                                             "0.00"
                                                                         }</b>
                                                                     </td>
                                                                     <td style={{'padding' : '10px 0px', 'width' : '20%'}}>
                                                                         <b>{data.role == 2 || data.role == 3 || data.role == 4 ?  
-                                                                            account.total_nominal_account_sumber.account_sumber_transaksi__nominal__sum +
-                                                                            account.total_nominal_account_tujuan.account_tujuan_transaksi__nominal__sum
+                                                                            this.formatNumber(
+                                                                                account.total_nominal_account_sumber.account_sumber_transaksi__nominal__sum +
+                                                                                account.total_nominal_account_tujuan.account_tujuan_transaksi__nominal__sum
+                                                                            )
                                                                             : 
                                                                             "0.00"
                                                                         }</b>

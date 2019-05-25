@@ -107,10 +107,7 @@ class Jadwal extends Component {
                                                 
                                                 {
                                                     this.state.jadwals.map((jadwal, key) =>
-                                                    <tr key={key}  
-                                                        style={
-                                                        (moment(new Date()).format('D MMM YYYY') !== moment(jadwal.start).format('D MMM YYYY'))?
-                                                        {'cursor' : 'pointer'} : {'background':'#E6E6FA', 'cursor' : 'pointer'}}>
+                                                    <tr key={key}>
                                                         <th>{this.state.days.find((dy) => (dy.day == moment(jadwal.start).format('dddd'))).hari}</th>
                                                         <td>{moment(jadwal.start).format('D MMM YYYY')}</td>
                                                         <td>{jadwal.title}</td>

@@ -11,8 +11,12 @@ class Pengajuan extends Component {
 
 	constructor(props){
         super(props);
+
+        const {pengajuan} = this.props.location.state
+
         this.state = {
             pegawai: [],
+            pengajuan,
             loading: true,
             form: false,
             selected: null,
@@ -113,13 +117,49 @@ class Pengajuan extends Component {
 		});
     }
 
+    handleApprovePegawai = (id, key)=> {
+
+    	const self = this
+    	swal({
+		  title: "Terima Transaksi ?",
+		  icon: "warning",
+		  buttons: true,
+		  dangerMode: true,
+		})
+		.then((willDelete) => {
+		  if (willDelete) {
+		  	fetch(BASE_URL + '/api/pengajuan-sgv/' + id + '/verify/', {
+				method: 'post',
+				headers: {
+					'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+					'Content-Type': 'application/json'
+				}
+			}).then(function(response) {
+				if (response.status == 200) {
+					let pengajuan_sgv = [...self.state.pengajuan_sgv]
+					pengajuan_sgv.find(data => data.id == id).verified = true
+					self.setState({
+						pengajuan_sgv
+					})
+					swal("Sukses! Transaksi Gaji berhasil!", {
+				      icon: "success",
+				    });
+				}
+			}).then(function(data) {
+			});
+		  }
+		});
+    }
+
     simpanGaji = () => {
     	const self = this
+    	let tempPegawai = this.state.tempPegawai
+    	tempPegawai.pengajuan =  this.state.pengajuan.id
 
     	console.log(JSON.stringify(this.state.tempPegawai))
     	fetch(BASE_URL + '/api/pengajuan-sgv/', {
 			method: 'post',
-			body: JSON.stringify(this.state.tempPegawai),
+			body: JSON.stringify(tempPegawai),
 			headers: {
 				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
 				'Content-Type': 'application/json'
@@ -209,27 +249,25 @@ class Pengajuan extends Component {
 		                                    </div>
 	                                    </div>
 	                                    <div className="col-lg-4">
-	                                    	<div className="col-sm-12">
-			                                    <button 
-			                                    	className="btn btn-info"
-			                                    	onClick={ () => {
-	                                					$('#ModalInputPegawai').modal('show')
-	                                				}}
-			                                    	>
-			                                    	<i className="fa fa-external-link"></i> Tambah Pegawai
-			                                    </button>
-		                                    </div>
+	                                    	{
+	                                    		!this.state.pengajuan.verified ?
+	                                    		<div className="col-sm-12">
+				                                    <button 
+				                                    	className="btn btn-info"
+				                                    	onClick={ () => {
+		                                					$('#ModalInputPegawai').modal('show')
+		                                				}}
+				                                    	>
+				                                    	<i className="fa fa-external-link"></i> Tambah Pegawai
+				                                    </button>
+			                                    </div>
+			                                    :
+			                                    null
+	                                    	}
 	                                    </div>
 	                                    <div className="col-lg-3">
 	                                    	<div className="col-sm-12">
-			                                    <button 
-			                                    	className="btn btn-primary"
-			                                    	onClick={ () => {
-	                                					this.exportData()
-	                                				}}
-			                                    	>
-			                                    	<i className="fa fa-print"></i> Cetak
-			                                    </button>
+			                                   
 		                                    </div>
 	                                    </div>
 	                                </div>
@@ -252,34 +290,25 @@ class Pengajuan extends Component {
 					                                <th>NAMA</th>
 					                                <th>PENDIDIKAN</th>
 					                                <th>GAJI</th>
-					                                <th>STATUS</th>
-					                                <th style={{'width':'10%', 'textAlign':'center'}}>AKSI</th>
+					                                {
+					                                	!this.state.pengajuan.verified ?
+					                                		<th style={{'width':'10%', 'textAlign':'center'}}>AKSI</th>
+					                                	:
+					                                		<th style={{'width':'10%', 'textAlign':'center'}}>TRANSAKSI</th>
+					                                }
 					                            </tr>
 					                            </thead>
 					                            <tbody>
 					                            {
-					                            	this.state.pengajuan_sgv.map((data, key) =>
+					                            	this.state.pengajuan_sgv.filter(pegawai => pegawai.pengajuan == this.state.pengajuan.id).map((data, key) =>
 					                            		<tr key={key}>
 					                            			<td>{key+1}</td>
 							                                <td>{data.pegawai_info.nama.toUpperCase()}</td>
 							                                <td>{data.pegawai_info.pendidikan_terakhir.toUpperCase()}</td>
-							                                <td>{this.formatNumber(data.gaji)}</td>
-							                                <td>
-							                                	{
-														        	data.status == 'verified' ?
-														        	<span className="badge badge-primary">Sukses</span> : null
-														        }
-														        {
-														        	data.status == 'rejected' ?
-														        	<span className="badge badge-danger">Ditolak</span> : null
-														        }
-														        {
-														        	data.status == 'pending' ?
-														        	<span className="badge badge-warning">Menunggu</span> : null
-														        }
-							                                </td>
-
-							                                <td style={{'width': '15%'}}>
+							                                <td>Rp. {this.formatNumber(data.gaji)}</td>
+							                               {
+							                               	!this.state.pengajuan.verified ?
+							                               	<td style={{'width': '15%'}}>
 						                                		<center>
 						                                			<button 
 						                                				style={{'margin' : '0 5px'}} 
@@ -291,6 +320,23 @@ class Pengajuan extends Component {
 
 						                                		</center>
 							                                </td>
+							                                :
+							                                !data.verified ?
+							                                <td style={{'width': '15%'}}>
+						                                		<center>
+						                                			<button 
+						                                				style={{'margin' : '0 5px'}} 
+						                                				className="btn btn-primary btn-sm" 
+						                                				type="button"
+						                                				onClick={() => this.handleApprovePegawai(data.id)}
+						                                				>
+						                                				<i className="fa fa-check"></i></button>
+
+						                                		</center>
+							                                </td>
+							                                :
+							                                <td style={{'width': '15%'}}>TRANSAKSI SUKSES</td>
+							                               }
 							                            </tr>
 					                            	)
 					                            }

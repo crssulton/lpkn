@@ -11,6 +11,7 @@ class Registrasi extends Component {
         kampus: [],
         pendaftar: {},
         loading     : false,
+        alert: false
     }
   }
 
@@ -41,6 +42,10 @@ class Registrasi extends Component {
     const self = this
     self.setState({loading : true})
     event.preventDefault()
+
+    let pendaftar = {...this.state.pendaftar}
+    pendaftar.online_register = true
+
     fetch(BASE_URL + '/api/pendaftaran/', {
         method: 'post',
         headers: {
@@ -50,10 +55,19 @@ class Registrasi extends Component {
         body: JSON.stringify(self.state.pendaftar)
       }).then(function(response) {
         if (response.status == 201) {
+
+            pendaftar.nama = null
+            pendaftar.alamat = null
+            pendaftar.tempat_lahir = null
+            pendaftar.asal_sekolah = null
+            pendaftar.no_hp = null
+
+
             self.setState({
+                alert: true,
+                pendaftar,
                 loading: !self.state.loading,
             })
-            toastr.success("Anda telah didaftarkan secara online", "Sukses ! ")
         }else{
             self.setState({
                 loading: !self.state.loading,
@@ -74,29 +88,37 @@ class Registrasi extends Component {
                           <div className="text-center">
                               <img src={logo} alt="laptop"/>
                           </div><br/>
+
+                          {
+                            this.state.alert ?
+                            <div className="alert alert-success" role="alert">
+                              Selamat! Anda telah mendaftar sebagai mahasiswa
+                            </div>
+                            :
+                            null
+                          }
+
                           <form onSubmit={this.handleSubmit}>
                               
                               <fieldset>
+                              <div className="form-group">
+                                  <label>Nama Lengkap *</label>
+                                  <input 
+                                      value={this.state.pendaftar.nama}
+                                      onChange={(e) => {
+                                          let pendaftar = []
+                                          pendaftar = this.state.pendaftar
+                                          pendaftar.nama = e.target.value
+                                          this.setState({pendaftar})
+                                      }}
+                                      id="userName" 
+                                      name="userName" 
+                                      type="text" 
+                                      className="form-control required"
+                                      />
+                              </div>
                               <div className="row">
                                   <div className="col-lg-6">
-                                      <div className="form-group">
-                                          <label>Nama Lengkap *</label>
-                                          <input 
-                                              value={this.state.pendaftar.nama}
-                                              onChange={(e) => {
-                                                  let pendaftar = []
-                                                  pendaftar = this.state.pendaftar
-                                                  pendaftar.nama = e.target.value
-                                                  pendaftar.nama_ayah = "Muhram"
-                                                  pendaftar.nama_ibu = "Siti Rochmiyati"
-                                                  this.setState({pendaftar})
-                                              }}
-                                              id="userName" 
-                                              name="userName" 
-                                              type="text" 
-                                              className="form-control required"
-                                              />
-                                      </div>
                                       <div className="form-group">
                                           <label>Jenis Kelamin *</label>
                                           <select 
@@ -186,22 +208,7 @@ class Registrasi extends Component {
                                               className="form-control required"
                                               />
                                       </div>
-                                      <div className="form-group">
-                                          <label>Email *</label>
-                                          <input 
-                                              value={this.state.pendaftar.email}
-                                              onChange={(e) => {
-                                                  let pendaftar = []
-                                                  pendaftar = this.state.pendaftar
-                                                  pendaftar.email = e.target.value
-                                                  this.setState({pendaftar})
-                                              }}
-                                              id="email" 
-                                              name="email" 
-                                              type="email" 
-                                              className="form-control required"
-                                              />
-                                      </div>
+
                                       <div className="form-group">
                                           <label>Tmpt Lahir *</label>
                                           <input 

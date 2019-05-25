@@ -12,6 +12,11 @@ let account_tujuan = []
 class Approve extends Component {
   constructor(props) {
     super(props);
+
+    let pembayaranBaru = {}
+    pembayaranBaru.account = null
+    pembayaranBaru.account_tujuan = null
+
     this.state = {
       approveStatus: "",
       pembayaran: [],
@@ -25,7 +30,7 @@ class Approve extends Component {
       jurusan: [],
       selectedJurusan: null,
       selectedMahasiswa: null,
-      pembayaranBaru: {}
+      pembayaranBaru
     };
   }
 
@@ -162,7 +167,8 @@ class Approve extends Component {
                 "Sukses ! "
               );
               self.setState({
-                pembayaran: self.state.pembayaran.filter(data => data.id != this.state.selectedData.id)
+                pembayaranBaru:{},
+                pembayaran: self.state.pembayaran.filter(data => data.id != self.state.selectedData.id)
               });
             } else {
               toastr.warning(
@@ -464,23 +470,6 @@ class Approve extends Component {
                           <h4 className="modal-title">Pilih Akun Transaksi</h4>
                         </div>
                         <div className="modal-body">
-                          <div className="form-group row">
-                              <label className="col-lg-2 col-form-label">Akun Sumber</label>
-                              <div className="col-lg-10">
-                                <Select
-                                  name="form-field-name"
-                                  value={this.state.pembayaranBaru.account}
-                                  onChange={(selectedOption) => {
-                                    let pembayaranBaru = [];
-                                    pembayaranBaru = this.state.pembayaran;
-                                    pembayaranBaru.account = selectedOption.value;
-                                    this.setState({ pembayaranBaru });
-                                  }}
-                                  options={account}
-                                />
-                              </div>
-                            </div>
-
                             <div className="form-group row">
                               <label className="col-lg-2 col-form-label">Akun Tujuan</label>
                               <div className="col-lg-10">
@@ -488,9 +477,9 @@ class Approve extends Component {
                                   name="form-field-name"
                                   value={this.state.pembayaranBaru.account_tujuan}
                                   onChange={(selectedOption) => {
-                                    let pembayaranBaru = [];
-                                    pembayaranBaru = this.state.pembayaranBaru;
+                                    let pembayaranBaru = {...this.state.pembayaranBaru}
                                     pembayaranBaru.account_tujuan = selectedOption.value;
+                                    pembayaranBaru.account = 16
                                     this.setState({ pembayaranBaru });
                                   }}
                                   options={account_tujuan}

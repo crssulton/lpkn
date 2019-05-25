@@ -125,7 +125,7 @@ class Jadwal extends Component {
                                                 <tbody>
                                                 
                                                 {
-                                                    this.state.jadwals.filter(x => x.mata_kuliah == this.state.selectedMatkul).map((jadwal, key) =>
+                                                    this.state.jadwals.filter(x => x.mata_kuliah == this.state.selectedMatkul && x.dosen_info.id == window.sessionStorage.getItem('user_id')).map((jadwal, key) =>
                                                     <tr key={key}  
                                                         style={{'cursor' : 'pointer'}}>
                                                         <td>{jadwal.title}</td>

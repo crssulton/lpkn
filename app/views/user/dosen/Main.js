@@ -74,6 +74,7 @@ class Main extends Component {
                                                     <th>HARI</th>
                                                     <th>TANGGAL</th>
                                                     <th>MATA KULIAH</th>
+                                                    <th>KELAS</th>
                                                     <th>RUANGAN</th>
                                                     <th>WAKTU</th>
                                                 </tr>
@@ -82,13 +83,11 @@ class Main extends Component {
                                                 
                                                 {
                                                     this.state.jadwals.map((jadwal, key) =>
-                                                    <tr key={key}  
-                                                        style={
-                                                        (moment(new Date()).format('D MMM YYYY') !== moment(jadwal.start).format('D MMM YYYY'))?
-                                                        null : {'background':'#E6E6FA'}}>
+                                                    <tr key={key}>
                                                         <th>{this.state.days.find((dy) => (dy.day == moment(jadwal.start).format('dddd'))).hari}</th>
                                                         <td>{moment(jadwal.start).format('D MMM YYYY')}</td>
                                                         <td>{jadwal.title}</td>
+                                                        <td>{jadwal.kelas_info.nama}</td>
                                                         <td>{jadwal.ruangan_info.nama}</td>
                                                         <td>{jadwal.jam_mulai +" - "+jadwal.jam_selesai}</td>
                                                     </tr>

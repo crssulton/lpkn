@@ -98,7 +98,7 @@ class Input extends Component {
                 <table className="table table-bordered">
                     <thead>
                     <tr>
-                        <th style={{width: 40}} className="text-center" rowSpan='2'>No.</th>
+                        <th style={{width: 40}} className="text-center" rowSpan='2'>NIM.</th>
                         <th rowSpan='2'>Nama Mahasiswa</th>
                         <th className="text-center" colSpan='4'>Nilai</th>
                         <th rowSpan='2'>Nilai Akhir</th>
@@ -117,7 +117,7 @@ class Input extends Component {
                     {
                         this.state.nilai.filter(x => x.mata_kuliah == this.state.selectedMatkul).map((data, key) =>
                             <tr key={key}>
-                                <td className="text-center">{data.id}</td>
+                                <td className="text-center">{data.mahasiswa_info.nim}</td>
                                 <td>{data.mahasiswa_info.nama}</td>
                                 <td className="text-center">
                                     <input 

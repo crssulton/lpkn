@@ -23,13 +23,15 @@ class Jadwal extends Component {
             jadwalBaru: {},
             tmpDate: '',
             title: '',
+            loading: true,
             idJadwalSelected: null,
             matkuls: [],
             ruangan: [],
             dosens: [],
             eventSelected: {},
             jurusans: [],
-            listDay: []
+            listDay: [],
+            kelas: []
         }
     }
 
@@ -44,9 +46,24 @@ class Jadwal extends Component {
             return response.json();
         }).then(function(data) {
             self.setState({
-                events: data.results
+                events: data.results,
+                loading: false
             })
         });
+
+        fetch(BASE_URL + '/api/kelas/', {
+            method: 'get',
+            headers: {
+                'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+            }
+        }).then(function(response) {
+            return response.json();
+        }).then(function(data) {
+            self.setState({
+                kelas: data.results
+            })
+        });
+
 
         fetch(BASE_URL + '/api/dosen/', {
             method: 'get',
@@ -221,6 +238,13 @@ class Jadwal extends Component {
         this.setState({jadwalBaru}) 
     }
 
+    onChangeKelas = (e) => {
+        let jadwalBaru = {}
+        jadwalBaru = this.state.jadwalBaru
+        jadwalBaru.kelas = e.target.value
+        this.setState({jadwalBaru}) 
+    }
+
     onChangeDosen = (e) => {
         let jadwalBaru = {}
         jadwalBaru = this.state.jadwalBaru
@@ -246,7 +270,7 @@ class Jadwal extends Component {
         jadwalBaru.ruangan = e.target.value
         jadwalBaru.ujian = false
         jadwalBaru.start = this.state.listDay
-        jadwalBaru.tahun_angkatan = 2019
+        jadwalBaru.tahun_angkatan = moment(new Date()).format("YYYY")
         this.setState({jadwalBaru}) 
     }
 
@@ -310,6 +334,20 @@ class Jadwal extends Component {
                                             </select>
                                         </div>
                                     </div>
+                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Kelas</label>
+                                        <div className="col-lg-10">
+                                            <select
+                                                onChange={this.onChangeKelas}
+                                                className="form-control">
+                                                <option value="">Pilih Kelas</option>
+                                                {
+                                                    this.state.kelas.filter(data => data.jurusan_info.id == this.state.jadwalBaru.jurusan).map((kelas, key) => 
+                                                        <option key={key} value={kelas.id}>{kelas.nama}</option>
+                                                    )
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
                                     <div className="form-group row"><label className="col-lg-2 col-form-label">Tanggal</label>
                                         <div className="col-lg-10">
                                             {
@@ -364,6 +402,8 @@ class Jadwal extends Component {
                                 <div className="ibox-title" style={{'backgroundColor':'#1ab394', 'color':'white'}}>
                                     <h5>Kalender Akademik</h5>
                                 </div>
+                                {
+                                !this.state.loading ?
                                 <div className="ibox-content">
                                 {
                                     this.state.events != null ?
@@ -411,6 +451,14 @@ class Jadwal extends Component {
                                     </div>
                                 }
                                 </div>
+                                :
+                                <div className="spiner-example">
+                                    <div className="sk-spinner sk-spinner-double-bounce">
+                                        <div className="sk-double-bounce1"></div>
+                                        <div className="sk-double-bounce2"></div>
+                                    </div>
+                                </div>
+                                }
                             </div>
                         </div>
                     </div>
@@ -427,8 +475,11 @@ class Jadwal extends Component {
                                     {
                                         this.state.idJadwalSelected != null ?
                                         <table className="table">
-                                            <tr>
+                                            <tr style={{'width': '30%'}}>
                                                 <td><b>MATA KULIAH</b> </td> <td>: {this.state.eventSelected.title}</td>
+                                            </tr>
+                                            <tr>
+                                                <td><b>KELAS</b></td> <td>: {this.state.eventSelected.kelas_info.nama}</td>
                                             </tr>
                                             <tr>
                                                 <td><b>JURUSAN</b></td> <td>: {this.state.eventSelected.jurusan_info.nama}</td>

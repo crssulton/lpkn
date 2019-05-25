@@ -128,7 +128,7 @@ class Nilai extends Component {
 												        <td>{key+1}</td>
 												        <td>{nilai.mata_kuliah_info.nama}</td>
 												        <td style={tableNilai}>12</td>
-														<td style={tableNilai}>{nilai.nilai_angka}</td>
+														<td style={tableNilai}>{nilai.nilai_angka.toFixed(2)}</td>
 														<td style={tableNilai}>{nilai.nilai_grade}</td>
 												    </tr>
 										    	)

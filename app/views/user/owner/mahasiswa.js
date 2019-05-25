@@ -161,6 +161,54 @@ class Mahasiswa extends Component {
         </div>
         <div className="wrapper wrapper-content">
           <div className="row animated fadeInRight">
+
+          <div style={{ backgroundColor: "white", display:'none' }}>
+          <table style={{fontSize: "8pt" }} className="table table-bordered" id="print_data">
+            <thead>
+              <tr>
+                <th>NO.</th>
+                <th>NIM.</th>
+                <th>NAMA</th>
+                <th>ALAMAT</th>
+                <th>TMPT LAHIR</th>
+                <th>TGL LAHIR</th>
+                <th>JK</th>
+                <th>JURUSAN</th>
+                <th>STATUS</th>
+                <th>ANGKATAN</th>
+                <th>TOTAL BAYAR</th>
+                <th>KAMPUS</th>
+              </tr>
+            </thead>
+            <tbody>
+              {this.state.mahasiswasTmp
+              .filter(mahasiswa => mahasiswa.calon == false)
+              .map((data, key) => (
+                <tr>
+                  <td>{key + 1}</td>
+                  <td>{data.nim}</td>
+                  <td>{data.nama}</td>
+                  <td>{data.alamat}</td>
+                  <td>{data.tempat_lahir}</td>
+                  <td>{data.tgl_lahir}</td>
+                  <td>{data.jenis_kelamin}</td>
+                  <td>{data.jurusan_info.nama}</td>
+                  <td>
+                    {data.aktif ? (
+                        "Aktif"
+                    ) : (
+                        "Tidak Aktif"
+                    )}
+                  </td>
+                  <td>{data.tahun_angkatan}</td>
+                  <td>{data.total_bayar}</td>
+                  <td>{data.kampus_info.nama}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
             <div className="col-lg-8">
               <div className="ibox ">
                 <div
@@ -377,7 +425,7 @@ class Mahasiswa extends Component {
                           {this.state.mahasiswa.nim}
                         </p>
                       </div>
-                      {this.state.bekerja.find(
+                      {this.state.bekerja != null ? this.state.bekerja.find(
                         data => data.mahasiswa == this.state.mahasiswa.id
                       ) != null ? (
                         <table className="table">
@@ -412,9 +460,9 @@ class Mahasiswa extends Component {
                             </tr>
                           </tbody>
                         </table>
-                      ) : null}
+                      ) : null : null}
 
-                      {this.state.magang.find(
+                      {this.state.magang != null ? this.state.magang.find(
                         data => data.mahasiswa == this.state.mahasiswa.id
                       ) != null ? (
                         <table className="table">
@@ -463,7 +511,7 @@ class Mahasiswa extends Component {
                             </tr>
                           </tbody>
                         </table>
-                      ) : null}
+                      ) : null : null}
 
                       <table className="table" style={{ width: "100%" }}>
                         <tbody>
@@ -537,50 +585,7 @@ class Mahasiswa extends Component {
           </div>
         </div>
 
-        <div style={{ backgroundColor: "white" }}>
-          <table style={{fontSize: "8pt" }} className="table table-bordered" id="print_data">
-            <thead>
-              <tr>
-                <th>NO.</th>
-                <th>NIM.</th>
-                <th>NAMA</th>
-                <th>ALAMAT</th>
-                <th>TMPT LAHIR</th>
-                <th>TGL LAHIR</th>
-                <th>JK</th>
-                <th>JURUSAN</th>
-                <th>STATUS</th>
-                <th>ANGKATAN</th>
-                <th>TOTAL BAYAR</th>
-                <th>KAMPUS</th>
-              </tr>
-            </thead>
-            <tbody>
-              {this.state.reportMahasiswa.map((data, key) => (
-                <tr>
-                  <td>{key + 1}</td>
-                  <td>{data.nim}</td>
-                  <td>{data.nama}</td>
-                  <td>{data.alamat}</td>
-                  <td>{data.tempat_lahir}</td>
-                  <td>{data.tgl_lahir}</td>
-                  <td>{data.jenis_kelamin}</td>
-                  <td>{data.jurusan_info.nama}</td>
-                  <td>
-                    {data.aktif ? (
-                        "Aktif"
-                    ) : (
-                        "Tidak Aktif"
-                    )}
-                  </td>
-                  <td>{data.tahun_angkatan}</td>
-                  <td>{data.total_bayar}</td>
-                  <td>{data.kampus_info.nama}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        
       </div>
     );
   }

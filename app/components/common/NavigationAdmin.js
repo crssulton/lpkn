@@ -49,6 +49,7 @@ class Navigation extends Component {
                                 <li className={this.activeRoute("/pendaftaran")}>
                                     <Link to="/pendaftaran">Tambah Data</Link>
                                 </li>
+                                <li><Link to="/list-pendaftar-online">List Pendaftaran Online</Link></li>
                                 <li><Link to="/list-pendaftar">List Pendaftaran</Link></li>
                             </ul>
                         </li>
@@ -76,11 +77,8 @@ class Navigation extends Component {
                         <li className={this.activeRoute("/approve")}>
                             <Link to="/approve"><i className="fa fa-check"></i> <span className="nav-label">Approve</span></Link>
                         </li>
-                        <li className={this.activeRoute("/aset")}>
-                            <Link to="/aset"><i className="fa fa-home"></i> <span className="nav-label">Aset</span></Link>
-                        </li>
-                        <li className={this.activeRoute("/pengajuan")}>
-                            <Link to="/pengajuan"><i className="fa fa-book"></i> <span className="nav-label">Anggaran</span></Link>
+                        <li className={this.activeRoute("/anggaran")}>
+                            <Link to="/anggaran"><i className="fa fa-book"></i> <span className="nav-label">Anggaran</span></Link>
                         </li>
                     </ul>
             </nav>

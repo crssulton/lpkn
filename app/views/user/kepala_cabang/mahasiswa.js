@@ -1,5 +1,6 @@
 import React, { Component } from 'react';	
 import {BASE_URL} from '../../../config/config.js'
+import print from "print-js";
 
 class Mahasiswa extends Component {
 
@@ -68,6 +69,19 @@ class Mahasiswa extends Component {
     	})
     }
 
+    exportData = () => {
+	    printJS({
+	      printable: "print_data",
+	      type: "html",
+	      modalMessage: "Sedang memuat data...",
+	      showModal: true,
+	      maxWidth: "1300",
+	      font_size: "8pt",
+	      documentTitle: "DATA MAHASISWA",
+	      targetStyles: ["*"]
+	    });
+	  };
+
     render() {
         return (
             <div >
@@ -87,7 +101,12 @@ class Mahasiswa extends Component {
                         </ol>
 		            </div>
 		            <div className="col-lg-4">
-		            </div>
+            <div className="title-action">
+              <a onClick={() => this.exportData()} className="btn btn-primary">
+                <i className="fa fa-print" /> Cetak{" "}
+              </a>
+            </div>
+          </div>
 		        </div>
 		        <div className="wrapper wrapper-content">
                     <div className="row animated fadeInRight">
@@ -98,6 +117,54 @@ class Mahasiswa extends Component {
                                 </div>
                                 <div className="ibox-content">
                                 	<div className="row">
+
+                                		<div style={{ backgroundColor: "white", display:'none' }}>
+								          <table style={{fontSize: "8pt" }} className="table table-bordered" id="print_data">
+								            <thead>
+								              <tr>
+								                <th>NO.</th>
+								                <th>NIM.</th>
+								                <th>NAMA</th>
+								                <th>ALAMAT</th>
+								                <th>TMPT LAHIR</th>
+								                <th>TGL LAHIR</th>
+								                <th>JK</th>
+								                <th>JURUSAN</th>
+								                <th>STATUS</th>
+								                <th>ANGKATAN</th>
+								                <th>TOTAL BAYAR</th>
+								                <th>KAMPUS</th>
+								              </tr>
+								            </thead>
+								            <tbody>
+								              {this.state.mahasiswas.filter(mahasiswa => mahasiswa.calon == false && 
+										        		this.state.selectedJurusan == 0 ? true : mahasiswa.jurusan == this.state.selectedJurusan)
+										        	.map((data, key) => (
+								                <tr>
+								                  <td>{key + 1}</td>
+								                  <td>{data.nim}</td>
+								                  <td>{data.nama}</td>
+								                  <td>{data.alamat}</td>
+								                  <td>{data.tempat_lahir}</td>
+								                  <td>{data.tgl_lahir}</td>
+								                  <td>{data.jenis_kelamin}</td>
+								                  <td>{data.jurusan_info.nama}</td>
+								                  <td>
+								                    {data.aktif ? (
+								                        "Aktif"
+								                    ) : (
+								                        "Tidak Aktif"
+								                    )}
+								                  </td>
+								                  <td>{data.tahun_angkatan}</td>
+								                  <td>{data.total_bayar}</td>
+								                  <td>{data.kampus_info.nama}</td>
+								                </tr>
+								              ))}
+								            </tbody>
+								          </table>
+								        </div>
+
 					                    <div className="col-lg-8">
 					                      <label className="col-sm-3 col-form-label">Filter </label>
 					                      <div className="col-sm-9">

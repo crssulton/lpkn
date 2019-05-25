@@ -2,6 +2,11 @@ import React, { Component } from 'react';
 import swal from 'sweetalert';
 import {BASE_URL} from '../../../config/config.js'
 import { Link, Location } from 'react-router';
+import Select from "react-select";
+import moment from "moment";
+import "react-select/dist/react-select.css";
+
+let account = []
 
 class Pengajuan extends Component {
 
@@ -14,7 +19,9 @@ class Pengajuan extends Component {
             selected: null,
             pengajuanBaru: {},
             add: true,
+            account: [],
             addForm: true,
+            selected: null,
             editpengajuan : {},
             newPengajuan: {}
         }
@@ -23,7 +30,7 @@ class Pengajuan extends Component {
     componentWillMount(){
     	const self = this
 		
-		fetch(BASE_URL + '/api/pengajuan/', {
+		fetch(BASE_URL + '/api/pengajuan/?gaji=1', {
             method: 'get',
             headers: {
                 'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
@@ -37,12 +44,31 @@ class Pengajuan extends Component {
 			})
         });
 
+        fetch(BASE_URL + "/api/account/", {
+	      method: "get",
+	      headers: {
+	        Authorization: "JWT " + window.sessionStorage.getItem("token"),
+	        "Content-Type": "application/json",
+	        Accept: "application/json"
+	      }
+	    })
+	      .then(function(response) {
+	        return response.json();
+	      })
+	      .then(function(data) {
+	        self.setState({
+	          account: data
+	        });
+	      });
+
     }
 
     addPengajuan = ()=> {
     	const self = this
     	let addButton = document.getElementsByClassName("btn-add")
     	addButton[0].setAttribute("disabled", "disabled")
+    	let newPengajuan = this.state.newPengajuan
+    	newPengajuan.gaji =  true
 
     	fetch(BASE_URL + '/api/pengajuan/', {
 			method: 'post',
@@ -51,7 +77,7 @@ class Pengajuan extends Component {
 				'Content-Type': 'application/json',
                 'Accept': 'application/json'
 			},
-			body: JSON.stringify(this.state.newPengajuan)
+			body: JSON.stringify(newPengajuan)
 		}).then(function(response) {
 			return response.json();
 		}).then(function(data) {
@@ -115,7 +141,57 @@ class Pengajuan extends Component {
 		});
     }
 
+    handleChangeStatus = () => {
+	    const self = this;
+
+	    let pengajuanBaru = {...this.state.pengajuanBaru}
+
+	    swal({
+	      title: "Terima Pengajuan Gaji?",
+	      icon: "warning",
+	      buttons: true,
+	      dangerMode: true
+	    }).then(change => {
+	      if (change) {
+	      	console.log(JSON.stringify(pengajuanBaru))
+	        fetch(
+	          BASE_URL + "/api/pengajuan/" + self.state.selected.id + "/",
+	          {
+	            method: "patch",
+	            headers: {
+	              Authorization: "JWT " + window.sessionStorage.getItem("token"),
+	              "Content-Type": "application/json",
+	              Accept: "application/json"
+	            },
+	            body: JSON.stringify(pengajuanBaru)
+	          }
+	        )
+	          .then(function(response) {
+	            if (response.status == 200) {
+	              toastr.success("Akun tujuan berhasil ditambahkan", "Sukses ! ");
+	              let pengajuan = [...self.state.pengajuan];
+	              pengajuan.find(
+	                data => data.id == self.state.selected.id
+	              ).account_tujuan = pengajuanBaru.account_tujuan;
+	              self.setState({ pengajuan });
+	            } else {
+	              toastr.warning("Mohon maaf,terjadi kesalahan", "Gagal ! ");
+	            }
+	          })
+	          .then(function(data) {});
+
+	      }
+	    });
+	  };
+
     render() {
+
+    	account = [...this.state.account]
+	      this.state.account.map((data, key) => {
+	      account[key].value = data.id
+	      account[key].label = data.nama
+	    })
+
         return (
             <div >
                 <div className="row wrapper border-bottom white-bg page-heading">
@@ -160,7 +236,8 @@ class Pengajuan extends Component {
 					                            <tr>
 					                                <th style={{'width':'5%'}}>NO</th>
 					                                <th style={{'width':'15%'}}>URAIAN</th>
-					                                <th style={{'width':'15%'}}>STATUS</th>
+					                                <th style={{'width':'15%'}}>AKUN</th>
+					                                <th style={{'width':'10%'}}>STATUS</th>
 					                                <th style={{'width':'13%', 'textAlign':'center'}}>AKSI</th>
 					                            </tr>
 					                            </thead>
@@ -170,11 +247,22 @@ class Pengajuan extends Component {
 					                            		<tr key={key}>
 							                                <td>{key+1}</td>
 							                                <td>{data.nama}</td>
-							                                <td>{data.status.toUpperCase()}</td>
+							                                <td>{data.account_tujuan != null ? this.state.account.find(x => x.id == data.account_tujuan).nama : "BELUM ADA"}</td>
+							                                <td>
+							                                {data.verified ? (
+							                                  <span className="badge badge-primary">
+							                                    Diterima
+							                                  </span>
+							                                ) : (
+							                                  <span className="badge badge-warning">
+							                                    Menunggu
+							                                  </span>
+							                                )}
+							                              </td>
 							                                <td>
 						                                		<center>
 						                                			{
-						                                				data.status == "pending"?
+						                                				!data.verified?
 						                                				<button 
 							                                				style={{'margin' : '0 5px'}} 
 							                                				onClick={() => this.handleDeleteMatkul( data.id, key )}
@@ -184,13 +272,29 @@ class Pengajuan extends Component {
 							                                				:
 							                                				null
 						                                			}
-						                                			<Link to={{ pathname: 'pengajuan-gaji', state: { pengajuan: data} }}>
-							                                			<button 
-							                                				style={{'margin' : '0 0 0 5px'}}
-							                                				className="btn btn-primary btn-sm" 
-							                                				type="button"
-							                                				><i className="fa fa-book"></i></button>
-						                                			</Link>
+						                                			<span>
+							                                			<Link to={{ pathname: 'pengajuan-gaji', state: { pengajuan: data} }}>
+								                                			<button 
+								                                				style={{'margin' : '0 0 0 5px'}}
+								                                				className="btn btn-primary btn-sm" 
+								                                				type="button"
+								                                				><i className="fa fa-book"></i></button>
+							                                			</Link>
+							                                			{
+							                                				data.verified ?
+							                                				<button 
+								                                				style={{'margin' : '0 5px'}} 
+								                                				onClick={ () => {
+								                                					this.setState({selected: data})
+								                                					$('#ModalAkunTransaksi').modal('show')
+								                                				}}
+								                                				className="btn btn-info btn-sm" 
+								                                				type="button"
+								                                				><i className="fa fa-external-link"></i></button>
+								                                			:
+								                                			null
+							                                			}
+						                                			</span>
 
 						                                		</center>
 							                                </td>
@@ -250,8 +354,69 @@ class Pengajuan extends Component {
                             </div>
                         </div>
                     </div>
-                    
-                    
+                  	<div
+		              className="modal inmodal"
+		              id="ModalAkunTransaksi"
+		              tabIndex="-1"
+		              role="dialog"
+		              aria-hidden="true"
+		            >
+		              <div className="modal-dialog">
+		                <div className="modal-content animated bounceInRight">
+		                  <div className="modal-header">
+		                    <button
+		                      type="button"
+		                      className="close"
+		                      data-dismiss="modal"
+		                    >
+		                      <span aria-hidden="true">&times;</span>
+		                      <span className="sr-only">Close</span>
+		                    </button>
+		                    <h4 className="modal-title">Pilih Akun Tujuan</h4>
+		                  </div>
+		                  <div className="modal-body">
+		                    <div className="form-group row">
+		                      <label className="col-lg-2 col-form-label">
+		                        Akun Tujuan
+		                      </label>
+		                      <div className="col-lg-10">
+		                        <Select
+		                          name="form-field-name"
+		                          value={this.state.pengajuanBaru.account_tujuan}
+		                          onChange={selectedOption => {
+		                            let pengajuanBaru = {
+		                              ...this.state.pengajuanBaru
+		                            };
+		                            console.log(selectedOption.value)
+		                            pengajuanBaru.account_tujuan =
+		                              selectedOption.value;
+		                            this.setState({ pengajuanBaru });
+		                          }}
+		                          options={account}
+		                        />
+		                      </div>
+		                    </div>
+		                  </div>
+		                  <div className="modal-footer">
+		                    <button
+		                      type="button"
+		                      className="btn btn-white"
+		                      data-dismiss="modal"
+		                    >
+		                      Tutup
+		                    </button>
+		                    <button
+		                      onClick={this.handleChangeStatus}
+		                      type="button"
+		                      className="btn btn-primary"
+		                      data-dismiss="modal"
+		                    >
+		                      Terima
+		                    </button>
+		                  </div>
+		                </div>
+		              </div>
+		            </div>  
                 </div>
 
 		        

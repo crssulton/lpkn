@@ -276,6 +276,10 @@ class Dashboard extends Component {
 												    <div className="full-height-scroll">
 												    	<table className="table">
                                                         <tbody>
+                                                        	<tr>
+												    			<td><b>Kelas</b></td>
+												    			<td>: {this.state.mahasiswa.kelas_info.nama}</td>
+												    		</tr>
 												    		<tr>
 												    			<td><b>Jurusan</b></td>
 												    			<td>: {this.state.mahasiswa.jurusan_info.nama}</td>

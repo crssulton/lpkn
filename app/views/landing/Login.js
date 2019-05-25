@@ -57,6 +57,7 @@ class Login extends Component {
         
         if (data.user.role_display != "Owner") {
           window.sessionStorage.setItem("user_id",  data.user.profile.id);
+          window.sessionStorage.setItem("kampus_id",  data.user.profile.kampus_info.id);
         }
         
         setTimeout(() => {

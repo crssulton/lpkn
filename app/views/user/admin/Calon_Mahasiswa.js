@@ -57,7 +57,7 @@ class Calon_Mahasiswa extends Component {
 
   componentDidMount() {
     const self = this;
-    fetch(BASE_URL + "/api/mahasiswa/", {
+    fetch(BASE_URL + "/api/mahasiswa/?kampus=1", {
       method: "get",
       headers: {
         Authorization: "JWT " + window.sessionStorage.getItem("token")
@@ -67,8 +67,9 @@ class Calon_Mahasiswa extends Component {
         return response.json();
       })
       .then(function(data) {
+        console.log(data)
         self.setState({
-          mahasiswas: data.results,
+          mahasiswas: data,
           loading: !self.state.loading
         });
       });
@@ -150,7 +151,7 @@ class Calon_Mahasiswa extends Component {
           return
         }
       }
-      // console.log(JSON.stringify(key))
+      self.setState({ loadingApprove: true });
       fetch(BASE_URL + "/api/mahasiswa/" + key.id + "/", {
         method: "patch",
         headers: {
@@ -194,7 +195,6 @@ class Calon_Mahasiswa extends Component {
 
   handleTerimaCalon = key => {
     const self = this;
-    self.setState({ loadingApprove: true });
     fetch(BASE_URL + "/api/mahasiswa/" + key.id + "/approve/", {
       method: "post",
       headers: {
@@ -205,8 +205,8 @@ class Calon_Mahasiswa extends Component {
     })
       .then(function(response) {
         if (response.status == 200) {
-          self.getmahasiswaResults();
-          self.setState({ profil: false, check: false});
+          let mahasiswas = self.state.mahasiswas.filter(data => data.id != key.id)
+          self.setState({ profil: false, check: false, mahasiswas});
           toastr.success("Mahasiswa telah diterima", "Sukses ! ");
         } else {
           toastr.warning("Mahasiswa gagal diterima", "Gagal ! ");
@@ -215,7 +215,6 @@ class Calon_Mahasiswa extends Component {
       })
       .then(function(data) {
         if (data.id != null) {
-          console.log(data)
           self.setState(
             {
               kwitansi: data
@@ -315,7 +314,7 @@ class Calon_Mahasiswa extends Component {
                 >
                   <h5>
                     {" "}
-                    <i className="fa fa-list " /> Daftar Calon mahasiswa
+                    <i className="fa fa-list " /> Daftar Calon Mahasiswa
                   </h5>
                 </div>
                 <div className="ibox-content">
@@ -1100,32 +1099,9 @@ class Calon_Mahasiswa extends Component {
                                 </div>
                               </div>
 
-                              <div className="form-group row">
-                                <label className="col-lg-3 col-form-label">
-                                  Biya Registrasi
-                                </label>
-                                <div className="text-right col-lg-9">
-                                  <select
-                                    value={this.state.mahasiswa.dp}
-                                    onChange={e => {
-                                      let mahasiswa = [];
-                                      mahasiswa = this.state.mahasiswa;
-                                      mahasiswa.dp = e.target.value;
-                                      this.setState({ mahasiswa });
-                                    }}
-                                    defaultValue={false}
-                                    className="form-control m-b"
-                                  >
-                                    <option value={false}>Tidak</option>
-                                    <option value={true}>Ya</option>
-                                  </select>
-                                </div>
-                              </div>
-                              {this.state.mahasiswa.dp == "true" ? (
-                                <div>
                                 <div className="form-group row">
                                   <label className="col-lg-3 col-form-label">
-                                    Nominal
+                                    Biaya Registrasi
                                   </label>
                                   <div className="col-lg-9">
                                     <CurrencyInput
@@ -1140,27 +1116,10 @@ class Calon_Mahasiswa extends Component {
                                       ) => {
                                         let mahasiswa = [];
                                         mahasiswa = this.state.mahasiswa;
+                                        mahasiswa.dp = true
                                         mahasiswa.dp_nominal = floatvalue;
                                         this.setState({ mahasiswa });
                                       }}
-                                    />
-                                  </div>
-                                </div>
-                                <div className="form-group row">
-                                  <label className="col-lg-3 col-form-label">
-                                    Akun Sumber
-                                  </label>
-                                  <div className="col-lg-9">
-                                    <Select
-                                      name="form-field-name"
-                                      value={this.state.mahasiswa.account}
-                                      onChange={(selectedOption) => {
-                                        let mahasiswa = [];
-                                        mahasiswa = this.state.mahasiswa;
-                                        mahasiswa.account = selectedOption.value;
-                                        this.setState({ mahasiswa });
-                                      }}
-                                      options={account}
                                     />
                                   </div>
                                 </div>
@@ -1175,6 +1134,7 @@ class Calon_Mahasiswa extends Component {
                                       onChange={(selectedOption) => {
                                         let mahasiswa = [];
                                         mahasiswa = this.state.mahasiswa;
+                                        mahasiswa.account = 16
                                         mahasiswa.account_tujuan = selectedOption.value;
                                         this.setState({ mahasiswa });
                                       }}
@@ -1182,8 +1142,6 @@ class Calon_Mahasiswa extends Component {
                                     />
                                   </div>
                                 </div>
-                                </div>
-                              ) : null}
                             </div>
                           </div>
                         </div>

@@ -9,6 +9,9 @@ class Approve_Gaji extends Component {
 
 	constructor(props){
         super(props);
+
+        const {pengajuan} = this.props.location.state
+
         this.state = {
             pegawai: [],
             loading: true,
@@ -22,27 +25,13 @@ class Approve_Gaji extends Component {
             jurusans: [],
             kampus: [],
             tempPegawai: {},
+            pengajuan,
             pengajuan_sgv : []
         }
     }
 
-    componentWillMount(){
+    componentDidMount(){
     	const self = this
-		
-		fetch(BASE_URL + '/api/pegawai/', {
-			method: 'get',
-			headers: {
-				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
-				'Content-Type': 'application/json'
-			}
-		}).then(function(response) {
-			return response.json();
-		}).then(function(data) {
-			self.setState({
-				pegawai: data.results,
-				loading: !self.state.loading
-			})
-		});
 
 		fetch(BASE_URL + '/api/pengajuan-sgv/', {
 			method: 'get',
@@ -53,8 +42,10 @@ class Approve_Gaji extends Component {
 		}).then(function(response) {
 			return response.json();
 		}).then(function(data) {
+			console.log(data)
 			self.setState({
-				pengajuan_sgv: data.results
+				pengajuan_sgv: data.results,
+				loading: !self.state.loading
 			})
 		});
 
@@ -99,7 +90,7 @@ class Approve_Gaji extends Component {
     	}
 
     	const self = this
-    	fetch(BASE_URL + '/api/pengajuan-sgv/', {
+    	fetch(BASE_URL + '/api/pengajuan-sgv/' + this.state.selected.id + '/', {
 			method: 'patch',
 			body: JSON.stringify(gajiBaru),
 			headers: {
@@ -108,9 +99,10 @@ class Approve_Gaji extends Component {
 			}
 		}).then(function(response) {
 			if(response.status == 200){
-				self.getPegawaiPengajuan()
+				let pengajuan_sgv = [...self.state.pengajuan_sgv]
+				pengajuan_sgv.find(data => data.id == self.state.selected.id).gaji = gajiBaru.gaji
 				self.setState({
-					pengajuan_sgv: self.state.pengajuan_sgv.find(data => data.pegawai_info.id == this.state.selected.pegawai_info.id).gaji = this.state.gajiPegawai,
+					pengajuan_sgv,
 					gajiPegawai: null,
 					selected: null
 				})
@@ -165,19 +157,6 @@ class Approve_Gaji extends Component {
 		                                    </div>
 	                                    </div>
 	                                    <div className="col-lg-6">
-	                                    	<label className="col-sm-2 col-form-label">Status </label>
-	                                    	<div className="col-sm-10">
-			                                    <select
-			                                    	className="form-control"
-			                                    	value={this.state.selectedStatus}
-			                                    	onChange={(e) => this.setState({selectedStatus: e.target.value})}
-			                                    >
-			                                    	<option>Pilih</option>
-			                                    	<option value="verified">Verified</option>
-			                                    	<option value="pending">Pending</option>
-			                                    	<option value="rejected">Rejected</option>
-			                                    </select>
-		                                    </div>
 	                                    </div>
 	                                </div>
 	                                
@@ -199,45 +178,42 @@ class Approve_Gaji extends Component {
 					                                <th>NAMA</th>
 					                                <th>PENDIDIKAN</th>
 					                                <th>GAJI</th>
-					                                <th>STATUS</th>
-					                                <th style={{'width':'5%', 'textAlign':'center'}}>AKSI</th>
+					                                {
+					                                	!this.state.pengajuan.verified ?
+					                                	<th style={{'width':'5%', 'textAlign':'center'}}>AKSI</th>
+					                                	:
+					                                	null
+					                            	}
 					                            </tr>
 					                            </thead>
 					                            <tbody>
 					                            {
-					                            	this.state.pengajuan_sgv.filter(gaji=> gaji.status == this.state.selectedStatus).map((data, key) =>
+					                            	this.state.pengajuan_sgv.filter(pegawai => pegawai.pengajuan == this.state.pengajuan.id).map((data, key) =>
 					                            		<tr>
 					                            			<td>{key+1}</td>
 							                                <td>{data.pegawai_info.nama.toUpperCase()}</td>
 							                                <td>{data.pegawai_info.pendidikan_terakhir.toUpperCase()}</td>
-							                                <td>{this.formatNumber(data.gaji)}</td>
-							                                <td>{data.status.toUpperCase()}</td>
-							                                <td style={{'width': '10%'}}>
-						                                		<center>
-						                                			<form className="form-inline">
-									                                    {
-									                                    	data.status == "pending" ?
-									                                    	<button 
-										                                    	onClick={(e) => this.handleChangeStatus(e, data.id)}
+							                                <td>Rp. {this.formatNumber(data.gaji)}</td>
+							                                {
+							                                	!this.state.pengajuan.verified ?
+							                                	<td style={{'width': '10%'}}>
+							                                		<center>
+							                                			<form className="form-inline">
+										                                    <button 
 								                                				style={{'margin' : '0 0 0 5px'}}
-								                                				className="btn btn-primary btn-sm" 
+								                                				onClick={ () => {
+								                                					this.setState({selected: data})
+								                                					$('#ModalEditGajiPegawai').modal('show')
+								                                				}}
+								                                				className="btn btn-info btn-sm" 
 								                                				type="button"
-								                                				><i className="fa fa-check"></i></button>
-								                                				:
-								                                				null
-									                                    }
-							                                			<button 
-							                                				style={{'margin' : '0 0 0 5px'}}
-							                                				onClick={ () => {
-							                                					this.setState({selected: data})
-							                                					$('#ModalEditGajiPegawai').modal('show')
-							                                				}}
-							                                				className="btn btn-info btn-sm" 
-							                                				type="button"
-							                                				><i className="fa fa-pencil"></i></button>
-						                                			</form>
-						                                		</center>
-							                                </td>
+								                                				><i className="fa fa-pencil"></i></button>
+							                                			</form>
+							                                		</center>
+								                                </td>
+								                                :
+								                                null
+							                                }
 							                            </tr>
 					                            	)
 					                            }

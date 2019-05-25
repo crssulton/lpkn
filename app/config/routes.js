@@ -26,6 +26,7 @@ import PertemuanDosen from '../views/user/dosen/pertemuan';
 import MainAdmin from '../components/layouts/MainAdmin';
 import Pendaftaran from '../views/user/admin/Pendaftaran';
 import List_pendaftar from '../views/user/admin/List_pendaftar'
+import List_pendaftar_online from '../views/user/admin/List_pendaftar_online'
 import Cetak_kuitansi from '../views/user/admin/Cetak_kuitansi';
 import Anggaran from '../views/user/admin/Anggaran';
 import Approve from '../views/user/admin/Approve';
@@ -65,9 +66,12 @@ import MataKuliahAkademik from '../views/user/akademik/Mata_Kuliah';
 import JadwalAkademik from '../views/user/akademik/Jadwal';
 import ListJadwalAkademik from '../views/user/akademik/list_jadwal';
 import KehadiranAkademik from '../views/user/akademik/kehadiran';
+import RekapAbsenMahasiswa from '../views/user/akademik/rekap_mahasiswa';
 import PengumumanAkademik from '../views/user/akademik/Pengumuman';
 import RuanganAkademik from '../views/user/akademik/Ruangan';
 import KelasAkademik from '../views/user/akademik/kelas';
+import DaftarKelasAkademik from '../views/user/akademik/daftar_kelas';
+import JadwalMahasiswaAkademik from '../views/user/akademik/jadwal_mahasiswa';
 import AbsensiAkademik from '../views/user/akademik/absensi';
 import DaftarAkademik from '../views/user/akademik/daftar';
 import NilaiMahasiswaAkademik from '../views/user/akademik/nilai_mahasiswa';
@@ -107,7 +111,8 @@ import Form_edit_staffOwner from '../views/user/owner/Form_edit_staff';
 import KepalaCabangOwner from '../views/user/owner/Kepala_cabang';
 import KelompokAkunOwner from '../views/user/owner/kelompok_akun';
 import ApproveGajiOwner from '../views/user/owner/approve_gaji';
-import PengajuanOwner from '../views/user/owner/pengajuan';
+import PengajuanGajiOwner from '../views/user/owner/pengajuan_gaji';
+import PengajuanAnggaranOwner from '../views/user/owner/pengajuan_anggaran';
 import AnggaranOwner from '../views/user/owner/Anggaran';
 import StaffOwner from '../views/user/owner/staff';
 
@@ -166,6 +171,7 @@ if(window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStor
             <IndexRedirect to="/pendaftaran" />
             <Route path="pendaftaran" component={Pendaftaran}> </Route>
             <Route path="list-pendaftar" component={List_pendaftar}> </Route>
+            <Route path="list-pendaftar-online" component={List_pendaftar_online}> </Route>
             <Route path="status" component={Status}> </Route>
             <Route path="broadcast" component={Broadcast}> </Route>
             <Route path="approve" component={Approve}> </Route>
@@ -219,9 +225,13 @@ if(window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStor
             <Route path="matkul" component={MataKuliahAkademik}> </Route>
             <Route path="jadwal" component={JadwalAkademik}> </Route>
             <Route path="pengumuman" component={PengumumanAkademik}> </Route>
+            <Route path="rekap-mahasiswa" component={RekapAbsenMahasiswa}> </Route>
             <Route path="ruangan" component={RuanganAkademik}> </Route>
+            <Route path="daftar-kelas" component={DaftarKelasAkademik}> </Route>
+            <Route path="jadwal-mahasiswa" component={JadwalMahasiswaAkademik}> </Route>
             <Route path="kelas" component={KelasAkademik}> </Route>
             <Route path="absensi" component={AbsensiAkademik}> </Route>
+            <Route path="kelas" component={KelasAkademik}> </Route>
             <Route path="daftar" component={DaftarAkademik}> </Route>
             <Route path="daftar-jadwal" component={ListJadwalAkademik}> </Route>
             <Route path="kehadiran" component={KehadiranAkademik}> </Route>
@@ -292,7 +302,8 @@ if(window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStor
             <Route path="kepala" component={KepalaCabangOwner}> </Route>
             <Route path="hrd" component={HRDOwner}> </Route>
             <Route path="anggaran" component={AnggaranOwner}> </Route>
-            <Route path="pengajuan" component={PengajuanOwner}> </Route>
+            <Route path="pengajuan-gaji" component={PengajuanGajiOwner}> </Route>
+            <Route path="pengajuan-anggaran" component={PengajuanAnggaranOwner}> </Route>
             <Route path="add-staff" component={Form_add_staffOwner}> </Route>
             <Route path="edit-staff" component={Form_edit_staffOwner}> </Route>
             <Route path="kelompok-account" component={KelompokAkunOwner}> </Route>

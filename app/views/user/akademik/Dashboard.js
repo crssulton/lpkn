@@ -7,7 +7,7 @@ class Dashboard extends Component {
 	constructor(props){
 
 		var months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-		var myDays = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jum&#39;at', 'Sabtu'];
+		var myDays = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
 		var date = new Date();
 		var day = date.getDate();
 		var month = date.getMonth();
@@ -23,14 +23,19 @@ class Dashboard extends Component {
             QRCode: "not found",
             check: false,
             loading: false,
-            openQR:false
+            openQR:false,
+            selectedID: null,
+            data: null
         }
     }
 
     componentDidMount(){
+    	this.getJadwal()
+    }
+
+    getJadwal = () => {
     	const self = this
-    	
-    	var d = new Date(),
+    	let d = new Date(),
         month = '' + (d.getMonth() + 1),
         day = '' + d.getDate(),
         year = d.getFullYear();
@@ -38,7 +43,7 @@ class Dashboard extends Component {
 	    if (month.length < 2) month = '0' + month;
 	    if (day.length < 2) day = '0' + day;
 		let tanggal = [year, month, day].join('-')
-		console.log(tanggal)
+
 		fetch(BASE_URL + '/api/jadwal/?search=' + tanggal, {
 			method: 'get',
 			headers: {
@@ -54,17 +59,48 @@ class Dashboard extends Component {
     }
 
     generateQrCode = (id) => {
+
     	this.setState({
     		openQR: true,
+    		selectedID: id.id,
+    		data: id,
 			loading: !this.state.loading
 		})
 		
     	setTimeout(() => {
     		this.setState({
-				QRCode: id.toString(),
+				QRCode: id.id.toString(),
 				loading: !this.state.loading
 			})
     	}, 1000)
+    }
+
+    handleAbsenDosen = () => {
+    	const self = this
+    	let dosen = {
+    		dosen_hadir: true
+    	}
+
+    	fetch(BASE_URL + '/api/jadwal/' + this.state.selectedID + '/', {
+			method: 'patch',
+			headers: {
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+				'Content-Type': 'application/json',
+                'Accept': 'application/json'
+			},
+			body: JSON.stringify(dosen)
+		}).then(function(response) {
+			console.log(response)
+			if (response.status == 200) {
+				self.getJadwal()
+				self.setState({openQR: false})
+				toastr.success("Dosen telah hadir", "Sukses ! ")
+			}else{
+				toastr.warning("Dosen gagal hadir", "Gagal ! ")
+			}
+		}).then(function(data) {
+			
+		});
     }
 
     render() {
@@ -94,6 +130,7 @@ class Dashboard extends Component {
 			                                <th style={{'width':'5%'}}>MATA KULIAH</th>
 			                                <th style={{'width':'10%'}}>WAKTU</th>
 			                                <th style={{'width':'10%'}}>RUANGAN</th>
+			                                <th style={{'width':'10%'}}>KELAS</th>
 			                                 <th style={{'width':'10%'}}>JURUSAN</th>
 			                                <th style={{'width':'10%'}}>DOSEN</th>
 			                            </tr>
@@ -101,10 +138,11 @@ class Dashboard extends Component {
 			                            <tbody>
 			                            {
 			                            	this.state.jadwal.map((data, key) =>
-			                            		<tr key={key} onClick={() => this.generateQrCode(data.id)} style={{'cursor': 'pointer'}}>
+			                            		<tr key={key} onClick={() => this.generateQrCode(data)} style={{'cursor': 'pointer'}}>
 					                                <td>{data.title}</td>
 					                                <td>{data.jam_mulai.substring(0, 5)} - {data.jam_selesai.substring(0, 5)}</td>
 					                                <td>{data.ruangan_info.nama}</td>
+					                                <td>{data.kelas_info.nama}</td>
 					                                <td>{data.jurusan_info.nama}</td>
 					                                <td>{data.dosen_info.nama}</td>
 					                            </tr>
@@ -135,14 +173,32 @@ class Dashboard extends Component {
 			                                </div>
 			                            </div>
 			                            :
-										<QRCode
-							                bgColor="#FFFFFF"
-							                fgColor="#000000"
-							                level="Q"
-							                style={{ width: 256 }}
-							                value={this.state.QRCode}
-							            />
-									
+										!this.state.data.dosen_hadir ?
+										<center>
+											<QRCode
+								                bgColor="#FFFFFF"
+								                fgColor="#000000"
+								                level="Q"
+								                style={{ width: 256 }}
+								                value={this.state.QRCode}
+								            />
+								            <br/><br/>
+								           	<button 
+								           		onClick={this.handleAbsenDosen}
+								           		className="btn btn-primary btn-block"
+								           	>
+								           		Absen Dosen
+								           	</button>
+										</center>
+										:
+										<center>
+											<img
+												width="100"
+								                src={'https://cdn3.iconfinder.com/data/icons/flat-actions-icons-9/792/Tick_Mark_Dark-512.png'}
+								            />
+								            <br/>
+								            <h3 style={{'textAlign':'center'}}>Dosen Telah Hadir</h3>
+										</center>
 									:
 									null
         						}   		

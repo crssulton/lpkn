@@ -1,433 +1,432 @@
-import React, { Component } from "react";
-import { Link } from "react-router";
-import { BASE_URL } from "../../../config/config.js";
-import CurrencyInput from "react-currency-input";
+import React, { Component } from 'react';
+import swal from 'sweetalert';
+import {BASE_URL} from '../../../config/config.js'
+import Select from 'react-select';
+import 'react-select/dist/react-select.css';
+import DayPickerInput from 'react-day-picker/DayPickerInput';
+import 'react-day-picker/lib/style.css';
+import CurrencyInput from 'react-currency-input';
 
-class Anggaran extends Component {
-  constructor(props) {
-    super(props);
+let account = []
+let account_tujuan = []
+let kelompok_account = []
 
-    const { pengajuan } = this.props.location.state;
+class Transaksi extends Component {
 
-    this.state = {
-      pengajuan,
-      pengajuan_anggaran: [],
-      loading: true,
-      form: false,
-      selected: null,
-      pengajuanBaru: {},
-      add: true,
-      addForm: true,
-      edit_pengajuan_anggaran: {},
-      newPengajuan: {}
-    };
-  }
+  constructor(props){
+        super(props);
 
-  componentWillMount() {
-    const self = this;
+        const {pengajuan}  = this.props.location.state
 
-    fetch(BASE_URL + "/api/pengajuan-anggaran/", {
-      method: "get",
-      headers: {
-        Authorization: "JWT " + window.sessionStorage.getItem("token")
-      }
-    })
-      .then(function(response) {
-        return response.json();
-      })
-      .then(function(data) {
-        self.setState({
-          pengajuan_anggaran: data.results,
-          loading: !self.state.loading
-        });
-      });
-  }
+        console.log(pengajuan)
 
-  editItem = () => {
-    const self = this;
-    console.log(JSON.stringify(this.state.edit_pengajuan_anggaran));
-    fetch(BASE_URL + "/api/pengajuan-anggaran/" + this.state.selected + "/", {
-      method: "put",
-      body: JSON.stringify(this.state.edit_pengajuan_anggaran),
-      headers: {
-        Authorization: "JWT " + window.sessionStorage.getItem("token"),
-        "Content-Type": "application/json",
-        Accept: "application/json"
-      }
-    })
-      .then(function(response) {
-        if (response.status == 200) {
-          toastr.success("Item berhasil diubah", "Sukses ! ");
-          self.setState({
-            addForm: !self.state.addForm
-          });
-        } else {
-          toastr.warning("Item mengubah kelas", "Gagal ! ");
+        this.state = {
+            transaksi: [],
+            account: [],
+            pengajuan,
+            kelompok_account: [],
+            loading: true,
+            form: false,
+            selected: null,
+            jurusans: [],
+            transaksiBaru: {},
+            add: true,
+            addForm: true,
+            jurusans: [],
+            edittransaksi : {}
         }
-      })
-      .then(function(data) {});
-  };
+    }
 
-  handleDeleteItem = (id, key) => {
-    const self = this;
-    swal({
-      title: "Hapus Item?",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true
-    }).then(willDelete => {
-      if (willDelete) {
-        fetch(BASE_URL + "/api/pengajuan-anggaran/" + id, {
-          method: "delete",
-          headers: {
-            Authorization: "JWT " + window.sessionStorage.getItem("token")
-          }
+    handleChange = (selectedOption) => {
+    this.setState({ selectedOption });
+    // selectedOption can be null when the `x` (close) button is clicked
+    if (selectedOption) {
+      console.log(`Selected: ${selectedOption.label}`);
+    }
+  }
+
+    componentDidMount(){
+      const self = this
+    
+    fetch(BASE_URL + '/api/transaksi/', {
+      method: 'get',
+      headers: {
+        'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+        'Content-Type': 'application/json',
+                'Accept': 'application/json'
+      }
+    }).then(function(response) {
+      return response.json();
+    }).then(function(data) {
+      self.setState({
+        transaksi: data.results,
+        loading: !self.state.loading
+      })
+    });
+
+
+    fetch(BASE_URL + '/api/account/', {
+      method: 'get',
+      headers: {
+        'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+        'Content-Type': 'application/json',
+                'Accept': 'application/json'
+      }
+    }).then(function(response) {
+      return response.json();
+    }).then(function(data) {
+      self.setState({
+        account: data
+      })
+    });
+
+    fetch(BASE_URL + '/api/kelompok-account/', {
+      method: 'get',
+      headers: {
+        'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+        'Content-Type': 'application/json',
+                'Accept': 'application/json'
+      }
+    }).then(function(response) {
+      return response.json();
+    }).then(function(data) {
+      self.setState({
+        kelompok_account: data.results
+      })
+    });
+
+    }
+
+    handleChangeKode = e => {
+        let transaksi = []
+        transaksi = this.state.transaksi
+        transaksi.filter(data => data.id == this.state.selected)[0].kode = e.target.value
+        this.setState({
+          transaksi,
+          edittransaksi: transaksi.filter(data => data.id == this.state.selected)[0]
         })
-          .then(function(response) {
-            self.setState({
-              pengajuan_anggaran: self.state.pengajuan_anggaran.filter(
-                data => data.id !== id
-              )
-            });
-            swal("Sukses! Item telah dihapus!", {
-              icon: "success"
-            });
-          })
-          .then(function(data) {
-            self.setState({
-              pengajuan_anggaran: self.state.pengajuan_anggaran.filter(
-                data => data.id !== id
-              )
-            });
-            swal("Sukses! Item telah dihapus!", {
-              icon: "success"
-            });
-          });
+    }
+    handleChangeUraian = e => {
+        let transaksi = []
+        transaksi = this.state.transaksi
+        transaksi.filter(data => data.id == this.state.selected)[0].uraian = e.target.value
+        this.setState({
+          transaksi,
+          edittransaksi: transaksi.filter(data => data.id == this.state.selected)[0]
+        })
+    }
+    handleChangeNominal = e => {
+        let transaksi = []
+        transaksi = this.state.transaksi
+        transaksi.filter(data => data.id == this.state.selected)[0].nominal = e.target.value
+        this.setState({
+          transaksi,
+          edittransaksi: transaksi.filter(data => data.id == this.state.selected)[0]
+        })
+    }
+
+    handleChangeTanggal = e => {
+        let transaksi = []
+        transaksi = this.state.transaksi
+        transaksi.filter(data => data.id == this.state.selected)[0].tanggal = e.target.value
+        this.setState({
+          transaksi,
+          edittransaksi: transaksi.filter(data => data.id == this.state.selected)[0]
+        })
+    }
+
+    handleChangeAccount = (selectedOption) => {
+        let transaksi = []
+        transaksi = this.state.transaksi
+        transaksi.filter(data => data.id == this.state.selected)[0].account = selectedOption.value
+        this.setState({
+          transaksi,
+          edittransaksi: transaksi.filter(data => data.id == this.state.selected)[0]
+        })
+    }
+
+    edittransaksi = () => {
+      const self = this
+      let edittransaksi = this.state.edittransaksi
+      delete edittransaksi.id
+      self.setState({edittransaksi})
+
+      fetch(BASE_URL + '/api/transaksi/'+ this.state.selected+'/', {
+      method: 'put',
+      body: JSON.stringify(this.state.edittransaksi),
+      headers: {
+        'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+        'Content-Type': 'application/json',
+                'Accept': 'application/json'
+      }
+    }).then(function(response) {
+      if (response.status == 200) {
+        toastr.success("transaksi berhasil diubah", "Sukses ! ")
+        self.setState({
+          addForm: !self.state.addForm
+        })
+      }else{
+        toastr.warning("Gagal mengubah transaksi", "Gagal ! ")
+      }
+    }).then(function(data) {
+      
+    });
+    }
+
+    addtransaksiUraian = (e) => {
+      let transaksiBaru = {}
+        transaksiBaru = this.state.transaksiBaru
+        transaksiBaru.uraian = e.target.value
+        this.setState({transaksiBaru})  
+    }
+    addtransaksiTanggal = (e) => {
+      let transaksiBaru = {}
+        transaksiBaru = this.state.transaksiBaru
+        transaksiBaru.tanggal = e.target.value
+        this.setState({transaksiBaru})  
+    }
+    addtransaksiNominal = (e, maskedvalue, floatvalue) => {
+      let transaksiBaru = {}
+        transaksiBaru = this.state.transaksiBaru
+        transaksiBaru.nominal = floatvalue
+        this.setState({transaksiBaru})  
+    }
+    addtransaksiAkun = (selectedOption) => {
+      if (selectedOption) {
+        let transaksiBaru = {}
+          transaksiBaru = this.state.transaksiBaru
+          transaksiBaru.account = selectedOption.value
+          this.setState({transaksiBaru})  
+      }
+    }
+    addtransaksiKelompokAkun = (selectedOption) => {
+      if (selectedOption) {
+        let transaksiBaru = {}
+          transaksiBaru = this.state.transaksiBaru
+          transaksiBaru.kelompok_account = selectedOption.value
+          this.setState({transaksiBaru})  
+      }
+    }
+    addtransaksiKode = (e) => {
+      let transaksiBaru = {}
+        transaksiBaru = this.state.transaksiBaru
+        transaksiBaru.kode = e.target.value
+        this.setState({transaksiBaru})  
+    }
+    addtransaksiAkunAkunTujuan = (selectedOption) => {
+      if (selectedOption) {
+        let transaksiBaru = {}
+          transaksiBaru = this.state.transaksiBaru
+          transaksiBaru.account_tujuan = selectedOption.value
+          this.setState({transaksiBaru})  
+      }
+    }
+    addtransaksiSaldoAwal = (e) => {
+      let transaksiBaru = {}
+        transaksiBaru = this.state.transaksiBaru
+        transaksiBaru.saldo_awal = e.target.value
+        this.setState({transaksiBaru})  
+    }
+    addtransaksiJurusan = (e) => {
+      let transaksiBaru = {}
+        transaksiBaru = this.state.transaksiBaru
+        transaksiBaru.jurusan = e.target.value
+        this.setState({transaksiBaru})  
+    }
+
+    addtransaksi = ()=> {
+      const self = this
+      let addButton = document.getElementsByClassName("btn-add")
+      console.log(JSON.stringify(this.state.transaksiBaru))
+      addButton[0].setAttribute("disabled", "disabled")
+
+      let transaksiBaru = {...this.state.transaksiBaru}
+      transaksiBaru.transaksi_anggaran = true
+      transaksiBaru.anggaran = this.state.pengajuan.id
+
+      console.log(JSON.stringify(transaksiBaru))
+      fetch(BASE_URL + '/api/transaksi/', {
+      method: 'post',
+      headers: {
+        'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(transaksiBaru)
+    }).then(function(response) {
+      return response.json();
+    }).then(function(data) {
+      if(data.id != null || data.id != undefined){
+        addButton[0].removeAttribute("disabled")
+        let transaksi = []
+        let transaksiBaru = {}
+        transaksiBaru = self.state.transaksiBaru
+
+            transaksi = self.state.transaksi
+            transaksi.push(data)
+
+            transaksiBaru.kode = null
+          transaksiBaru.uraian = null
+        transaksiBaru.tanggal = null
+        transaksiBaru.nominal = null
+
+        self.setState({
+          addForm: true,
+          transaksi,
+          transaksiBaru : {}
+          
+        })
+        toastr.success("Akun berhasil ditambahkan", "Sukses ! ")
+      }else{
+        addButton[0].removeAttribute("disabled")
+        self.setState({
+          addForm: true
+        })
+        toastr.warning("Gagal menambahkan Akun", "Gagal ! ")
       }
     });
-  };
+    }
 
-  formatNumber = num => {
-    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
-  };
+    handleDeleteTransaksi = (id, key)=> {
+      console.log(id)
+      const self = this
+      swal({
+      title: "Hapus Transaksi ?",
+      icon: "warning",
+      buttons: true,
+      dangerMode: true,
+    })
+    .then((willDelete) => {
+      if (willDelete) {
+        fetch(BASE_URL + '/api/transaksi/' + id, {
+        method: 'delete',
+        headers: {
+          'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+        }
+      }).then(function(response) {
+        if (response.status == 204) {
+          self.setState({
+            transaksi: self.state.transaksi.filter(data => data.id !== id)
+          })
+          swal("Sukses! transaksi telah dihapus!", {
+              icon: "success",
+            });
+        }
+      }).then(function(data) {
+      });
+      }
+    });
+    }
 
-  render() {
-    return (
-      <div>
-        <div className="row wrapper border-bottom white-bg page-heading">
-          <div className="col-lg-10">
-            <h2>Pengajuan Anggaran</h2>
-            <ol className="breadcrumb">
-              <li className="breadcrumb-item">
-                <Link to="/main">Home</Link>
-              </li>
-              <li className="breadcrumb-item active">
-                <strong>Pengajuan Anggaran</strong>
-              </li>
-            </ol>
-          </div>
-          <div className="col-lg-2" />
-        </div>
-        <div className="wrapper wrapper-content">
-          <div className="row animated fadeInRight">
-            <div className="row">
-              <div className="col-lg-12">
-                <div className="ibox ">
-                  <div
-                    className="ibox-title"
-                    style={{ backgroundColor: "#1ab394", color: "white" }}
-                  >
-                    <h5>
-                      {" "}
-                      <i className="fa fa-list " /> List Pengajuan
-                    </h5>
-                  </div>
-
-                  <div className="ibox-content">
-                    <div className="row">
-                      <div className="col-lg-2">
-                        <button
-                          className="btn btn-info"
-                          onClick={() => this.props.history.goBack()}
-                        >
-                          {" "}
-                          <i className="fa fa-arrow-left " /> Kembali{" "}
-                        </button>
-                      </div>
-                    </div>
-                    <br />
-                    <br />
-                    <div className="table-responsive">
-                      <table className="table table-striped" align="right">
-                        <thead>
-                          <tr>
-                            <th>NO</th>
-                            <th>NAMA BARANG</th>
-                            <th>SPESIFIKASI</th>
-                            <th>JUMLAH</th>
-                            <th>SATUAN</th>
-                            <th>HARGA</th>
-                            {this.state.pengajuan.status == "pending" ? <th><center>AKSI</center></th> : null}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {this.state.pengajuan_anggaran
-                            .filter(x => x.pengajuan == this.state.pengajuan.id)
-                            .map((data, key) => (
-                              <tr key={key}>
-                                <td>{key + 1}</td>
-                                <td>{data.nama_barang}</td>
-                                <td>{data.spesifikasi}</td>
-                                <td>{data.jumlah}</td>
-                                <td>{data.satuan}</td>
-                                <td>Rp. {this.formatNumber(data.harga)}</td>
-                                {
-                                this.state.pengajuan.status == "pending" ?
-                                <td>
-                                  <center>
-                                    <button
-                                      style={{ margin: "0 5px" }}
-                                      className="btn btn-info btn-sm"
-                                      type="button"
-                                      onClick={() => {
-                                        this.setState({
-                                          selected: data.id,
-                                          addForm: false
-                                        });
-                                        $("#ModalEditAnggaran").modal("show");
-                                      }}
-                                    >
-                                      <i className="fa fa-edit" />
-                                    </button>
-
-                                    <button
-                                      onClick={() =>
-                                        this.handleDeleteItem(data.id, key)
-                                      }
-                                      className="btn btn-danger btn-sm"
-                                      type="button"
-                                    >
-                                      <i className="fa fa-trash" />
-                                    </button>
-                                  </center>
-                                </td>
-                                :
-                                null
-                                }
-                              </tr>
-                            ))}
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div id="ModalEditAnggaran" className="modal fade">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <button type="button" className="close" data-dismiss="modal">
-                  <span aria-hidden="true">×</span>{" "}
-                  <span className="sr-only">close</span>
-                </button>
-                <h4 id="modalTitle" className="modal-title">
-                  Input Gaji Pegawai
-                </h4>
-              </div>
-              <div className="modal-body">
-                {!this.state.addForm ? (
-                  <div className="ibox-content">
-                    <div className="">
-                      <div className="form-group row">
-                        <label className="col-lg-3 col-form-label">
-                          Nama Barang
-                        </label>
-                        <div className="col-lg-9">
-                          <input
-                            value={
-                              this.state.pengajuan_anggaran.filter(
-                                data => data.id === this.state.selected
-                              )[0].nama_barang
-                            }
-                            onChange={e => {
-                              let pengajuan_anggaran = [];
-                              pengajuan_anggaran = this.state
-                                .pengajuan_anggaran;
-                              pengajuan_anggaran.filter(
-                                data => data.id == this.state.selected
-                              )[0].nama_barang = e.target.value;
-                              this.setState({
-                                pengajuan_anggaran,
-                                edit_pengajuan_anggaran: pengajuan_anggaran.filter(
-                                  data => data.id == this.state.selected
-                                )[0]
-                              });
-                            }}
-                            type="text"
-                            className="form-control m-b"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="form-group row">
-                        <label className="col-lg-3 col-form-label">
-                          Spesifikasi
-                        </label>
-                        <div className="col-lg-9">
-                          <input
-                            value={
-                              this.state.pengajuan_anggaran.filter(
-                                data => data.id === this.state.selected
-                              )[0].spesifikasi
-                            }
-                            onChange={e => {
-                              let pengajuan_anggaran = [];
-                              pengajuan_anggaran = this.state
-                                .pengajuan_anggaran;
-                              pengajuan_anggaran.filter(
-                                data => data.id == this.state.selected
-                              )[0].spesifikasi = e.target.value;
-                              this.setState({
-                                pengajuan_anggaran,
-                                edit_pengajuan_anggaran: pengajuan_anggaran.filter(
-                                  data => data.id == this.state.selected
-                                )[0]
-                              });
-                            }}
-                            type="text"
-                            className="form-control m-b"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="form-group row">
-                        <label className="col-lg-3 col-form-label">
-                          Satuan
-                        </label>
-                        <div className="col-lg-9">
-                          <select
-                            value={
-                              this.state.pengajuan_anggaran.filter(
-                                data => data.id === this.state.selected
-                              )[0].satuan
-                            }
-                            onChange={e => {
-                              let pengajuan_anggaran = [];
-                              pengajuan_anggaran = this.state
-                                .pengajuan_anggaran;
-                              pengajuan_anggaran.filter(
-                                data => data.id == this.state.selected
-                              )[0].satuan = e.target.value;
-                              this.setState({
-                                pengajuan_anggaran,
-                                edit_pengajuan_anggaran: pengajuan_anggaran.filter(
-                                  data => data.id == this.state.selected
-                                )[0]
-                              });
-                            }}
-                            className="form-control m-b"
-                          >
-                            <option value="">--Pilih Satuan--</option>
-                            <option value="buah">Buah</option>
-                            <option value="unit">Unit</option>
-                            <option value="lembar">Lembar</option>
-                            <option value="batang">Batang</option>
-                            <option value="bungkus">Bungkus</option>
-                          </select>
-                        </div>
-                      </div>
-
-                      <div className="form-group row">
-                        <label className="col-lg-3 col-form-label">
-                          Jumlah
-                        </label>
-                        <div className="col-lg-9">
-                          <input
-                            value={
-                              this.state.pengajuan_anggaran.filter(
-                                data => data.id === this.state.selected
-                              )[0].jumlah
-                            }
-                            onChange={e => {
-                              let pengajuan_anggaran = [];
-                              pengajuan_anggaran = this.state
-                                .pengajuan_anggaran;
-                              pengajuan_anggaran.filter(
-                                data => data.id == this.state.selected
-                              )[0].jumlah = e.target.value;
-                              this.setState({
-                                pengajuan_anggaran,
-                                edit_pengajuan_anggaran: pengajuan_anggaran.filter(
-                                  data => data.id == this.state.selected
-                                )[0]
-                              });
-                            }}
-                            type="number"
-                            className="form-control m-b"
-                          />
-                        </div>
-                      </div>
-
-                      <div className="form-group row">
-                        <label className="col-lg-3 col-form-label">Harga</label>
-                        <div className="col-lg-9">
-                          <CurrencyInput
-                            precision="0"
-                            className="form-control m-b"
-                            prefix="Rp "
-                            value={
-                              this.state.pengajuan_anggaran.filter(
-                                data => data.id === this.state.selected
-                              )[0].harga
-                            }
-                            onChangeEvent={(e, maskedvalue, floatvalue) => {
-                              let pengajuan_anggaran = [];
-                              pengajuan_anggaran = this.state
-                                .pengajuan_anggaran;
-                              pengajuan_anggaran.filter(
-                                data => data.id == this.state.selected
-                              )[0].harga = floatvalue;
-                              this.setState({
-                                pengajuan_anggaran,
-                                edit_pengajuan_anggaran: pengajuan_anggaran.filter(
-                                  data => data.id == this.state.selected
-                                )[0]
-                              });
-                            }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ) : null}
-              </div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  data-dismiss="modal"
-                >
-                  Tutup
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-primary"
-                  data-dismiss="modal"
-                  onClick={this.editItem}
-                >
-                  Simpan
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
+    formatNumber = (num) => {
+    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
   }
+
+    render() {
+
+      kelompok_account = [...this.state.kelompok_account]
+      this.state.kelompok_account.map((data, key) => {
+      kelompok_account[key].value = data.id
+      kelompok_account[key].label = data.nama
+    })
+
+      account = [...this.state.account]
+      const { selectedOption } = this.state;
+      this.state.account.filter(x => x.kelompok_account ==  this.state.transaksiBaru.kelompok_account).map((data, key) => {
+      account[key].value = data.id
+      account[key].label = data.nama
+    })
+
+    account_tujuan = [...this.state.account]
+      this.state.account.map((data, key) => {
+      account_tujuan[key].value = data.id
+      account_tujuan[key].label = data.nama
+    })
+
+        return (
+            <div >
+                <div className="row wrapper border-bottom white-bg page-heading">
+                <div className="col-lg-8">
+                    <h2>Daftar Transaksi Anggaran</h2>
+                    <ol className="breadcrumb">
+                            <li className="breadcrumb-item">
+                                Dashboard
+                            </li>
+                            <li className="breadcrumb-item active">
+                                <strong>Transaksi</strong>
+                            </li>
+                        </ol>
+                </div>
+                <div className="col-lg-4">
+                </div>
+            </div>
+            <div className="wrapper wrapper-content">
+                    <div className="row animated fadeInRight">
+                        <div className="col-lg-12">
+                            <div className="ibox ">
+                                <div className="ibox-title" style={{'backgroundColor':'#1ab394', 'color':'white'}}>
+                                    <h5> <i className="fa fa-list "></i> Daftar Transaksi Anggaran</h5>
+                                </div>
+                                <div className="ibox-content">
+                                  <div className="row">
+                                      <div className="col-lg-6">
+                                        
+                                      </div>
+                                  </div>
+                                  <div className="hr-line-dashed"></div>
+                                    {
+                                      this.state.loading ?
+                                    <div className="spiner-example">
+                              <div className="sk-spinner sk-spinner-double-bounce">
+                                <div className="sk-double-bounce1" />
+                                <div className="sk-double-bounce2" />
+                              </div>
+                            </div>
+                            :
+                                  <div>
+                      <table className="table table-striped" align="right">
+                                      <thead>
+                                      <tr>
+                                        <th style={{'width':'5%'}}>KODE</th>
+                                          <th style={{'width':'15%'}}>URAIAN</th>
+                                          <th style={{'width':'10%'}}>TANGGAL</th>
+                                          <th style={{'width':'10%'}}>NOMINAL</th>
+                                          <th style={{'width':'10%'}}>AKUN SUMBER</th>
+                                          <th style={{'width':'10%'}}>AKUN TUJUAN</th>
+                                      </tr>
+                                      </thead>
+                                      <tbody>
+                                      {
+                                        this.state.transaksi.filter(data => data.anggaran == this.state.pengajuan.id).map((data, key) =>
+                                          <tr key={key}>
+                                            <td>{data.kode}</td>
+                                              <td>{data.uraian}</td>
+                                              <td>{data.tanggal}</td>
+                                              <td>Rp. {this.formatNumber(data.nominal)}</td>
+                                              <td>{data.account_info.nama}</td>
+                                              <td>{data.account_tujuan_info.nama}</td>
+                                          </tr>
+                                        )
+                                      }
+                                      </tbody>
+                                  </table>
+                                  </div>
+
+                            }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                </div>
+
+            
+            </div>
+      
+
+        )
+    }
+
 }
 
-export default Anggaran;
+export default Transaksi

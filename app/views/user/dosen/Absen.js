@@ -87,6 +87,7 @@ class Absen extends Component {
                                                     <th>MATA KULIAH</th>
                                                     <th>RUANGAN</th>
                                                     <th>WAKTU</th>
+                                                    <th>KELAS</th>
                                                     <th><center>ABSEN</center></th>
                                                 </tr>
                                                 </thead>
@@ -102,6 +103,7 @@ class Absen extends Component {
                                                         <td>{jadwal.title}</td>
                                                         <td>{jadwal.ruangan_info.nama}</td>
                                                         <td>{jadwal.jam_mulai +" - "+jadwal.jam_selesai}</td>
+                                                        <td>{jadwal.kelas_info.nama}</td>
                                                         <td>
                                                             <center>
                                                                 <Link to={{ pathname: 'kehadiran', state: { jadwal: jadwal } }}>

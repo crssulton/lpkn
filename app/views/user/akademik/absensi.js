@@ -18,7 +18,8 @@ class Absensi extends Component {
             dosen: [],
             addForm: true,
             jurusans: [],
-            editAbsensi : {}
+            editAbsensi : {},
+            kelas: []
         }
     }
 
@@ -36,6 +37,19 @@ class Absensi extends Component {
 			self.setState({
 				absensi: data.results,
 				loading: !self.state.loading
+			})
+        });
+
+        fetch(BASE_URL + '/api/kelas/', {
+            method: 'get',
+            headers: {
+                'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+            }
+		}).then(function(response) {
+			return response.json();
+		}).then(function(data) {
+			self.setState({
+				kelas: data.results
 			})
         });
         
@@ -89,6 +103,15 @@ class Absensi extends Component {
         let absensi = []
         absensi = this.state.absensi
         absensi.filter(data => data.id == this.state.selected)[0].mata_kuliah = e.target.value
+        this.setState({
+        	absensi,
+        	editAbsensi: absensi.filter(data => data.id == this.state.selected)[0]
+        })
+    }
+    handleChangeKelas = e => {
+        let absensi = []
+        absensi = this.state.absensi
+        absensi.filter(data => data.id == this.state.selected)[0].kelas = e.target.value
         this.setState({
         	absensi,
         	editAbsensi: absensi.filter(data => data.id == this.state.selected)[0]
@@ -259,6 +282,7 @@ class Absensi extends Component {
 					                            <tr>
 					                                <th style={{'width':'5%'}}>NO</th>
 					                                <th style={{'width':'15%'}}>MATA KULIAH</th>
+					                                <th style={{'width':'10%'}}>KELAS</th>
 					                                <th style={{'width':'15%'}}>JURUSAN</th>
                                                     <th style={{'width':'15%'}}>DOSEN</th>
 					                                <th style={{'width':'13%', 'textAlign':'center'}}>AKSI</th>
@@ -270,6 +294,7 @@ class Absensi extends Component {
 					                            		<tr key={key}>
 							                                <td>{key+1}</td>
 							                                <td>{data.mata_kuliah_info.nama}</td>
+							                                <td>{data.kelas != null ? this.state.kelas.find(x => x.id == data.kelas).nama : null}</td>
                                                             <td>{data.jurusan_info.nama}</td>
                                                             <td>{data.dosen_info.nama}</td>
 							                                <td>
@@ -287,14 +312,6 @@ class Absensi extends Component {
 						                                				className="btn btn-danger btn-sm" 
 						                                				type="button"
 						                                				><i className="fa fa-trash"></i></button>
-
-						                                			<Link to={{ pathname: 'daftar', state: { absensiData: data, matkul: data.mata_kuliah_info.nama} }}>
-							                                			<button 
-							                                				style={{'margin' : '0 0 0 5px'}}
-							                                				className="btn btn-primary btn-sm" 
-							                                				type="button"
-							                                				><i className="fa fa-address-card"></i></button>
-						                                			</Link>
 
 						                                		</center>
 							                                </td>
@@ -365,6 +382,26 @@ class Absensi extends Component {
 	                                        </div>
 	                                    </div>
 
+	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Kelas</label>
+	                                        <div className="col-lg-9">
+                                                <select 
+                                                    value={this.state.absensiBaru.kelas}
+                                                    onChange={(e) => {
+                                                        let absensiBaru = {...this.state.absensiBaru}
+                                                        absensiBaru.kelas = e.target.value
+                                                        this.setState({absensiBaru})
+                                                    }}
+                                                    className="form-control m-b">
+                                                    <option value="">Pilih Kelas</option>
+                                                    {
+                                                        this.state.kelas.map((data, i) => 
+                                                            <option key={i} value={data.id}>{data.nama}</option>
+                                                        )
+                                                    }
+                                                </select>
+	                                        </div>
+	                                    </div>
+
 	                                    <button
 	                                		className="btn btn-primary btn-sm btn-add" 
 	                                		type="button"
@@ -399,6 +436,22 @@ class Absensi extends Component {
                                                     <option value="">Pilih Dosen</option>
                                                     {
                                                         this.state.dosen.map((data, i) => 
+                                                            <option key={i} value={data.id}>{data.nama}</option>
+                                                        )
+                                                    }
+                                                </select>
+	                                        </div>
+	                                    </div>
+
+	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Kelas</label>
+	                                        <div className="col-lg-9">
+                                                <select 
+                                                    value={this.state.kelas.filter(data => data.id === this.state.selected)[0].kelas}
+                                                    onChange={this.handleChangeKelas}
+                                                    className="form-control m-b">
+                                                    <option value="">Pilih Kelas</option>
+                                                    {
+                                                        this.state.kelas.map((data, i) => 
                                                             <option key={i} value={data.id}>{data.nama}</option>
                                                         )
                                                     }

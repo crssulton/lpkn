@@ -101,6 +101,7 @@ class Pendaftaran extends Component {
     self.setState({
       loading: !this.state.loading
     });
+    
     let pendaftar = { ...this.state.pendaftar };
     if (pendaftar.biaya_pendaftaran == "true") {
       pendaftar.biaya_pendaftaran_nominal = 250000;
@@ -655,31 +656,6 @@ class Pendaftaran extends Component {
                       ) : (
                         <div>
                           <label className="col-lg-4 col-form-label">
-                            Akun Sumber
-                          </label>
-                          <div className="text-right col-lg-8">
-                            <Select
-                              name="form-field-name"
-                              value={this.state.pendaftar.account}
-                              onChange={selectedOption => {
-                                let pendaftar = [];
-                                pendaftar = this.state.pendaftar;
-                                pendaftar.account = selectedOption.value;
-                                this.setState({ pendaftar });
-                              }}
-                              options={account}
-                            />
-                          </div>
-
-                          <label className="col-lg-4 col-form-label" />
-                          <div className="text-right col-lg-8">
-                            <input
-                              style={{ visibility: "hidden" }}
-                              type="text"
-                            />
-                          </div>
-
-                          <label className="col-lg-4 col-form-label">
                             Akun Tujuan
                           </label>
                           <div className="text-right col-lg-8">
@@ -690,6 +666,7 @@ class Pendaftaran extends Component {
                                 let pendaftar = [];
                                 pendaftar = this.state.pendaftar;
                                 pendaftar.account_tujuan = selectedOption.value;
+                                pendaftar.account = 15
                                 this.setState({ pendaftar });
                               }}
                               options={accountTujuan}
