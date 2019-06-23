@@ -18,31 +18,15 @@ class List_pendaftar extends Component {
       selectedJurusan: "all",
       key: null,
       profil: false,
+      selectedPendaftar: "",
       key: null
     };
   }
 
   componentDidMount() {
     const self = this;
-    fetch(BASE_URL + "/api/pendaftaran/?approved=0&online=0", {
-      method: "get",
-      headers: {
-        Authorization: "JWT " + window.sessionStorage.getItem("token")
-      }
-    })
-      .then(function(response) {
-        return response.json();
-      })
-      .then(function(data) {
-        self.setState({
-          pendaftars: data.results,
-          numPage: data.num_pages,
-          dataCount: data.count,
-          next: data.next,
-          previous: data.previous,
-          loading: !self.state.loading
-        });
-      });
+    
+    this.getPendaftar()
 
     fetch(BASE_URL + "/api/jurusan/", {
       method: "get",
@@ -71,6 +55,58 @@ class List_pendaftar extends Component {
       .then(function(data) {
         self.setState({
           kampus: data.results
+        });
+      });
+  }
+
+  getPendaftar = () =>{
+    const self = this;
+    fetch(BASE_URL + "/api/pendaftaran/?approved=0&online=0", {
+      method: "get",
+      headers: {
+        Authorization: "JWT " + window.sessionStorage.getItem("token")
+      }
+    })
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(data) {
+        self.setState({
+          pendaftars: data,
+          numPage: data.num_pages,
+          dataCount: data.count,
+          next: data.next,
+          previous: data.previous,
+          loading: !self.state.loading
+        });
+      });
+  }
+
+  onFilterData = () => {
+    const self = this;
+
+    this.setState({loading: true})
+
+    let pendaftar = this.state.selectedPendaftar
+
+    fetch(BASE_URL + `/api/pendaftaran/?pendaftar=${pendaftar}`, {
+      method: "get",
+      headers: {
+        Authorization: "JWT " + window.sessionStorage.getItem("token")
+      }
+    })
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(data) {
+        console.log(data)
+        self.setState({
+          pendaftars: data.filter(x => x.approved == false && x.online_register == false),
+          numPage: data.num_pages,
+          dataCount: data.count,
+          next: data.next,
+          previous: data.previous,
+          loading: false
         });
       });
   }
@@ -256,6 +292,51 @@ class List_pendaftar extends Component {
                   </h5>
                 </div>
                 <div className="ibox-content">
+                  <div className="row">
+                    <div className="col-lg-4">
+                      <label className="form-label">Nama Pendaftar: </label>
+                    </div>
+                    <div className="col-lg-3" />
+                  </div>
+                  <div className="row">
+                    <div className="col-lg-5">
+                      <input 
+                          type="text"
+                          placeholder="Nama Pendaftar"
+                          className="form-control"
+                            value={this.state.selectedPendaftar}
+                            onChange={e => {
+                              this.setState({ selectedPendaftar: e.target.value });
+                            }}
+                      />
+                    </div>
+                    
+                    <div className="col-lg-6">
+                      <button
+                        onClick={this.onFilterData}
+                        className="btn btn-info"
+                        type="button"
+                      >
+                        <i className="fa fa-filter" /> Filter
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          const self = this
+                          this.setState({
+                            selectedPendaftar: ""
+                          });
+                          this.getPendaftar()
+                        }}
+                        style={{ marginLeft: "5px" }}
+                        className="btn btn-warning"
+                        type="button"
+                      >
+                        <i className="fa fa-close" /> Reset
+                      </button>
+                    </div>
+                  </div>
+                  <div className="hr-line-dashed"></div>
                   {this.state.loading ? (
                     <div className="spiner-example">
                       <div className="sk-spinner sk-spinner-double-bounce">
@@ -366,18 +447,9 @@ class List_pendaftar extends Component {
                             <a
                               className="nav-link"
                               data-toggle="tab"
-                              href="#tab-2"
-                            >
-                              Orang Tua
-                            </a>
-                          </li>
-                          <li>
-                            <a
-                              className="nav-link"
-                              data-toggle="tab"
                               href="#tab-3"
                             >
-                              Tambahan
+                              Biaya Pendaftaran
                             </a>
                           </li>
                         </ul>
@@ -465,50 +537,7 @@ class List_pendaftar extends Component {
                               </table>
                             </div>
                           </div>
-                          <div role="tabpanel" id="tab-2" className="tab-pane">
-                            <div className="panel-body">
-                              <table className="table">
-                                <tbody>
-                                  <tr>
-                                    <td>
-                                      <b>Nama Ayah</b>{" "}
-                                    </td>
-                                    <td>: {this.state.pendaftar.nama_ayah}</td>
-                                  </tr>
-                                  <tr>
-                                    <td>
-                                      <b>Pekerjaan Ayah</b>
-                                    </td>
-                                    <td>
-                                      : {this.state.pendaftar.pekerjaan_ayah}
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>
-                                      <b>Nama Ibu</b>
-                                    </td>
-                                    <td>: {this.state.pendaftar.nama_ibu}</td>
-                                  </tr>
-                                  <tr>
-                                    <td>
-                                      <b>Pekerjaan Ibu</b>
-                                    </td>
-                                    <td>
-                                      : {this.state.pendaftar.pekerjaan_ibu}
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>
-                                      <b>Alamat Wali</b>
-                                    </td>
-                                    <td>
-                                      : {this.state.pendaftar.alamat_wali}
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            </div>
-                          </div>
+                          
                           <div role="tabpanel" id="tab-3" className="tab-pane">
                             <div className="panel-body">
                               <table className="table">
@@ -533,7 +562,7 @@ class List_pendaftar extends Component {
                                       <b>Biaya Registrasi</b>
                                     </td>
                                     <td>
-                                      {this.state.pendaftar.biaya_pendaftaran ? "Rp. 250.000" : "Rp. 0"}
+                                      : {this.state.pendaftar.biaya_pendaftaran ? "Rp. 250.000" : "Rp. 0"}
                                     </td>
                                   </tr>
                                   <tr>

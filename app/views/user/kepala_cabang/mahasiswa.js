@@ -15,6 +15,7 @@ class Mahasiswa extends Component {
             key: null,
             profil: false,
             jurusans: [],
+            selectedNama: "",
             selectedStatus: ''
         }
     }
@@ -101,12 +102,12 @@ class Mahasiswa extends Component {
                         </ol>
 		            </div>
 		            <div className="col-lg-4">
-            <div className="title-action">
-              <a onClick={() => this.exportData()} className="btn btn-primary">
-                <i className="fa fa-print" /> Cetak{" "}
-              </a>
-            </div>
-          </div>
+            		<div className="title-action">
+			              <a onClick={() => this.exportData()} className="btn btn-primary">
+			                <i className="fa fa-print" /> Cetak{" "}
+			              </a>
+			            </div>
+		          </div>
 		        </div>
 		        <div className="wrapper wrapper-content">
                     <div className="row animated fadeInRight">
@@ -189,6 +190,10 @@ class Mahasiswa extends Component {
 					                        <input
 					                          type="text"
 					                          disabled=""
+					                          value={this.state.selectedNama}
+	                                    		onChange={(e) => {
+	                                    			this.setState({selectedNama: e.target.value})
+	                                    		}}
 					                          placeholder="Nama Mahasiswa"
 					                          className="form-control"
 					                        />
@@ -225,7 +230,9 @@ class Mahasiswa extends Component {
 										        <tbody>
 										        {
 										        	this.state.mahasiswas.filter(mahasiswa => mahasiswa.calon == false && 
-										        		this.state.selectedJurusan == 0 ? true : mahasiswa.jurusan == this.state.selectedJurusan)
+										        		mahasiswa.nama.toLowerCase().includes(this.state.selectedNama) &&
+										        		this.state.selectedJurusan == 0 ? true : mahasiswa.jurusan == this.state.selectedJurusan
+										        		)
 										        	.map((mahasiswa, key) => 
 
 										        		<tr key={key}>
@@ -271,7 +278,7 @@ class Mahasiswa extends Component {
 				                                	this.state.mahasiswa.foto != null ?
 				                                	<img alt="image" width="50%" style={{'borderRadius':'50%', 'display':'block', 'margin':'0 auto'}} className="img-fluid"  src={this.state.mahasiswa.foto}/>
 				                                	:
-				                                	<img alt="image" width="50%" style={{'borderRadius':'50%', 'display':'block', 'margin':'0 auto'}} className="img-fluid"  src="http://www.personalbrandingblog.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640-300x300.png"/>
+				                                	<img alt="image" width="50%" style={{'borderRadius':'50%', 'display':'block', 'margin':'0 auto'}} className="img-fluid"  src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Circle-icons-profile.svg"/>
 				                                }
 				                            </div>
 				                            <div className="ibox-content profile-content">

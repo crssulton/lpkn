@@ -20,7 +20,7 @@ class DataJurnal extends Component {
             loading: true,
             transaksi: [],
             form: false,
-            selected: null,
+            selectedAset: [],
             asetBaru: {},
             add: true,
             addForm: true,
@@ -45,21 +45,6 @@ class DataJurnal extends Component {
 			self.setState({
 				aset: data.results,
 				loading: !self.state.loading
-			})
-		});
-
-		fetch(BASE_URL + '/api/transaksi/', {
-			method: 'get',
-			headers: {
-				'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
-				'Content-Type': 'application/json',
-                'Accept': 'application/json'
-			}
-		}).then(function(response) {
-			return response.json();
-		}).then(function(data) {
-			self.setState({
-				transaksi: data
 			})
 		});
 
@@ -216,7 +201,6 @@ class DataJurnal extends Component {
     addaset = ()=> {
     	const self = this
     	let addButton = document.getElementsByClassName("btn-add")
-    	console.log(JSON.stringify(this.state.asetBaru))
     	addButton[0].setAttribute("disabled", "disabled")
 
     	fetch(BASE_URL + '/api/aset/', {
@@ -261,7 +245,6 @@ class DataJurnal extends Component {
     }
 
     handleDeleteaset = (id, key)=> {
-    	console.log(id)
     	const self = this
     	swal({
 		  title: "Hapus Data Jurnal ?",
@@ -308,16 +291,10 @@ class DataJurnal extends Component {
 			account[key].label = data.nama
 		})
 
-		transaksi = [...this.state.transaksi]
-    	this.state.transaksi.map((data, key) => {
-			transaksi[key].value = data.id
-			transaksi[key].label = data.kode + " | " + data.uraian
-		})
-
         return (
             <div >
                 <div className="row wrapper border-bottom white-bg page-heading">
-		            <div className="col-lg-8">
+		            <div className="col-lg-12">
 		                <h2>Daftar Aset</h2>
 		                <ol className="breadcrumb">
                             <li className="breadcrumb-item">
@@ -333,7 +310,7 @@ class DataJurnal extends Component {
 		        </div>
 		        <div className="wrapper wrapper-content">
                     <div className="row animated fadeInRight">
-                        <div className={window.sessionStorage.getItem("role") == "6" || window.sessionStorage.getItem("role") == "8" ? "col-lg-12" : "col-lg-8"}>
+                        <div className="col-lg-12">
                             <div className="ibox ">
                                 <div className="ibox-title" style={{'backgroundColor':'#1ab394', 'color':'white'}}>
                                     <h5> <i className="fa fa-list "></i> Daftar Aset</h5>
@@ -354,14 +331,11 @@ class DataJurnal extends Component {
 					                            	<th style={{'width':'5%'}}>NO.</th>
 					                            	<th style={{'width':'5%'}}>NAMA</th>
 					                                <th style={{'width':'5%'}}>TANGGAL PEMBELIAN</th>
-					                                <th style={{'width':'10%'}}>HARGA</th>
-					                                <th style={{'width':'10%'}}>JUMLAH TAHUN PENYUSUTAN</th>
+					                                <th style={{'width':'10%'}}>NILAI</th>
+					                                <th style={{'width':'10%'}}>JUMLAH PENYUSUTAN</th>
 					                                <th style={{'width':'10%'}}>AKUN</th>
 					                                <th style={{'width':'10%'}}>KAMPUS</th>
-					                                {
-					                                	window.sessionStorage.getItem("role") == "6" || window.sessionStorage.getItem("role") == "8" ? null :
-					                                	<th style={{'width':'15%', 'textAlign':'center'}}>AKSI</th>
-					                                }
+					                                <th style={{'width':'15%', 'textAlign':'center'}}>AKSI</th>
 					                               
 					                            </tr>
 					                            </thead>
@@ -371,32 +345,30 @@ class DataJurnal extends Component {
 					                            		<tr key={key}>
 					                            			<td>{key+1}</td>
 							                                <td>{data.nama}</td>
-							                                <td>{data.tanggal}</td>
-							                                <td>Rp. {this.formatNumber(data.harga)}</td>
-							                                <td>{data.jumlah_penyusutan}</td>
+							                                <td>{moment(data.tanggal).format("DD/MM/YYYY")}</td>
+							                                <td>{this.formatNumber(data.harga)}</td>
+							                                <td>{data.jumlah_penyusutan} X</td>
 							                                <td>{data.account_info.nama}</td>
 							                                <td>{data.kampus_info.nama}</td>
-							                                {
-							                                window.sessionStorage.getItem("role") == "6" || window.sessionStorage.getItem("role") == "8" ? null
-							                                :
 							                                <td>
-						                                		<center>
-						                                			<button 
-						                                				style={{'margin' : '0 5px'}} 
-						                                				className="btn btn-info btn-sm" 
-						                                				type="button"
-						                                				onClick={ () => {this.setState({ selected: data.id, addForm: false})} }
-						                                				>
-						                                				<i className="fa fa-edit"></i></button>
+                                                                <center>
+                                                                    <button 
+                                                                        style={{'margin' : '0 5px'}} 
+                                                                        className="btn btn-primary btn-sm" 
+                                                                        type="button"
+                                                                        data-toggle="modal"
+                                                                        data-target="#ModalDetailPenyusutan"
+                                                                        onClick={ () => {this.setState({ selectedAset: data.penyusutanAset, addForm: false})} }
+                                                                        >
+                                                                        <i className="fa fa-eye"></i></button>
 
-						                                			<button 
-						                                				onClick={() => this.handleDeleteaset( data.id, key )}
-						                                				className="btn btn-danger btn-sm" 
-						                                				type="button"
-						                                				><i className="fa fa-trash"></i></button>
-						                                		</center>
-							                                </td>
-							                            	}
+                                                                    <button 
+                                                                        onClick={() => this.handleDeleteaset( data.id, key )}
+                                                                        className="btn btn-danger btn-sm" 
+                                                                        type="button"
+                                                                        ><i className="fa fa-trash"></i></button>
+                                                                </center>
+                                                            </td>
 							                            </tr>
 					                            	)
 					                            }
@@ -408,203 +380,66 @@ class DataJurnal extends Component {
                                 </div>
                             </div>
                         </div>
-                        {
-                        window.sessionStorage.getItem("role") == "6" || window.sessionStorage.getItem("role") == "8" ? null
-                        :
-                        <div className="col-lg-4">
-                            <div className="ibox ">
-                                {
-                                	this.state.addForm ?
-                                	<div className="ibox-title" style={{'backgroundColor':'#1ab394', 'color':'white'}}>
-	                                    <h5> <i className="fa fa-plus"></i> Tambah Aset</h5>
-	                                </div>
-	                                :
-	                                <div className="ibox-title" style={{'backgroundColor':'#fad284', 'color':'white'}}>
-	                                    <h5> <i className="fa fa-pencil"></i> Ubah Aset</h5>
-	                                </div>
-                                }
-                                
-                                {
-                                	this.state.addForm?
-                                	<div className="ibox-content">
-                                		<div className="form-group row"><label className="col-lg-3 col-form-label">Transaksi</label>
-		                                    <div className="col-lg-9">
-		                                    	<Select
-											        name="form-field-name"
-											        value={this.state.asetBaru.transaksi} 
-											        onChange={this.addasetTransaksi}
-											        options={transaksi}
-											      />
-		                                    </div>
-	                                    </div>
-
-	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Nama</label>
-	                                        <div className="col-lg-9">
-	                                            <input 
-	                                            	type="text" 
-	                                            	className="form-control m-b" 
-	                                            	name="aset"
-	                                            	value={this.state.asetBaru.nama}
-						                            onChange={this.addasetNama}
-						                            />
-	                                        </div>
-	                                    </div>
-
-	                                	<div className="form-group row"><label className="col-lg-3 col-form-label">Harga</label>
-	                                        <div className="col-lg-9">
-	                                        	<CurrencyInput 
-	                                        		precision="0" 
-	                                        		className="form-control m-b" 
-	                                        		prefix="Rp "
-	                                        		value={this.state.asetBaru.harga} 
-	                                        		onChangeEvent={this.addasetHarga}
-	                                        		/>
-	                                            
-	                                        </div>
-	                                    </div>
-
-	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Jumlah Tahun Penyusutan</label>
-	                                        <div className="col-lg-9">
-	                                        	<input 
-	                                            	type="number" 
-	                                            	className="form-control m-b" 
-	                                            	name="aset"
-	                                            	value={this.state.asetBaru.jumlah_penyusutan}
-	                                        		onChangeEvent={this.addasetJumlahPenyusutan}
-						                            />
-	                                        </div>
-	                                    </div>
-
-	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Tanggal Pembelian</label>
-	                                        <div className="col-lg-9">
-	                                            <input 
-	                                            	type="date" 
-	                                            	className="form-control m-b" 
-	                                            	name="aset"
-	                                            	value={this.state.asetBaru.tanggal}
-						                            onChange={this.addasetTanggal}
-						                            />
-	                                        </div>
-	                                    </div>
-
-	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Akun</label>
-		                                    <div className="col-lg-9">
-		                                    <Select
-										        name="form-field-name"
-										        value={this.state.asetBaru.account}
-										        onChange={this.addasetAccount}
-										        options={account}
-										      />
-		                                    </div>
-	                                    </div>
-
-	                                    <button
-	                                		className="btn btn-primary btn-sm btn-add" 
-	                                		type="button"
-	                                		onClick={this.addaset}>
-	                                		Tambah
-	                                	</button>
-	                                </div>
-	                                :
-	                                <div className="ibox-content">
-	                                	<div className="form-group row"><label className="col-lg-3 col-form-label">Kode Transaksi</label>
-		                                    <div className="col-lg-9">
-		                                    <select
-		                                    	className="form-control m-b" 
-		                                    	value={this.state.aset.filter(data => data.id === this.state.selected)[0].kode}
-							                    onChange={this.handleChangeKode}
-		                                    >
-		                                    	<option>Kode Transaksi</option>
-		                                    	{
-		                                    		this.state.transaksi.map(data =>{
-		                                    			return(
-		                                    				<option value={data.id}>{data.kode} - {data.uraian}</option>
-		                                    			)
-		                                    		})
-		                                    	}
-		                                    </select>
-		                                    </div>
-	                                    </div>
-
-	                                	<div className="form-group row"><label className="col-lg-3 col-form-label">Nama</label>
-	                                        <div className="col-lg-9">
-	                                            <input 
-	                                            	type="text" 
-	                                            	className="form-control m-b" 
-	                                            	name="aset"
-	                                            	value={this.state.aset.filter(data => data.id === this.state.selected)[0].nama}
-						                            onChange={this.handleChangeNama}
-	                                            	/>
-	                                        </div>
-	                                    </div>
-
-	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Harga</label>
-	                                        <div className="col-lg-9">
-	                                            <input 
-	                                            	type="number" 
-	                                            	className="form-control m-b" 
-	                                            	name="aset"
-	                                            	value={this.state.aset.filter(data => data.id === this.state.selected)[0].harga}
-						                            onChange={this.handleChangeHarga}
-	                                            	/>
-	                                        </div>
-	                                    </div>
-
-	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Jumlah Penyusutan</label>
-	                                        <div className="col-lg-9">
-	                                            <input 
-	                                            	type="number" 
-	                                            	className="form-control m-b" 
-	                                            	name="aset"
-	                                            	value={this.state.aset.filter(data => data.id === this.state.selected)[0].jumlah_penyusutan}
-						                            onChange={this.handleChangeJumlahPenyusutan}
-	                                            	/>
-	                                        </div>
-	                                    </div>
-
-	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Tanggal</label>
-	                                        <div className="col-lg-9">
-	                                            <input 
-	                                            	type="date" 
-	                                            	className="form-control m-b" 
-	                                            	name="aset"
-	                                            	value={this.state.aset.filter(data => data.id === this.state.selected)[0].tanggal}
-						                            onChange={this.handleChangeTanggal}
-						                            />
-	                                        </div>
-	                                    </div>
-	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Akun</label>
-		                                    <div className="col-lg-9">
-		                                    <Select
-										        name="form-field-name"
-										        value={this.state.aset.filter(data => data.id === this.state.selected)[0].account}
-										        onChange={this.handleChangeAccount}
-										        options={account}
-										      />
-		                                    </div>
-	                                    </div>
-
-	                                    <button
-	                                    	style={{'marginRight': '10px'}}
-	                                		className="btn btn-info btn-add" 
-	                                		type="button"
-	                                		onClick={this.editaset}>
-	                                		Edit
-	                                	</button>
-	                                	<button 
-	                        				className="btn btn-danger " 
-	                        				type="button"
-	                        				onClick={ () => {this.setState({ addForm: !this.state.addForm})} }>
-	                        				Batal
-	                        			</button>
-	                                </div>
-                                }
-
-                            </div>
-                        </div>
-                    	}
+                        
                     </div>
                     
+                    <div
+                    className="modal inmodal"
+                    id="ModalDetailPenyusutan"
+                    tabIndex="-1"
+                    role="dialog"
+                    aria-hidden="true"
+                  >
+                    <div className="modal-dialog">
+                      <div className="modal-content animated bounceInRight">
+                        <div className="modal-header">
+                          <button
+                            type="button"
+                            className="close"
+                            data-dismiss="modal"
+                          >
+                            <span aria-hidden="true">&times;</span>
+                            <span className="sr-only">Close</span>
+                          </button>
+                          <h4 className="modal-title">Detail Penyusutan Aset</h4>
+                        </div>
+                        <div className="modal-body">
+                            <table className="table table-hover">
+                            	<thead>
+                            		<th>No</th>
+                            		<th>Tanggal</th>
+                            		<th>Debet</th>
+                            		<th>Kredit</th>
+                            		<th>Nominal</th>
+                            	</thead>
+                            	<tbody>
+                            		{
+                            			this.state.selectedAset.map((data, key) => 
+                            				<tr key={key}>
+                            					<td>{key+1}</td>
+		                            			<td>{moment(data.tanggal).format("DD/MM/YYYY")}</td>
+		                            			<td>{this.formatNumber(data.debet.toFixed(2))}</td>
+		                            			<td>{this.formatNumber(data.kredit.toFixed(2))}</td>
+		                            			<td>{this.formatNumber(data.nilai_buku.toFixed(2))}</td>
+		                            		</tr>
+                            			)
+                            		}
+                            	</tbody>
+                            </table>
+                        </div>
+                        <div className="modal-footer">
+                          <button
+                            type="button"
+                            className="btn btn-white"
+                            data-dismiss="modal"
+                          >
+                            Tutup
+                          </button>
+                          
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                     
                 </div>
 

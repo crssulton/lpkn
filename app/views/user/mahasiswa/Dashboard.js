@@ -204,7 +204,6 @@ class Dashboard extends Component {
     }
     onChangeFoto = e => {
     	this.setState({fotoMhs : e.target.files[0]})
-    	
     }
 
     loadPengumuman = () => {
@@ -264,7 +263,7 @@ class Dashboard extends Component {
 				                                	this.state.mahasiswa.foto != null ?
 				                                	<img alt="image" width="100%" className="img-fluid" src={this.state.mahasiswa.foto}/>
 				                                	:
-				                                	<img alt="image" width="100%" className="img-fluid" src="http://www.personalbrandingblog.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640-300x300.png"/>
+				                                	<center><img alt="image" width="50%" className="img-fluid" src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Circle-icons-profile.svg"/></center>
 				                                }
 				                            </div>
 				                            <div className="ibox-content profile-content">

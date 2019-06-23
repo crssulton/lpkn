@@ -44,7 +44,7 @@ class Dashboard extends Component {
 	    if (day.length < 2) day = '0' + day;
 		let tanggal = [year, month, day].join('-')
 
-		fetch(BASE_URL + '/api/jadwal/?search=' + tanggal, {
+		fetch(BASE_URL + '/api/jadwal/?tanggal=' + tanggal, {
 			method: 'get',
 			headers: {
 				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')

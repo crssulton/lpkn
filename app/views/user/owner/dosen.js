@@ -151,6 +151,10 @@ class dosen extends Component {
 					                      <input
 					                          type="text"
 					                          disabled=""
+					                          value={this.state.selectedNama}
+					                          onChange={(e) => {
+					                          	this.setState({selectedNama: e.target.value})
+					                          }}
 					                          placeholder="Nama Dosen"
 					                          className="form-control"
 					                        />
@@ -182,6 +186,7 @@ class dosen extends Component {
 										        <tbody>
 										        {
 										        	this.state.dosensTmp
+										        	.filter(staff => staff.nama.toLowerCase().includes(this.state.selectedNama))
 										        	.map((dosen, key) => 
 
 										        		<tr key={key}>
@@ -193,7 +198,7 @@ class dosen extends Component {
 															}
 												            </td>
 												            <td>{dosen.jenis_kelamin}</td>
-												            <td>{dosen.pendidikan_terakhir}</td>
+												            <td>{dosen.pendidikan_terakhir.toUpperCase()}</td>
 												            <td>
 												            	<button 
 					                                				className="btn btn-info btn-sm" 
@@ -228,7 +233,7 @@ class dosen extends Component {
 				                                	this.state.dosen.foto != null ?
 				                                	<img alt="image" width="50%" style={{'borderRadius':'50%', 'display':'block', 'margin':'0 auto'}} className="img-fluid"  src={this.state.dosen.foto}/>
 				                                	:
-				                                	<img alt="image" width="50%" style={{'borderRadius':'50%', 'display':'block', 'margin':'0 auto'}} className="img-fluid"  src="http://www.personalbrandingblog.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640-300x300.png"/>
+				                                	<img alt="image" width="50%" style={{'borderRadius':'50%', 'display':'block', 'margin':'0 auto'}} className="img-fluid"  src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Circle-icons-profile.svg" />
 				                                }
 				                            </div>
 				                            <div className="ibox-content profile-content">
@@ -256,7 +261,7 @@ class dosen extends Component {
 											    </tr>
 											    <tr>
 											        <td><b>Agama</b></td>
-													<td>: {this.state.dosen.agama}</td>
+													<td>: {this.state.dosen.agama.toUpperCase()}</td>
 											    </tr>
 											    <tr>
 											        <td><b>No Hp</b></td>
@@ -278,6 +283,14 @@ class dosen extends Component {
 											        <td><b>Keterangan</b></td>
 													<td>: {this.state.dosen.keterangan}</td>
 											    </tr>
+												<tr>
+													<td><b>Ijazah</b></td>
+													<td>: <a href={this.state.dosen.ijazah}>Unduh File</a> </td>
+												</tr>
+												<tr>
+													<td><b>Sertifikat</b></td>
+													<td>: <a href={this.state.dosen.sertifikat}>Unduh File</a></td>
+												</tr>
 											</tbody>
 											</table>
 

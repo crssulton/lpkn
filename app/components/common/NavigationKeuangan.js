@@ -36,6 +36,7 @@ class Navigation extends Component {
                             <span className="clear"> <span className="block m-t-xs"> <strong className="font-bold">KEUANGAN</strong>
                              </span> <span className="text-muted text-xs block">Setting <b className="caret"></b></span> </span> </a>
                                 <ul className="dropdown-menu animated fadeInLeft m-t-xs">
+                                    <Link to="/akun"><li><a> Akun</a></li></Link>
                                     <li><a onClick={this.handleLogout}> Logout</a></li>
                                 </ul>
                             </div>
@@ -49,8 +50,16 @@ class Navigation extends Component {
                         <li className={this.activeRoute("/tagihan")}>
                             <Link to="/tagihan"><i className="fa fa-book"></i> <span className="nav-label">Pembayaran Mahasiswa</span></Link>
                         </li>
-                        <li className={this.activeRoute("/transaksi")}>
-                            <Link to="/transaksi"><i className="fa fa-calendar"></i> <span className="nav-label">Transaksi</span></Link>
+                        <li>
+                            <a><i className="fa fa-book"></i> <span className="nav-label">Transaksi</span> <span className="fa arrow"></span></a>
+                            <ul className="nav nav-second-level collapse">
+                                <li className={this.activeRoute("/transaksi")}>
+                                    <Link to="/transaksi"><span className="nav-label">Tambah Transaksi</span></Link>
+                                </li>
+                                <li className={this.activeRoute("/daftar-transaksi")}>
+                                    <Link to="/daftar-transaksi"><span className="nav-label">Daftar Transaksi</span></Link>
+                                </li>
+                            </ul>
                         </li>
                         <li className={this.activeRoute("/jurnal")}>
                             <Link to="/jurnal"><i className="fa fa-calendar"></i> <span className="nav-label">Data Jurnal</span></Link>

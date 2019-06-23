@@ -9,6 +9,10 @@ class Main extends Component {
         this.state = {
             loading: false,
             jadwals: [],
+            next: null,
+          selectedMahasiswa: "",
+          previous: null,
+          count: null,
             months:[
                     'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 
                     'Agustus', 'September', 'Oktober', 'November', 'Desember'],
@@ -22,6 +26,54 @@ class Main extends Component {
                 {day:'Saturday',hari:'Sabtu'}],
         }
     }
+
+    getNextData = () => {
+    const self = this;
+    this.setState({ loading: true });
+    fetch(this.state.next, {
+      method: "get",
+      headers: {
+        Authorization: "JWT " + window.sessionStorage.getItem("token")
+      }
+    })
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(data) {
+        self.setState({
+          num_pages: data.num_pages,
+          next: data.next,
+          previous: data.previous,
+          count: data.count,
+          tagihans: data.results,
+          loading: false
+        });
+      });
+  };
+
+  getPreviousData = () => {
+    const self = this;
+    this.setState({ loading: true });
+    fetch(this.state.previous, {
+      method: "get",
+      headers: {
+        Authorization: "JWT " + window.sessionStorage.getItem("token")
+      }
+    })
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(data) {
+        self.setState({
+          num_pages: data.num_pages,
+          next: data.next,
+          previous: data.previous,
+          count: data.count,
+          tagihans: data.results,
+          loading: false
+        });
+      });
+  };
 
     componentDidMount(){
         const self = this
@@ -99,6 +151,27 @@ class Main extends Component {
                                         </div>
 
                                     }
+                                    <div className="text-center">
+                                      <div className="btn-group">
+                                        <button
+                                          disabled={this.state.previous == null ? "disabled" : null}
+                                          onClick={this.getPreviousData}
+                                          className="btn btn-white"
+                                          type="button"
+                                        >
+                                          <i className="fa fa-chevron-left" /> Sebelumnya{" "}
+                                        </button>
+                                        <button
+                                          disabled={this.state.next == null ? "disabled" : null}
+                                          onClick={this.getNextData}
+                                          className="btn btn-white"
+                                          type="button"
+                                        >
+                                          {" "}
+                                          Selanjutnya <i className="fa fa-chevron-right" />{" "}
+                                        </button>
+                                      </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>

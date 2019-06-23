@@ -140,6 +140,60 @@ class Kehadiran extends Component {
     this.setState({ jadwal });
   };
 
+  changeKehadiran = (status, daftar) => {
+    const self = this;
+    let newKehadiran = {};
+    newKehadiran.daftar = daftar.id;
+    newKehadiran.jadwal = this.state.jadwal.id;
+    newKehadiran.status = status.target.value
+    let idKehadiran = daftar.kehadiran.find(
+      x => x.jadwal == this.state.jadwal.id
+    ).id;
+
+    console.log(BASE_URL +
+        "/api/kehadiran/" +
+        idKehadiran +
+        "/")
+
+    console.log(JSON.stringify(newKehadiran))
+
+    fetch(
+      BASE_URL +
+        "/api/kehadiran/" +
+        idKehadiran +
+        "/",
+      {
+        method: "patch",
+        headers: {
+          Authorization:
+            "JWT " +
+            window.sessionStorage.getItem(
+              "token"
+            ),
+          "Content-Type":
+            "application/json",
+          Accept: "application/json"
+        },
+        body: JSON.stringify(newKehadiran)
+      }
+    )
+      .then(function(response) {
+        if (response.status == 200) {
+          self.getDaftar();
+          toastr.success(
+            "Data berhasil diubah",
+            "Sukses ! "
+          );
+        } else {
+          toastr.warning(
+            "Data gagal diubah",
+            "Gagal ! "
+          );
+        }
+      })
+      .then(function(data) {});
+  }
+
   render() {
     const styletb = {
       borderCollapse: "collapse",
@@ -255,7 +309,7 @@ class Kehadiran extends Component {
                             <th>NIM </th>
                             <th>NAMA </th>
                             <th>
-                              <center>PILIH</center>
+                             PILIH
                             </th>
                           </tr>
                         </thead>
@@ -279,65 +333,52 @@ class Kehadiran extends Component {
                                 </td>
                                 <td style={{ width: "20%" }}>
                                   <center>
-                                    <select
-                                      className="form-control m-b"
-                                      value={
-                                        daftar.kehadiran.find(
-                                          x => x.jadwal == this.state.jadwal.id
-                                        ).status
-                                      }
-                                      onChange={e => {
-                                        const self = this;
-                                        let newKehadiran = {};
-                                        newKehadiran.daftar = daftar.id;
-                                        newKehadiran.jadwal = this.state.jadwal.id;
-                                        newKehadiran.status = e.target.value;
-                                        let idKehadiran = daftar.kehadiran.find(
-                                          x => x.jadwal == this.state.jadwal.id
-                                        ).id;
-
-                                        fetch(
-                                          BASE_URL +
-                                            "/api/kehadiran/" +
-                                            idKehadiran +
-                                            "/",
-                                          {
-                                            method: "patch",
-                                            headers: {
-                                              Authorization:
-                                                "JWT " +
-                                                window.sessionStorage.getItem(
-                                                  "token"
-                                                ),
-                                              "Content-Type":
-                                                "application/json",
-                                              Accept: "application/json"
-                                            },
-                                            body: JSON.stringify(newKehadiran)
-                                          }
-                                        )
-                                          .then(function(response) {
-                                            if (response.status == 200) {
-                                              self.getDaftar();
-                                              toastr.success(
-                                                "Data berhasil diubah",
-                                                "Sukses ! "
-                                              );
-                                            } else {
-                                              toastr.warning(
-                                                "Data gagal diubah",
-                                                "Gagal ! "
-                                              );
-                                            }
-                                          })
-                                          .then(function(data) {});
-                                      }}
-                                    >
-                                      <option value="hadir">Hadir</option>
-                                      <option value="tidak_hadir">
-                                        Tidak Hadir
-                                      </option>
-                                    </select>
+                                    <div className="row" >
+                                      <div className="radio" style={{textAlign:'left'}}>
+                                        <label className="radio-inline">
+                                          <input  
+                                            type="radio" 
+                                            onClick={(e) => this.changeKehadiran(e, daftar)}
+                                            name={`optradio_${key}`} 
+                                            value="hadir"
+                                            defaultChecked={daftar.kehadiran.find(x => x.jadwal == this.state.jadwal.id).status == "hadir" ? true : false}
+                                            />
+                                            Hadir
+                                        </label>
+                                        <label className="radio-inline">
+                                          <input 
+                                            type="radio" 
+                                            onClick={(e) => this.changeKehadiran(e, daftar)}
+                                            value="tanpa_keterangan"
+                                            defaultChecked={daftar.kehadiran.find(x => x.jadwal == this.state.jadwal.id).status == "tanpa_keterangan" ? true : false}
+                                            name={`optradio_${key}`}
+                                            />
+                                            T. Keterangan
+                                        </label>
+                                      </div>
+                                      <div className="radio" style={{textAlign:'left'}}>
+                                        <label className="radio-inline">
+                                          <input 
+                                            type="radio" 
+                                            onClick={(e) => this.changeKehadiran(e, daftar)}
+                                            value="sakit"
+                                            defaultChecked={daftar.kehadiran.find(x => x.jadwal == this.state.jadwal.id).status == "sakit" ? true : false}
+                                            name={`optradio_${key}`}
+                                            />
+                                            Sakit
+                                        </label>
+                                        <label className="radio-inline">
+                                          <input 
+                                            type="radio" 
+                                            defaultChecked={daftar.kehadiran.find(x => x.jadwal == this.state.jadwal.id).status == "izin" ? true : false}
+                                            onClick={(e) => this.changeKehadiran(e, daftar)}
+                                            value="izin"
+                                            name={`optradio_${key}`}
+                                            />
+                                            Izin
+                                        </label>  
+                                      </div>
+                                    </div>
                                   </center>
                                 </td>
                               </tr>

@@ -12,6 +12,7 @@ class Jurusan extends Component {
             form: false,
             selected: null,
             jurusanBaru: {},
+            selectedNama:"",
             add: true,
             addForm: true,
             jurusans: [],
@@ -24,6 +25,9 @@ class Jurusan extends Component {
 		
 		fetch(BASE_URL + '/api/jurusan/', {
 			method: 'get',
+			headers: {
+		        Authorization: "JWT " + window.sessionStorage.getItem("token")
+		     }
 		}).then(function(response) {
 			return response.json();
 		}).then(function(data) {
@@ -228,6 +232,10 @@ class Jurusan extends Component {
 			                                    <input 
 		                                    		type="text" 
 		                                    		disabled="" 
+		                                    		value={this.state.selectedNama}
+		                                    		onChange={(e) => {
+		                                    			this.setState({selectedNama: e.target.value})
+		                                    		}}
 		                                    		placeholder="Nama jurusan"
 		                                    		className="form-control"/>
 		                                    </div>
@@ -254,7 +262,7 @@ class Jurusan extends Component {
 					                            </thead>
 					                            <tbody>
 					                            {
-					                            	this.state.jurusan.map((data, key) =>
+					                            	this.state.jurusan.filter(x => x.nama.toLowerCase().includes(this.state.selectedNama)).map((data, key) =>
 					                            		<tr key={key}>
 							                                <td>{data.kode}</td>
 							                                <td>{data.nama}</td>

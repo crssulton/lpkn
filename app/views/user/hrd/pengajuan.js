@@ -247,7 +247,7 @@ class Pengajuan extends Component {
 					                            		<tr key={key}>
 							                                <td>{key+1}</td>
 							                                <td>{data.nama}</td>
-							                                <td>{data.account_tujuan != null ? this.state.account.find(x => x.id == data.account_tujuan).nama : "BELUM ADA"}</td>
+							                                <td>{data.account_tujuan != null ? this.state.account.find(x => x.id == data.account_tujuan).nama : "-"}</td>
 							                                <td>
 							                                {data.verified ? (
 							                                  <span className="badge badge-primary">

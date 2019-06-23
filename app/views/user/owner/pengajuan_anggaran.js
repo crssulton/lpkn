@@ -22,7 +22,10 @@ class Pengajuan extends Component {
       addForm: true,
       kampus: [],
       account: [],
+      kampus: window.sessionStorage.getItem("kampus_id"),
       editpengajuan: {},
+      checkbox: false,
+      danaSebelumnya: {},
       newPengajuan: {},
       selectedPengajuan: null
     };
@@ -41,11 +44,10 @@ class Pengajuan extends Component {
         return response.json();
       })
       .then(function(data) {
-        console.log(data.results);
         self.setState({
           pengajuan: data.results,
           loading: !self.state.loading
-        });
+        })
       });
 
     fetch(BASE_URL + "/api/account/", {
@@ -75,17 +77,62 @@ class Pengajuan extends Component {
         return response.json();
       })
       .then(function(data) {
-        console.log(data.results);
         self.setState({
           kampus: data.results
         });
       });
   }
 
+  getPengajuanAnggaran = () => {
+    const self = this;
+
+    fetch(BASE_URL + "/api/pengajuan-anggaran", {
+      method: "get",
+      headers: {
+        Authorization: "JWT " + window.sessionStorage.getItem("token")
+      }
+    })
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(data) {
+        self.setState({
+          pengajuan: data.results
+        })
+      });
+  }
+
+  verifiedAnggaranSebelumnya = () => {
+    const self = this
+    fetch(
+        BASE_URL + "/api/pengajuan-anggaran/" + this.state.danaSebelumnya.id + "/verify/",
+        {
+          method: "post",
+          headers: {
+            Authorization: "JWT " + window.sessionStorage.getItem("token"),
+            "Content-Type": "application/json",
+            Accept: "application/json"
+          }
+        }
+      )
+        .then(function(response) {
+          if (response.status == 200) {
+            console.log("berhasil")
+          }
+        })
+        .then(function(data) {});
+  }
+
   handleChangeStatus = () => {
     const self = this;
     let selectedPengajuan = { ...this.state.selectedPengajuan };
     selectedPengajuan.approved = true;
+    if (this.state.checkbox) {
+      selectedPengajuan.transfer = selectedPengajuan.harga - this.state.danaSebelumnya.sisa
+    }else{
+      selectedPengajuan.transfer = selectedPengajuan.harga
+    }
+
     swal({
       title: "Terima Pengajuan ?",
       icon: "warning",
@@ -108,6 +155,12 @@ class Pengajuan extends Component {
           .then(function(response) {
             if (response.status == 200) {
               toastr.success("Pengajuan berhasil di terima", "Sukses ! ");
+              
+              if (typeof self.state.danaSebelumnya != 'undefined') {
+                self.verifiedAnggaranSebelumnya()
+              }
+              
+              self.getPengajuanAnggaran()
               let pengajuan = [...self.state.pengajuan];
               pengajuan.find(
                 data => data.id == selectedPengajuan.id
@@ -127,11 +180,14 @@ class Pengajuan extends Component {
   };
 
   render() {
+
     account = [...this.state.account];
     this.state.account.map((data, key) => {
       account[key].value = data.id;
       account[key].label = data.nama;
     });
+
+    console.log(this.state.checkbox)
 
     return (
       <div>
@@ -177,9 +233,9 @@ class Pengajuan extends Component {
                           <tr>
                             <th style={{ width: "5%" }}>NO</th>
                             <th style={{ width: "15%" }}>NAMA</th>
-                            <th style={{ width: "5%" }}>JUMLAH</th>
                             <th style={{ width: "10%" }}>NOMINAL</th>
                             <th style={{ width: "10%" }}>SISA</th>
+                            <th style={{ width: "10%" }}>DIKIRIMKAN</th>
                             <th style={{ width: "15%" }}>URAIRAN</th>
                             <th style={{ width: "15%" }}>KAMPUS</th>
                             <th style={{ width: "10%" }}>STATUS</th>
@@ -193,13 +249,18 @@ class Pengajuan extends Component {
                             <tr key={key}>
                               <td>{key + 1}</td>
                               <td>{data.nama}</td>
-                              <td>{data.jumlah}</td>
                               <td>{this.formatNumber(data.harga)}</td>
                               <td>{this.formatNumber(data.sisa)}</td>
+                              <td>{this.formatNumber(data.transfer)}</td>
                               <td>{data.uraian}</td>
-                              <td>{data.kampus != null ? this.state.kampus.find(x => x.id == data.kampus).nama : null}</td>
+                              <td>{data.kampus_info.nama}</td>
                               <td>
                                 {data.approved ? (
+                                  data.verified ?
+                                  <span className="badge badge-secondary">
+                                    Expired
+                                  </span>
+                                  :
                                   <span className="badge badge-primary">
                                     Diterima
                                   </span>
@@ -216,7 +277,8 @@ class Pengajuan extends Component {
                                       <button
                                         onClick={e => {
                                           this.setState({
-                                            selectedPengajuan: data
+                                            selectedPengajuan: data,
+                                            danaSebelumnya: this.state.pengajuan.find(x => x.approved == true && x.kampus == data.kampus_info.id && x.verified == false)
                                           });
                                         }}
                                         data-toggle="modal"
@@ -295,22 +357,6 @@ class Pengajuan extends Component {
                     </div>
 
                     <div className="form-group row">
-                      <label className="col-lg-3 col-form-label">Jumlah</label>
-                      <div className="col-lg-9">
-                        <input
-                          value={
-                            this.state.selectedPengajuan != null
-                              ? this.state.selectedPengajuan.jumlah
-                              : null
-                          }
-                          disabled="disabled"
-                          type="number"
-                          className="form-control m-b"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="form-group row">
                       <label className="col-lg-3 col-form-label">Harga</label>
                       <div className="col-lg-9">
                         <CurrencyInput
@@ -350,6 +396,64 @@ class Pengajuan extends Component {
                     </div>
 
                     <div className="form-group row">
+                      <label className="col-lg-3 col-form-label">Sisa Anggaran Sebelumnya</label>
+                      <div className="col-lg-9">
+                        <CurrencyInput
+                          precision="0"
+                          className="form-control m-b"
+                          prefix="Rp "
+                          value={typeof this.state.danaSebelumnya != 'undefined' ? this.state.danaSebelumnya.sisa : "Kosong"}
+                          disabled="disabled"
+                        />
+                      </div>
+                    </div>
+                    {
+                    typeof this.state.danaSebelumnya != "undefined" ?
+                    <div className="form-group row">
+                      <label className="col-lg-3 col-form-label"></label>
+                      <div className="col-lg-9">
+                        <input
+                          value={this.state.checkbox}
+                          type="checkbox" 
+                          onClick={(e) => {
+                            this.setState({
+                              checkbox: !this.state.checkbox
+                            })
+                          }}
+                        /> 
+                        {" "}
+                        Gunakan sisa anggaran sebelumnya
+                      </div>
+                    </div>
+                    :
+                    null
+                    }
+
+                    <div className="form-group row">
+                      <label className="col-lg-3 col-form-label">Dana Dikirimkan</label>
+                      <div className="col-lg-9">
+                        <CurrencyInput
+                          precision="0"
+                          className="form-control m-b"
+                          prefix="Rp "
+                          value={
+                            this.state.selectedPengajuan != null
+                              ? this.state.checkbox && typeof this.state.danaSebelumnya != "undefined" ?
+                                this.state.selectedPengajuan.harga - this.state.danaSebelumnya.sisa : this.state.selectedPengajuan.harga
+                              : null
+                          }
+                          onChangeEvent={(e, maskedvalue, floatvalue) => {
+                            let selectedPengajuan = {
+                              ...this.state.selectedPengajuan
+                            };
+                            selectedPengajuan.harga = floatvalue;
+                            this.setState({ selectedPengajuan });
+                          }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="form-group row">
                       <label className="col-lg-3 col-form-label">
                         Akun Sumber
                       </label>
@@ -375,6 +479,7 @@ class Pengajuan extends Component {
                   </div>
                   <div className="modal-footer">
                     <button
+                      onClick={() => this.setState({checkbox: false})}
                       type="button"
                       className="btn btn-white"
                       data-dismiss="modal"

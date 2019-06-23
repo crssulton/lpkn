@@ -158,6 +158,10 @@ class staff extends Component {
 					                    <div className="col-lg-4">
 					                      <input
 					                          type="text"
+					                          value={this.state.selectedNama}
+					                          onChange={(e) => {
+					                          	this.setState({selectedNama: e.target.value})
+					                          }}
 					                          disabled=""
 					                          placeholder="Nama Staff"
 					                          className="form-control"
@@ -190,6 +194,7 @@ class staff extends Component {
 										        <tbody>
 										        {
 										        	this.state.staffsTmp
+										        	.filter(staff => staff.nama.toLowerCase().includes(this.state.selectedNama))
 										        	.map((staff, key) => 
 
 										        		<tr key={key}>
@@ -200,7 +205,7 @@ class staff extends Component {
 																staff.kampus_info.nama
 															}
 												            </td>
-												            <td>{staff.pendidikan_terakhir}</td>
+												            <td>{staff.pendidikan_terakhir.toLowerCase()}</td>
 												            <td>{role.find(data => data.role == staff.role).nama}</td>
 												            <td>
 												            	<button 
@@ -236,7 +241,7 @@ class staff extends Component {
 				                                	this.state.staff.foto != null ?
 				                                	<img alt="image" width="50%" style={{'borderRadius':'50%', 'display':'block', 'margin':'0 auto'}} className="img-fluid"  src={this.state.staff.foto}/>
 				                                	:
-				                                	<img alt="image" width="50%" style={{'borderRadius':'50%', 'display':'block', 'margin':'0 auto'}} className="img-fluid"  src="http://www.personalbrandingblog.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640-300x300.png"/>
+				                                	<img alt="image" width="50%" style={{'borderRadius':'50%', 'display':'block', 'margin':'0 auto'}} className="img-fluid" src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Circle-icons-profile.svg" />
 				                                }
 				                            </div>
 				                            <div className="ibox-content profile-content">
@@ -256,7 +261,7 @@ class staff extends Component {
 											    </tr>
 											    <tr>
 											        <td><b>Tgl Lahir</b></td>
-													<td>: {this.state.staff.tgl_lahir}</td>
+													<td>: {moment(this.state.staff.tgl_lahir).format("DD-MM-YYYY")}</td>
 											    </tr>
 											    <tr>
 											        <td><b>Jenis Kelamin</b></td>
@@ -264,7 +269,7 @@ class staff extends Component {
 											    </tr>
 											    <tr>
 											        <td><b>Agama</b></td>
-													<td>: {this.state.staff.agama}</td>
+													<td>: {this.state.staff.agama.toUpperCase()	}</td>
 											    </tr>
 											    <tr>
 											        <td><b>No Hp</b></td>
@@ -276,7 +281,7 @@ class staff extends Component {
 											    </tr>
 											    <tr>
 											        <td><b>Pendidikan</b></td>
-													<td>: {this.state.staff.pendidikan_terakhir}</td>
+													<td>: {this.state.staff.pendidikan_terakhir.toUpperCase()}</td>
 											    </tr>
 											    <tr>
 											        <td><b>Status Menikah</b></td>

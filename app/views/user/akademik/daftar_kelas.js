@@ -13,35 +13,35 @@ class Daftar extends Component {
             loading: true,
             jurusans:[],
             kelas,
+            angkatan: [],
             loadingSimpan: false,
             daftars: [],
             sendDaftar: [],
-            selectedJurusan: 0,
+            selectedJurusan: kelas.jurusan_info.id,
+      		selectedAngkatan: "",
+      		selectedMahasiswa: "",
             checkAll: false
         }
-        console.log(kelas)
     }
 
     componentDidMount(){
     	const self = this
 
-		fetch(BASE_URL + "/api/mahasiswa/?kampus=" + window.sessionStorage.getItem("kampus_id"), {
-			method: 'get',
-			headers: {
-				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
-			}
-		}).then(function(response) {
-			return response.json();
-		}).then(function(data) {
-			let mhs = [...data]
-			mhs.map(data => {
-				data.check = false
-			})
-			self.setState({
-				mahasiswas: mhs,
-				loading: !self.state.loading,
-			})
-		});
+		fetch(BASE_URL + "/api/mahasiswa/?jurusan=" + this.state.selectedJurusan, {
+	      method: "get",
+	      headers: {
+	        Authorization: "JWT " + window.sessionStorage.getItem("token")
+	      }
+	    })
+	      .then(function(response) {
+	        return response.json();
+	      })
+	      .then(function(data) {
+	        self.setState({
+	          mahasiswas: data,
+	          loading: false
+	        });
+	      });
 
 		fetch(BASE_URL + '/api/daftar/', {
 			method: 'get',
@@ -69,11 +69,72 @@ class Daftar extends Component {
 			return response.json();
 		}).then(function(data) {
 			self.setState({
-				selectedJurusan: data.results[0].id,
 				jurusans: data.results
 			})
 		});
 
+		fetch(BASE_URL + '/api/angkatan/', {
+			method: 'get',
+			headers: {
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+			}
+		}).then(function(response) {
+			return response.json();
+		}).then(function(data) {
+			self.setState({
+				angkatan: data
+			})
+		});
+
+    }
+
+    fetchDaftar = () => {
+    	const self = this
+
+    	this.setState({loading: true})
+
+		fetch(BASE_URL + "/api/mahasiswa/?jurusan=" + this.state.selectedJurusan, {
+	      method: "get",
+	      headers: {
+	        Authorization: "JWT " + window.sessionStorage.getItem("token")
+	      }
+	    })
+	      .then(function(response) {
+	        return response.json();
+	      })
+	      .then(function(data) {
+
+	        self.setState({
+	          mahasiswas: data,
+	          loading: false
+	        });
+	      });
+    }
+
+    onFilterData = () => {
+    	const self = this
+
+    	this.setState({loading: true})
+
+    	let mahasiswa = this.state.selectedMahasiswa
+    	let jurusan = this.state.selectedJurusan
+
+		fetch(BASE_URL + `/api/mahasiswa/?mahasiswa=${mahasiswa}&jurusan=${jurusan}`, {
+	      method: "get",
+	      headers: {
+	        Authorization: "JWT " + window.sessionStorage.getItem("token")
+	      }
+	    })
+	      .then(function(response) {
+	        return response.json();
+	      })
+	      .then(function(data) {
+
+	        self.setState({
+	          mahasiswas: data.filter(x => x.angkatan == self.state.selectedAngkatan),
+	          loading: false
+	        });
+	      });
     }
 
     handleDeleteCheck = (id) => {
@@ -108,7 +169,7 @@ class Daftar extends Component {
     	let mahasiswas = [...this.state.mahasiswas]
     	let mahasiswasID = this.state.mahasiswas.find(data => data.kelas == this.state.kelas.id && data.id == id)
     	if (mahasiswasID != null) {
-    		console.log("sini")
+
     		mahasiswas.find(data => data.id == id).kelas = null
     		this.setState({ 
 	    		mahasiswas
@@ -198,7 +259,7 @@ class Daftar extends Component {
     }
 
     render() {
-    	console.log(this.state.sendDaftar)
+
         return (
             <div>
                 <div className="row wrapper border-bottom white-bg page-heading">
@@ -228,36 +289,91 @@ class Daftar extends Component {
                                 </div>
                                 <div className="ibox-content">
                                 	<div className="row">
-                                        <div className="col-lg-6">
-                                        	<label className="col-sm-3 col-form-label">Filter </label>
-                                        	<div className="col-sm-9">
-			                                    <select
-			                                    	value={this.state.selectedJurusan}
-			                                    	onChange={(e) => this.setState({selectedJurusan: e.target.value}) }
-			                                        className="form-control">
-			                                        {
-			                                        	this.state.jurusans.map((jurusan, key) => 
-			                                        		<option key={key} value={jurusan.id}>{jurusan.nama}</option>
-			                                        	)
-			                                        }
-			                                    </select>
-		                                    </div>
-                                        </div>
-                                        <div className="col-lg-4">
-                                        </div>
-                                        <div className="col-lg-2">
-                                        	{
-                                        		this.state.loadingSimpan ?
-                                        		<button disabled className="btn btn-primary push-right" onClick={this.sendDaftar}>
-			                                    	<i className="fa fa-save"></i> Menyimpan...
-			                                    </button>
-			                                    :
-			                                    <button className="btn btn-primary push-right" onClick={this.sendDaftar}>
-			                                    	<i className="fa fa-save"></i> Simpan
-			                                    </button>
-                                        	}
-                                        </div>
-                                    </div>
+					                    <div className="col-lg-3">
+					                      <label className="form-label">Angkatan : </label>
+					                    </div>
+					                    <div>
+					                      <label className="form-label">Mahasiswa : </label>
+					                    </div>
+					                    <div className="col-lg-3" />
+					                    <div className="col-lg-3" />
+					                  </div>
+					                  <div className="row">
+					                    <div className="col-lg-3">
+					                      <select
+					                        value={this.state.selectedAngkatan}
+					                        onChange={e => {
+					                          this.setState({
+					                            selectedAngkatan: e.target.value
+					                          });
+					                        }}
+					                        className="form-control"
+					                      >
+					                        <option value="">Pilih Angkatan</option>
+					                        {this.state.angkatan.map((angkatan, key) => (
+					                          <option key={key} value={angkatan.angkatan}>
+					                            {angkatan.tahun} | Angkatan ke-{angkatan.angkatan}
+					                          </option>
+					                        ))}
+					                      </select>
+					                    </div>
+					                    <div className="col-lg-3">
+					                      <input 
+					                      	type="text"
+					                      	placeholder="NIM/Nama Mahasiswa"
+					                      	className="form-control"
+					                      	value={this.state.selectedMahasiswa}
+					                        onChange={e => {
+					                          this.setState({
+					                            selectedMahasiswa: e.target.value
+					                          });
+					                        }}
+					                      />
+					                    </div>
+					                    <div className="col-lg-3">
+					                      <button
+					                        onClick={this.onFilterData}
+					                        className="btn btn-info btn-sm"
+					                        type="button"
+					                      >
+					                        <i className="fa fa-filter" /> Filter
+					                      </button>
+
+					                      <button
+					                        onClick={() => {
+					                          const self = this;
+					                          this.fetchDaftar();
+					                          this.setState({
+					                            selectedAngkatan: "",
+					                            selectedJurusan: ""
+					                          });
+					                        }}
+					                        style={{ marginLeft: "5px" }}
+					                        className="btn btn-warning btn-sm"
+					                        type="button"
+					                      >
+					                        <i className="fa fa-close" /> Reset
+					                      </button>
+					                    </div>
+					                    <div className="col-lg-3">
+					                      {this.state.loadingSimpan ? (
+					                        <button
+					                          disabled
+					                          className="btn btn-primary btn-sm push-right"
+					                          onClick={this.sendDaftar}
+					                        >
+					                          <i className="fa fa-save" /> Menyimpan...
+					                        </button>
+					                      ) : (
+					                        <button
+					                          className="btn btn-primary btn-sm push-right"
+					                          onClick={this.sendDaftar}
+					                        >
+					                          <i className="fa fa-save" /> Simpan
+					                        </button>
+					                      )}
+					                    </div>
+					                  </div>
 
                             		<div className="hr-line-dashed"></div>
                                     {
@@ -293,8 +409,7 @@ class Daftar extends Component {
 										        </thead>
 										        <tbody>
 										        {
-										        	this.state.mahasiswas.filter(mahasiswa => mahasiswa.calon == false && 
-										        		mahasiswa.jurusan == this.state.selectedJurusan)
+										        	this.state.mahasiswas.filter(mahasiswa => mahasiswa.calon == false)
 										        	.map((mahasiswa, key) => 
 
 										        		<tr key={key}>

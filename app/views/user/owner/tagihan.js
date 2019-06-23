@@ -343,7 +343,7 @@ class Tagihan extends Component {
                           <th>NIM</th>
                           <th>NAMA</th>
                           <th>MASA</th>
-                          <th>NOMINAL</th>
+                          <th>TAGIHAN</th>
                           <th>STATUS</th>
                           {window.sessionStorage.getItem("role") == "5" ||
                           window.sessionStorage.getItem("role") == "3" ? (

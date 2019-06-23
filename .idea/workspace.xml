@@ -1,0 +1,851 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="87860f79-893e-46d6-9b67-3f1770be7aad" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/app/views/user/admin/addDosen.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/views/user/admin/editDosen.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/views/user/akademik/mahasiswa_bekerja.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/views/user/akademik/mahasiswa_magang.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/views/user/akademik/mahasiswa_nonaktif.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/views/user/akademik/mahasiswa_pindah.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/views/user/akun.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/components/common/NavigationAdmin.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/components/common/NavigationAdmin.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/components/common/NavigationAkademik.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/components/common/NavigationAkademik.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/components/common/NavigationDosen.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/components/common/NavigationDosen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/components/common/NavigationHrd.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/components/common/NavigationHrd.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/components/common/NavigationKepalaCabang.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/components/common/NavigationKepalaCabang.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/components/common/NavigationKeuangan.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/components/common/NavigationKeuangan.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/components/common/NavigationMhs.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/components/common/NavigationMhs.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/components/common/NavigationOwner.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/components/common/NavigationOwner.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/config/routes.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/config/routes.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/landing/Login.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/landing/Login.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/admin/Anggaran.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/admin/Anggaran.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/admin/Approve.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/admin/Approve.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/admin/Broadcast.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/admin/Broadcast.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/admin/Calon_Mahasiswa.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/admin/Calon_Mahasiswa.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/admin/List_pendaftar.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/admin/List_pendaftar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/admin/List_pendaftar_online.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/admin/List_pendaftar_online.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/admin/Mahasiswa.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/admin/Mahasiswa.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/admin/Pendaftaran.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/admin/Pendaftaran.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/admin/Tagihan.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/admin/Tagihan.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/admin/aset.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/admin/aset.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/admin/dosen.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/admin/dosen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/admin/pembayaran.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/admin/pembayaran.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/admin/pengajuan.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/admin/pengajuan.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/akademik/Dashboard.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/akademik/Dashboard.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/akademik/Jadwal.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/akademik/Jadwal.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/akademik/Mahasiswa.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/akademik/Mahasiswa.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/akademik/Pengumuman.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/akademik/Pengumuman.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/akademik/absensi.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/akademik/absensi.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/akademik/daftar.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/akademik/daftar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/akademik/daftar_kelas.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/akademik/daftar_kelas.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/akademik/jadwal_mahasiswa.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/akademik/jadwal_mahasiswa.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/akademik/kehadiran.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/akademik/kehadiran.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/akademik/kelas.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/akademik/kelas.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/akademik/list_jadwal.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/akademik/list_jadwal.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/akademik/nilai_mahasiswa.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/akademik/nilai_mahasiswa.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/akademik/rekap_mahasiswa.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/akademik/rekap_mahasiswa.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/dosen/Input.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/dosen/Input.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/dosen/Main.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/dosen/Main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/dosen/pertemuan.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/dosen/pertemuan.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/hrd/pengajuan.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/hrd/pengajuan.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/kepala_cabang/administrator.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/kepala_cabang/administrator.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/kepala_cabang/akademik.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/kepala_cabang/akademik.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/kepala_cabang/dosen.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/kepala_cabang/dosen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/kepala_cabang/jurusan.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/kepala_cabang/jurusan.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/kepala_cabang/keuangan.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/kepala_cabang/keuangan.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/kepala_cabang/mahasiswa.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/kepala_cabang/mahasiswa.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/kepala_cabang/staff.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/kepala_cabang/staff.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/keuangan/buku_besar.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/keuangan/buku_besar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/keuangan/neraca_saldo_akhir.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/keuangan/neraca_saldo_akhir.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/keuangan/transaksi.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/keuangan/transaksi.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/keuangan/transaksi_buku_besar.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/keuangan/transaksi_buku_besar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/mahasiswa/Dashboard.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/mahasiswa/Dashboard.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/mahasiswa/Jadwal.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/mahasiswa/Jadwal.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/mahasiswa/Nilai.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/mahasiswa/Nilai.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/mahasiswa/Pembayaran.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/mahasiswa/Pembayaran.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/owner/Anggaran.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/owner/Anggaran.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/owner/HRD.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/owner/HRD.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/owner/Kampus.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/owner/Kampus.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/owner/Kepala_cabang.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/owner/Kepala_cabang.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/owner/dosen.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/owner/dosen.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/owner/kelompok_akun.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/owner/kelompok_akun.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/owner/mahasiswa.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/owner/mahasiswa.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/owner/pengajuan_anggaran.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/owner/pengajuan_anggaran.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/owner/staff.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/owner/staff.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/owner/tagihan.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/owner/tagihan.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/user/report/mahasiswa_akademik.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/user/report/mahasiswa_akademik.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/bundle.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/bundle.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/bundle.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/bundle.js.map" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/vendor.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/vendor.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/vendor.js.map" beforeDir="false" afterPath="$PROJECT_DIR$/dist/vendor.js.map" afterDir="false" />
+    </list>
+    <ignored path="$PROJECT_DIR$/.tmp/" />
+    <ignored path="$PROJECT_DIR$/temp/" />
+    <ignored path="$PROJECT_DIR$/tmp/" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/views/user/keuangan/transaksi.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="262">
+              <caret line="682" column="40" lean-forward="true" selection-start-line="678" selection-start-column="36" selection-end-line="682" selection-end-column="40" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/views/user/admin/tambah_aset.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="131">
+              <caret line="574" column="22" lean-forward="true" selection-start-line="574" selection-start-column="22" selection-end-line="578" selection-end-column="29" />
+              <folding>
+                <element signature="e#0#41#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/views/user/admin/Tagihan.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="120">
+              <caret line="904" column="36" lean-forward="true" selection-start-line="904" selection-start-column="36" selection-end-line="908" selection-end-column="47" />
+              <folding>
+                <element signature="e#0#39#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/views/user/keuangan/daftar_transaksi.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="45">
+              <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
+              <folding>
+                <element signature="e#0#39#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/views/user/owner/Kampus.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="164">
+              <caret line="211" column="12" selection-start-line="211" selection-start-column="8" selection-end-line="211" selection-end-column="12" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="FindInProjectRecents">
+    <findStrings>
+      <find>svg</find>
+      <find>Agama</find>
+      <find>Pendi</find>
+      <find>agama</find>
+      <find>semua kam</find>
+      <find>pendidikan</find>
+      <find>undu</find>
+      <find>keten</find>
+      <find>png</find>
+      <find>Akun tujuan</find>
+      <find>penc</find>
+      <find>pen</find>
+      <find>delete</find>
+      <find>p</find>
+      <find>getKwi</find>
+      <find>getKwitansi</find>
+      <find>print</find>
+      <find>telah</find>
+      <find>kwitansi</find>
+      <find>mahasiswa_info</find>
+      <find>program</find>
+      <find>mahasiswa_info.nama</find>
+      <find>MAGANG</find>
+      <find>tidak_</find>
+      <find>Mataram</find>
+      <find>this.state.kwitansi.mahasiswa_info.nama</find>
+      <find>none</find>
+      <find>.mahasiswa_info.nama</find>
+      <find>swall</find>
+      <find>swal</find>
+    </findStrings>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/app/views/user/admin/dosen.js" />
+        <option value="$PROJECT_DIR$/app/views/user/admin/editDosen.js" />
+        <option value="$PROJECT_DIR$/app/views/user/admin/Broadcast.js" />
+        <option value="$PROJECT_DIR$/app/views/user/admin/Anggaran.js" />
+        <option value="$PROJECT_DIR$/app/components/common/NavigationAkademik.js" />
+        <option value="$PROJECT_DIR$/app/config/routes.js" />
+        <option value="$PROJECT_DIR$/app/views/user/mahasiswa/Nilai.js" />
+        <option value="$PROJECT_DIR$/app/views/user/keuangan/neraca.js" />
+        <option value="$PROJECT_DIR$/app/views/user/keuangan/neraca_saldo_akhir.js" />
+        <option value="$PROJECT_DIR$/app/views/user/keuangan/transaksi_buku_besar.js" />
+        <option value="$PROJECT_DIR$/app/views/user/keuangan/buku_besar.js" />
+        <option value="$PROJECT_DIR$/app/components/common/NavigationKeuangan.js" />
+        <option value="$PROJECT_DIR$/app/components/common/NavigationAdmin.js" />
+        <option value="$PROJECT_DIR$/app/components/common/NavigationDosen.js" />
+        <option value="$PROJECT_DIR$/app/components/common/NavigationOwner.js" />
+        <option value="$PROJECT_DIR$/app/components/common/NavigationKepalaCabang.js" />
+        <option value="$PROJECT_DIR$/app/components/common/NavigationHrd.js" />
+        <option value="$PROJECT_DIR$/app/components/common/NavigationMhs.js" />
+        <option value="$PROJECT_DIR$/app/views/user/owner/Kampus.js" />
+        <option value="$PROJECT_DIR$/app/views/user/admin/Mahasiswa.js" />
+        <option value="$PROJECT_DIR$/app/views/user/admin/pembayaran.js" />
+        <option value="$PROJECT_DIR$/app/views/user/akademik/transkrip.js" />
+        <option value="$PROJECT_DIR$/app/views/user/report/mahasiswa_akademik.js" />
+        <option value="$PROJECT_DIR$/app/views/user/akademik/Mahasiswa.js" />
+        <option value="$PROJECT_DIR$/app/views/user/akademik/mahasiswa_nonaktif.js" />
+        <option value="$PROJECT_DIR$/app/views/landing/Login.js" />
+        <option value="$PROJECT_DIR$/app/views/user/akademik/mahasiswa_magang.js" />
+        <option value="$PROJECT_DIR$/app/views/user/akademik/jadwal_mahasiswa.js" />
+        <option value="$PROJECT_DIR$/app/views/user/akademik/Pengumuman.js" />
+        <option value="$PROJECT_DIR$/app/views/user/mahasiswa/Dashboard.js" />
+        <option value="$PROJECT_DIR$/app/views/user/admin/Approve.js" />
+        <option value="$PROJECT_DIR$/app/views/user/mahasiswa/Pembayaran.js" />
+        <option value="$PROJECT_DIR$/app/views/user/admin/Calon_Mahasiswa.js" />
+        <option value="$PROJECT_DIR$/app/views/user/owner/mahasiswa.js" />
+        <option value="$PROJECT_DIR$/app/views/user/kepala_cabang/akademik.js" />
+        <option value="$PROJECT_DIR$/app/views/user/kepala_cabang/administrator.js" />
+        <option value="$PROJECT_DIR$/app/views/user/kepala_cabang/keuangan.js" />
+        <option value="$PROJECT_DIR$/app/views/user/owner/Kepala_cabang.js" />
+        <option value="$PROJECT_DIR$/app/views/user/owner/HRD.js" />
+        <option value="$PROJECT_DIR$/app/views/user/owner/dosen.js" />
+        <option value="$PROJECT_DIR$/app/views/user/owner/staff.js" />
+        <option value="$PROJECT_DIR$/app/views/user/kepala_cabang/dosen.js" />
+        <option value="$PROJECT_DIR$/app/views/user/kepala_cabang/staff.js" />
+        <option value="$PROJECT_DIR$/app/views/user/kepala_cabang/mahasiswa.js" />
+        <option value="$PROJECT_DIR$/app/views/user/keuangan/transaksi.js" />
+        <option value="$PROJECT_DIR$/app/views/user/akademik/mahasiswa_bekerja.js" />
+        <option value="$PROJECT_DIR$/app/views/user/akademik/mahasiswa_pindah.js" />
+        <option value="$PROJECT_DIR$/app/views/user/admin/Pendaftaran.js" />
+        <option value="$PROJECT_DIR$/app/views/user/admin/tambah_aset.js" />
+        <option value="$PROJECT_DIR$/app/views/user/admin/Tagihan.js" />
+        <option value="$PROJECT_DIR$/app/views/user/keuangan/daftar_transaksi.js" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="10" />
+    <option name="y" value="20" />
+    <option name="width" value="1346" />
+    <option name="height" value="698" />
+  </component>
+  <component name="ProjectView">
+    <navigator proportions="" version="1">
+      <foldersAlwaysOnTop value="true" />
+    </navigator>
+    <panes>
+      <pane id="ProjectPane">
+        <subPane>
+          <expand>
+            <path>
+              <item name="lpkn" type="b2602c69:ProjectViewProjectNode" />
+              <item name="lpkn" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="lpkn" type="b2602c69:ProjectViewProjectNode" />
+              <item name="lpkn" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="lpkn" type="b2602c69:ProjectViewProjectNode" />
+              <item name="lpkn" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="config" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="lpkn" type="b2602c69:ProjectViewProjectNode" />
+              <item name="lpkn" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="views" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="lpkn" type="b2602c69:ProjectViewProjectNode" />
+              <item name="lpkn" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="views" type="462c0819:PsiDirectoryNode" />
+              <item name="user" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="lpkn" type="b2602c69:ProjectViewProjectNode" />
+              <item name="lpkn" type="462c0819:PsiDirectoryNode" />
+              <item name="app" type="462c0819:PsiDirectoryNode" />
+              <item name="views" type="462c0819:PsiDirectoryNode" />
+              <item name="user" type="462c0819:PsiDirectoryNode" />
+              <item name="admin" type="462c0819:PsiDirectoryNode" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
+      <pane id="Scope" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="js.last.introduce.type" value="LET" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="prettierjs.PrettierConfiguration.Package" value="E:\Project\Programming\baru\lpkn\node_modules\prettier" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Color Scheme Font" />
+  </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="E:\Project\Programming\baru\lpkn\app\views\user" />
+      <recent name="E:\Project\Programming\baru\lpkn\app\views\user\admin" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="ruleStates">
+      <list>
+        <RuleState>
+          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
+        </RuleState>
+        <RuleState>
+          <option name="name" value="StatusDashboardGroupingRule" />
+        </RuleState>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="87860f79-893e-46d6-9b67-3f1770be7aad" name="Default Changelist" comment="" />
+      <created>1561103215409</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1561103215409</updated>
+      <workItem from="1561103230940" duration="718000" />
+      <workItem from="1561119374567" duration="1823000" />
+      <workItem from="1561121418612" duration="35739000" />
+      <workItem from="1561270741411" duration="28876000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="67156000" />
+  </component>
+  <component name="TodoView">
+    <todo-panel id="selected-file">
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+    <todo-panel id="all">
+      <are-packages-shown value="true" />
+      <is-autoscroll-to-source value="true" />
+    </todo-panel>
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-8" y="-8" width="1382" height="754" extended-state="6" />
+    <layout>
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49915966" visible="true" weight="0.17261904" />
+      <window_info id="Structure" order="1" sideWeight="0.50084037" side_tool="true" weight="0.24330357" />
+      <window_info id="npm" order="2" sideWeight="0.50084037" side_tool="true" weight="0.24330357" />
+      <window_info id="Favorites" order="3" side_tool="true" />
+      <window_info anchor="bottom" id="Message" order="0" />
+      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Run" order="2" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
+      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
+      <window_info anchor="bottom" id="TODO" order="6" weight="0.32828283" />
+      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="8" weight="0.32941177" />
+      <window_info anchor="bottom" id="Event Log" order="9" side_tool="true" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="10" visible="true" weight="0.9137056" />
+      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
+      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
+      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+    </layout>
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/app/views/user/keuangan/neraca_saldo_akhir.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="385">
+          <caret line="94" column="30" selection-start-line="94" selection-start-column="30" selection-end-line="94" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/keuangan/transaksi_buku_besar.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="196">
+          <caret line="113" column="75" selection-start-line="113" selection-start-column="75" selection-end-line="113" selection-end-column="75" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/keuangan/jurnal_umum.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state>
+          <folding>
+            <element signature="e#0#41#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/keuangan/neraca.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="196">
+          <caret line="114" column="81" selection-start-line="114" selection-start-column="81" selection-end-line="114" selection-end-column="81" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/keuangan/buku_besar.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="253">
+          <caret line="90" column="30" selection-start-line="90" selection-start-column="30" selection-end-line="90" selection-end-column="30" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/components/common/NavigationAkademik.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="780">
+          <caret line="40" column="32" selection-start-line="40" selection-start-column="32" selection-end-line="40" selection-end-column="77" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/components/common/NavigationKeuangan.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="740">
+          <caret line="38" column="81" selection-start-line="38" selection-start-column="81" selection-end-line="38" selection-end-column="81" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/components/common/NavigationAdmin.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="780">
+          <caret line="40" column="77" selection-start-line="40" selection-start-column="77" selection-end-line="40" selection-end-column="77" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/components/common/NavigationDosen.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="780">
+          <caret line="40" column="77" selection-start-line="40" selection-start-column="77" selection-end-line="40" selection-end-column="77" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/components/common/NavigationOwner.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="780">
+          <caret line="40" column="77" selection-start-line="40" selection-start-column="77" selection-end-line="40" selection-end-column="77" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/components/common/NavigationKepalaCabang.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="760">
+          <caret line="39" column="77" selection-start-line="39" selection-start-column="77" selection-end-line="39" selection-end-column="77" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/components/common/NavigationHrd.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="780">
+          <caret line="40" column="77" selection-start-line="40" selection-start-column="77" selection-end-line="40" selection-end-column="77" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/components/common/NavigationMhs.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="220">
+          <caret line="31" column="47" lean-forward="true" selection-start-line="31" selection-start-column="47" selection-end-line="31" selection-end-column="47" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/admin/pembayaran.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="196">
+          <caret line="423" column="108" selection-start-line="423" selection-start-column="108" selection-end-line="423" selection-end-column="108" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/akademik/kehadiran.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="196">
+          <caret line="90" column="1" lean-forward="true" selection-start-line="90" selection-start-column="1" selection-end-line="101" selection-end-column="3" />
+          <folding>
+            <element signature="e#0#41#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/akademik/transkrip.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="48">
+          <caret line="64" column="17" selection-start-line="64" selection-start-column="17" selection-end-line="64" selection-end-column="17" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/akademik/list_mahasiswa.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="20">
+          <caret line="193" column="8" lean-forward="true" selection-start-line="193" selection-start-column="8" selection-end-line="193" selection-end-column="8" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/config/routes.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="164">
+          <caret line="118" column="76" selection-start-line="118" selection-start-column="58" selection-end-line="118" selection-end-column="76" />
+          <folding>
+            <element signature="e#0#25#0" expanded="true" />
+            <element signature="e#2322#2384#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/report/mahasiswa_akademik.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="326">
+          <caret line="166" column="18" lean-forward="true" selection-start-line="69" selection-start-column="12" selection-end-line="166" selection-end-column="18" />
+          <folding>
+            <element signature="e#0#26#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/akademik/Mahasiswa.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="1055" column="37" selection-end-line="1109" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/landing/Login.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="197">
+          <caret line="85" column="56" selection-start-line="85" selection-start-column="56" selection-end-line="85" selection-end-column="56" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/mahasiswa/Dashboard.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="196">
+          <caret line="265" column="204" selection-start-line="265" selection-start-column="204" selection-end-line="265" selection-end-column="204" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/akademik/Pengumuman.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="196">
+          <caret line="203" column="228" lean-forward="true" selection-start-line="203" selection-start-column="47" selection-end-line="203" selection-end-column="228" />
+          <folding>
+            <element signature="e#0#40#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/admin/Broadcast.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="60">
+          <caret line="3" selection-start-line="3" selection-end-line="3" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/akademik/jadwal_mahasiswa.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="196">
+          <caret line="396" column="58" selection-start-line="396" selection-start-column="53" selection-end-line="396" selection-end-column="58" />
+          <folding>
+            <element signature="e#0#41#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/akademik/mahasiswa_magang.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="196">
+          <caret line="656" column="56" selection-start-line="656" selection-start-column="56" selection-end-line="656" selection-end-column="138" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/admin/Calon_Mahasiswa.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="40">
+          <caret line="2" column="68" selection-start-line="2" selection-start-column="65" selection-end-line="2" selection-end-column="68" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/kepala_cabang/keuangan.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="102" column="149" lean-forward="true" selection-start-line="102" selection-start-column="149" selection-end-line="102" selection-end-column="149" />
+          <folding>
+            <element signature="e#0#41#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/owner/mahasiswa.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="196">
+          <caret line="420" column="138" selection-start-line="420" selection-start-column="138" selection-end-line="420" selection-end-column="138" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/kepala_cabang/akademik.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="196">
+          <caret line="103" column="149" selection-start-line="103" selection-start-column="149" selection-end-line="103" selection-end-column="231" />
+          <folding>
+            <element signature="e#0#41#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/admin/Mahasiswa.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="86">
+          <caret line="542" column="56" selection-start-line="542" selection-start-column="56" selection-end-line="542" selection-end-column="138" />
+          <folding>
+            <element signature="e#0#41#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/owner/Kepala_cabang.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="196">
+          <caret line="103" column="231" selection-start-line="103" selection-start-column="231" selection-end-line="103" selection-end-column="231" />
+          <folding>
+            <element signature="e#0#41#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/owner/HRD.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="196">
+          <caret line="103" column="231" lean-forward="true" selection-start-line="103" selection-start-column="149" selection-end-line="103" selection-end-column="231" />
+          <folding>
+            <element signature="e#0#41#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/owner/staff.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="224">
+          <caret line="194" column="49" lean-forward="true" selection-start-line="194" selection-start-column="49" selection-end-line="194" selection-end-column="49" />
+          <folding>
+            <element signature="e#0#41#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/owner/dosen.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="156">
+          <caret line="285" column="48" selection-start-line="285" selection-start-column="48" selection-end-line="292" selection-end-column="53" />
+          <folding>
+            <element signature="e#0#41#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/kepala_cabang/dosen.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="396">
+          <caret line="245" column="53" selection-start-line="245" selection-start-column="53" selection-end-line="245" selection-end-column="53" />
+          <folding>
+            <element signature="e#0#41#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/kepala_cabang/administrator.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="196">
+          <caret line="103" column="149" selection-start-line="103" selection-start-column="149" selection-end-line="103" selection-end-column="231" />
+          <folding>
+            <element signature="e#0#41#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/kepala_cabang/staff.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="196">
+          <caret line="199" column="255" selection-start-line="199" selection-start-column="255" selection-end-line="199" selection-end-column="255" />
+          <folding>
+            <element signature="e#0#41#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/kepala_cabang/mahasiswa.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="196">
+          <caret line="280" column="255" selection-start-line="280" selection-start-column="255" selection-end-line="280" selection-end-column="255" />
+          <folding>
+            <element signature="e#0#41#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/keuangan/akun.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="316">
+          <caret line="317" column="73" lean-forward="true" selection-start-line="303" selection-start-column="64" selection-end-line="317" selection-end-column="73" />
+          <folding>
+            <element signature="e#0#41#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/akademik/mahasiswa_bekerja.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="56">
+          <caret line="565" column="60" selection-start-line="565" selection-start-column="60" selection-end-line="565" selection-end-column="60" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/akademik/mahasiswa_nonaktif.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="20">
+          <caret line="39" column="50" selection-end-line="1109" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/akademik/mahasiswa_pindah.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="37">
+          <caret line="39" column="58" selection-start-line="39" selection-start-column="58" selection-end-line="39" selection-end-column="58" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/admin/Pendaftaran.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="299">
+          <caret line="346" column="24" lean-forward="true" selection-start-line="346" selection-start-column="24" selection-end-line="346" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/admin/tambah_aset.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="131">
+          <caret line="574" column="22" lean-forward="true" selection-start-line="574" selection-start-column="22" selection-end-line="578" selection-end-column="29" />
+          <folding>
+            <element signature="e#0#41#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/admin/Tagihan.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="120">
+          <caret line="904" column="36" lean-forward="true" selection-start-line="904" selection-start-column="36" selection-end-line="908" selection-end-column="47" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/keuangan/transaksi.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="262">
+          <caret line="682" column="40" lean-forward="true" selection-start-line="678" selection-start-column="36" selection-end-line="682" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/admin/Approve.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="454">
+          <caret line="838" column="66" selection-start-line="838" selection-start-column="66" selection-end-line="838" selection-end-column="66" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/mahasiswa/Pembayaran.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="250">
+          <caret line="151" column="14" lean-forward="true" selection-start-line="146" selection-start-column="12" selection-end-line="151" selection-end-column="14" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/owner/Kampus.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="164">
+          <caret line="211" column="12" selection-start-line="211" selection-start-column="8" selection-end-line="211" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/views/user/keuangan/daftar_transaksi.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="45">
+          <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
+          <folding>
+            <element signature="e#0#39#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>

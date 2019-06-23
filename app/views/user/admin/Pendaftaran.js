@@ -19,7 +19,7 @@ class Pendaftaran extends Component {
 
     this.state = {
       jurusans: [],
-      kampus: [],
+      kampus: {},
       namaKwintansi: "",
       pendaftar,
       check: false,
@@ -68,7 +68,9 @@ class Pendaftaran extends Component {
   componentDidMount = () => {
     const self = this;
 
-    fetch(BASE_URL + "/api/kampus/", {
+    let kampus = window.sessionStorage.getItem("kampus_id")
+
+    fetch(BASE_URL + `/api/kampus/${kampus}/`, {
       method: "get",
       headers: {
         Authorization: "JWT " + window.sessionStorage.getItem("token")
@@ -79,7 +81,7 @@ class Pendaftaran extends Component {
       })
       .then(function(data) {
         self.setState({
-          kampus: data.results
+          kampus: data
         });
       });
   };
@@ -344,7 +346,11 @@ class Pendaftaran extends Component {
                         <div className="col-md-4">
                           <p style={{ textAlign: "center" }}>
                             <b>
-                              Mataram, {moment(new Date()).format("DD-MM-YYYY")}
+                              {this.state.check
+                                  ? this.state.kwitansi.transaksi[0].kwitansi[0].kampus_info.kota
+                                  : null}, {moment(this.state.check
+                                  ? this.state.kwitansi.transaksi[0].kwitansi[0].tanggal
+                                  : null).format("DD-MM-YYYY")}
                             </b>
                           </p>
                         </div>
@@ -397,9 +403,9 @@ class Pendaftaran extends Component {
                           </p>
                         </div>
                         <p style={{ textAlign: "center" }}>
-                          Kampus : Jl. Pejanggik 60 Pajang Timur, Mataram, Tlp.
-                          0370-632437 <br />
-                          e-mail : lpknmataram@yahoo.com
+                          Kampus : {this.state.kampus.alamat}, {this.state.kampus.kota}
+                          <br />
+                          e-mail : {this.state.kampus.email}
                         </p>
                       </div>
                     </div>

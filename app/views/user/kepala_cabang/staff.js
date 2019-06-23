@@ -115,6 +115,10 @@ class staff extends Component {
                                         	<div className="col-sm-9">
 			                                    <input 
 		                                    		type="text" 
+		                                    		value={this.state.selectedNama}
+		                                    		onChange={(e) => {
+		                                    			this.setState({selectedNama: e.target.value})
+		                                    		}}
 		                                    		disabled="" 
 		                                    		placeholder="Nama staff"
 		                                    		className="form-control"/>
@@ -146,7 +150,7 @@ class staff extends Component {
 										        </thead>
 										        <tbody>
 										        {
-										        	this.state.staffs.filter(staff => staff.kampus_info.id == this.state.selectedJurusan)
+										        	this.state.staffs.filter(staff => staff.kampus_info.id == this.state.selectedJurusan && staff.nama.toLowerCase().includes(this.state.selectedNama))
 										        	.map((staff, key) => 
 
 										        		<tr key={key}>
@@ -193,7 +197,7 @@ class staff extends Component {
 				                                	this.state.staff.foto != null ?
 				                                	<img alt="image" width="50%" style={{'borderRadius':'50%', 'display':'block', 'margin':'0 auto'}} className="img-fluid"  src={this.state.staff.foto}/>
 				                                	:
-				                                	<img alt="image" width="50%" style={{'borderRadius':'50%', 'display':'block', 'margin':'0 auto'}} className="img-fluid"  src="http://www.personalbrandingblog.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640-300x300.png"/>
+				                                	<img alt="image" width="50%" style={{'borderRadius':'50%', 'display':'block', 'margin':'0 auto'}} className="img-fluid"  src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Circle-icons-profile.svg"/>
 				                                }
 				                            </div>
 				                            <div className="ibox-content profile-content">

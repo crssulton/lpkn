@@ -15,6 +15,7 @@ class Akademik extends Component {
             staffsBaru: {},
             add: true,
             addForm: true,
+            selectedNama:"",
             jurusans: [],
             kampus: []
         }
@@ -100,7 +101,7 @@ class Akademik extends Component {
                         	data.foto != null ?
                         	<img alt="image" width="50%" style={{'borderRadius':'50%', 'display':'block', 'margin':'0 auto'}} className="img-fluid"  src={data.foto}/>
                         	:
-                        	<img alt="image" width="50%" style={{'borderRadius':'50%', 'display':'block', 'margin':'0 auto'}} className="img-fluid"  src="http://www.personalbrandingblog.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640-300x300.png"/>
+                        	<img alt="image" width="50%" style={{'borderRadius':'50%', 'display':'block', 'margin':'0 auto'}} className="img-fluid"  src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Circle-icons-profile.svg"/>
                         }
                         <br/>
 			    		<table className="table table-striped">
@@ -197,6 +198,10 @@ class Akademik extends Component {
 			                                    <input 
 		                                    		type="text" 
 		                                    		disabled="" 
+		                                    		value={this.state.selectedNama}
+		                                    		onChange={(e) => {
+		                                    			this.setState({selectedNama: e.target.value})
+		                                    		}}
 		                                    		placeholder="Nama Akademik"
 		                                    		className="form-control"/>
 		                                    </div>
@@ -235,7 +240,7 @@ class Akademik extends Component {
 					                            </thead>
 					                            <tbody>
 					                            {
-					                            	this.state.staffs.filter(data => data.role == 5).map((data, key) =>
+					                            	this.state.staffs.filter(x => x.nama.toLowerCase().includes(this.state.selectedNama) && x.role == 5).map((data, key) =>
 					                            		<tr key={key}>
 							                                <td>{data.nama.toUpperCase()}</td>
 							                                <td>{data.jenis_kelamin}</td>

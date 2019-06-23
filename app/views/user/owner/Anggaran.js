@@ -372,18 +372,36 @@ class Transaksi extends Component {
                                         
                                       </div>
                                   </div>
+                                  <div className="row">
+                                    <div className="col-md-12">
+                                      <table style={{width: '100%'}}>
+                                        <tr>
+                                          <td style={{width: '20%'}}>Nama Pengajuan</td>
+                                          <td>: {this.state.pengajuan.nama}</td>
+                                        </tr>
+                                        <tr>
+                                          <td>Nominal</td>
+                                          <td>: Rp. {this.formatNumber(this.state.pengajuan.harga)}</td>
+                                        </tr>
+                                        <tr>
+                                          <td>Sisa</td>
+                                          <td>: Rp. {this.formatNumber(this.state.pengajuan.sisa)}</td>
+                                        </tr>
+                                      </table>
+                                    </div>
+                                  </div>
                                   <div className="hr-line-dashed"></div>
                                     {
                                       this.state.loading ?
                                     <div className="spiner-example">
-                              <div className="sk-spinner sk-spinner-double-bounce">
-                                <div className="sk-double-bounce1" />
-                                <div className="sk-double-bounce2" />
-                              </div>
-                            </div>
-                            :
+                                    <div className="sk-spinner sk-spinner-double-bounce">
+                                      <div className="sk-double-bounce1" />
+                                      <div className="sk-double-bounce2" />
+                                    </div>
+                                  </div>
+                                  :
                                   <div>
-                      <table className="table table-striped" align="right">
+                                    <table className="table table-striped" align="right">
                                       <thead>
                                       <tr>
                                         <th style={{'width':'5%'}}>KODE</th>

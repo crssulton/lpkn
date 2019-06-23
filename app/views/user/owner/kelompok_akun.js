@@ -15,7 +15,8 @@ class Kelompok_akun extends Component {
             add: true,
             addForm: true,
             jurusans: [],
-            editkelompok_account : {}
+            editkelompok_account : {},
+            selectedNama: ""
         }
     }
 
@@ -231,6 +232,9 @@ class Kelompok_akun extends Component {
 			                                    <input 
 		                                    		type="text" 
 		                                    		disabled="" 
+		                                    		onChange={(e) => {
+		                                    			this.setState({selectedNama: e.target.value})
+		                                    		}}
 		                                    		placeholder="Nama Kelompok Akun"
 		                                    		className="form-control"/>
 		                                    </div>
@@ -258,7 +262,9 @@ class Kelompok_akun extends Component {
 					                            </thead>
 					                            <tbody>
 					                            {
-					                            	this.state.kelompok_account.map((data, key) =>
+					                            	this.state.kelompok_account
+					                            	.filter(x => x.nama.toLowerCase().includes(this.state.selectedNama))
+					                            	.map((data, key) =>
 					                            		<tr>
 					                            			<td>{key+1}</td>
 							                                <td>{data.kode}</td>

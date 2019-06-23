@@ -14,7 +14,7 @@ class dosen extends Component {
             key: null,
             profil: false,
             jurusans: [],
-            selectedStatus: ''
+            selectedStatus: '',
         }
     }
 
@@ -104,6 +104,10 @@ class dosen extends Component {
                                         	<div className="col-sm-9">
 			                                    <input 
 		                                    		type="text" 
+		                                    		value={this.state.selectedNama}
+		                                    		onChange={(e) => {
+		                                    			this.setState({selectedNama: e.target.value})
+		                                    		}}
 		                                    		disabled="" 
 		                                    		placeholder="Nama dosen"
 		                                    		className="form-control"/>
@@ -135,7 +139,7 @@ class dosen extends Component {
 										        </thead>
 										        <tbody>
 										        {
-										        	this.state.dosens.filter(dosen => dosen.kampus_info.id == this.state.selectedJurusan)
+										        	this.state.dosens.filter(dosen => dosen.kampus_info.id == this.state.selectedJurusan && dosen.nama.toLowerCase().includes(this.state.selectedNama))
 										        	.map((dosen, key) => 
 
 										        		<tr key={key}>
@@ -182,7 +186,7 @@ class dosen extends Component {
 				                                	this.state.dosen.foto != null ?
 				                                	<img alt="image" width="50%" style={{'borderRadius':'50%', 'display':'block', 'margin':'0 auto'}} className="img-fluid"  src={this.state.dosen.foto}/>
 				                                	:
-				                                	<img alt="image" width="50%" style={{'borderRadius':'50%', 'display':'block', 'margin':'0 auto'}} className="img-fluid"  src="http://www.personalbrandingblog.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640-300x300.png"/>
+				                                	<img alt="image" width="50%" style={{'borderRadius':'50%', 'display':'block', 'margin':'0 auto'}} className="img-fluid"  src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Circle-icons-profile.svg"/>
 				                                }
 				                            </div>
 				                            <div className="ibox-content profile-content">
@@ -232,6 +236,14 @@ class dosen extends Component {
 											        <td><b>Keterangan</b></td>
 													<td>: {this.state.dosen.keterangan}</td>
 											    </tr>
+												<tr>
+													<td><b>Ijazah</b></td>
+													<td>: <a href={this.state.dosen.ijazah}>Unduh File</a> </td>
+												</tr>
+												<tr>
+													<td><b>Sertifikat</b></td>
+													<td>: <a href={this.state.dosen.sertifikat}>Unduh File</a></td>
+												</tr>
 											</tbody>
 											</table>
 

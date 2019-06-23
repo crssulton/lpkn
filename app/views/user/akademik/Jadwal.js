@@ -4,6 +4,7 @@ import FullCalendar from 'fullcalendar-reactwrapper';
 import { Link } from 'react-router';
 import moment from 'moment'
 import {BASE_URL} from '../../../config/config.js'
+import swal from 'sweetalert';
 
 class Jadwal extends Component {
     constructor(props) {
@@ -31,7 +32,10 @@ class Jadwal extends Component {
             eventSelected: {},
             jurusans: [],
             listDay: [],
-            kelas: []
+            absensi: [],
+            kelas: [],
+            selectedJurusan: "",
+            selectedMatkul: ""
         }
     }
 
@@ -51,33 +55,6 @@ class Jadwal extends Component {
             })
         });
 
-        fetch(BASE_URL + '/api/kelas/', {
-            method: 'get',
-            headers: {
-                'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
-            }
-        }).then(function(response) {
-            return response.json();
-        }).then(function(data) {
-            self.setState({
-                kelas: data.results
-            })
-        });
-
-
-        fetch(BASE_URL + '/api/dosen/', {
-            method: 'get',
-            headers: {
-                'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
-            }
-        }).then(function(response) {
-            return response.json();
-        }).then(function(data) {
-            self.setState({
-                dosens: data.results
-            })
-        });
-
         fetch(BASE_URL + '/api/ruangan/', {
             method: 'get',
             headers: {
@@ -91,7 +68,7 @@ class Jadwal extends Component {
             })
         });
 
-        fetch(BASE_URL + '/api/mata-kuliah/', {
+        fetch(BASE_URL + '/api/dosen/', {
             method: 'get',
             headers: {
                 'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
@@ -100,7 +77,7 @@ class Jadwal extends Component {
             return response.json();
         }).then(function(data) {
             self.setState({
-                matkuls: data.results
+                dosens: data.results
             })
         });
 
@@ -119,6 +96,40 @@ class Jadwal extends Component {
 
     }
 
+    getKelas = () => {
+        const self = this
+        fetch(BASE_URL + '/api/kelas/?jurusan=' + this.state.selectedJurusan, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+            }
+        }).then(function(response) {
+            return response.json();
+        }).then(function(data) {
+            self.setState({
+                kelas: data.results
+            })
+        });
+    }
+
+    getDosen = () => {
+        const self = this
+        fetch(BASE_URL + `/api/absensi/?matkulid=${this.state.jadwalBaru.mata_kuliah}&kelas=${this.state.jadwalBaru.kelas}`, {
+            method: 'get',
+            headers: {
+                'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+            }
+        }).then(function(response) {
+            return response.json();
+        }).then(function(data) {
+            let jadwalBaru = self.state.jadwalBaru
+            jadwalBaru.dosen = data.results.find(x => x.mata_kuliah == self.state.jadwalBaru.mata_kuliah && x.kelas == self.state.jadwalBaru.kelas).dosen
+            self.setState({
+                jadwalBaru
+            })
+        });
+    }
+
     addJadwal = () => {
         const self = this
         let toggle = 0
@@ -134,7 +145,6 @@ class Jadwal extends Component {
             newJadwal.title = $("#namaMatkul option:selected").text()
             newJadwal.start = moment(data).format('YYYY-MM-DD')
             
-            console.log(JSON.stringify(jadwalBaru))
             fetch(BASE_URL + '/api/jadwal/', {
                 method: 'post',
                 headers: {
@@ -208,13 +218,77 @@ class Jadwal extends Component {
             });
           }
         });
+    } 
+
+    getMatkul = () => {
+        const self = this
+        fetch(BASE_URL + `/api/mata-kuliah/?jurusan=${this.state.jadwalBaru.jurusan}`, {
+            method: 'get',
+            headers: {
+                'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+            }
+        }).then(function(response) {
+            return response.json();
+        }).then(function(data) {
+            self.setState({
+                matkuls: data.results
+            })
+        });
     }
 
-    onChangeMatkul = (e) => {
+    onChangeJurusan = (e) => {
+        const self = this
+
         let jadwalBaru = {}
         jadwalBaru = this.state.jadwalBaru
-        jadwalBaru.mata_kuliah = e.target.value
-        this.setState({jadwalBaru}) 
+        jadwalBaru.jurusan = e.target.value
+        this.setState({
+            jadwalBaru,
+            selectedJurusan: e.target.value
+        }, () => {
+            self.getMatkul()
+            self.getKelas()
+        }) 
+    }  
+
+    onChangeMatkul = (e) => {
+        const self = this
+        let value = e.target.value
+        let jadwalBaru = {}
+        jadwalBaru = this.state.jadwalBaru
+
+        let id = value
+
+        fetch(BASE_URL + `/api/absensi/?matkulid=${id}`, {
+            method: 'get',
+            headers: {
+                'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+            }
+        }).then(function(response) {
+            return response.json();
+        }).then(function(data) {
+            if (data.results.length != 0) {
+                jadwalBaru.mata_kuliah  = value
+                self.setState({
+                    jadwalBaru,
+                    selectedMatkul: value
+                })  
+            }else{
+                swal({
+                  icon: 'warning',
+                  title: 'Mata Kuliah Belum Dibuatkan Absensi !'    
+                })
+
+                jadwalBaru.mata_kuliah  = ""
+                jadwalBaru.kelas  = ""
+                jadwalBaru.dosen  = ""
+                self.setState({
+                    jadwalBaru,
+                    selectedMatkul: null
+                }) 
+            }
+        });
+        
     }
 
     onChangeJamMulai = (e) => {
@@ -242,7 +316,9 @@ class Jadwal extends Component {
         let jadwalBaru = {}
         jadwalBaru = this.state.jadwalBaru
         jadwalBaru.kelas = e.target.value
-        this.setState({jadwalBaru}) 
+        this.setState({
+            jadwalBaru
+        }, () => this.getDosen()) 
     }
 
     onChangeDosen = (e) => {
@@ -251,12 +327,7 @@ class Jadwal extends Component {
         jadwalBaru.dosen = e.target.value
         this.setState({jadwalBaru}) 
     }
-    onChangeJurusan = (e) => {
-        let jadwalBaru = {}
-        jadwalBaru = this.state.jadwalBaru
-        jadwalBaru.jurusan = e.target.value
-        this.setState({jadwalBaru}) 
-    }
+
     onChangeRuangan = (e) => {
         let jadwalBaru = {}
         jadwalBaru = this.state.jadwalBaru
@@ -308,22 +379,11 @@ class Jadwal extends Component {
                                     <h5>Input Jadwal</h5>
                                 </div>
                                 <div className="ibox-content">
-                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Mata Kuliah</label>
-                                        <div className="col-lg-10">
-                                            <select id="namaMatkul" className="form-control m-b" name="account" onChange={this.onChangeMatkul}>
-                                                <option >Pilih Mata Kuliah</option>
-                                                {
-                                                    this.state.matkuls.map((matkul, key) => 
-                                                        <option key={key} value={matkul.id}>{matkul.nama}</option>
-                                                    )
-                                                }
-                                            </select>
-                                        </div>
-                                    </div>
                                     <div className="form-group row"><label className="col-lg-2 col-form-label">Jurusan</label>
                                         <div className="col-lg-10">
                                             <select
                                                 onChange={this.onChangeJurusan}
+                                                value={this.state.jadwalBaru.jurusan}
                                                 className="form-control">
                                                 <option value="">Pilih Jurusan</option>
                                                 {
@@ -334,15 +394,29 @@ class Jadwal extends Component {
                                             </select>
                                         </div>
                                     </div>
+                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Mata Kuliah</label>
+                                        <div className="col-lg-10">
+                                            <select id="namaMatkul" className="form-control m-b" value={this.state.jadwalBaru.mata_kuliah} name="account" onChange={this.onChangeMatkul}>
+                                                <option value="">Pilih Mata Kuliah</option>
+                                                {
+                                                    this.state.matkuls.map((matkul, key) => 
+                                                        <option key={key} value={matkul.id}>{matkul.nama}</option>
+                                                    )
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
                                     <div className="form-group row"><label className="col-lg-2 col-form-label">Kelas</label>
                                         <div className="col-lg-10">
                                             <select
                                                 onChange={this.onChangeKelas}
-                                                className="form-control">
+                                                className="form-control"
+                                                value={this.state.jadwalBaru.kelas} 
+                                                >
                                                 <option value="">Pilih Kelas</option>
                                                 {
                                                     this.state.kelas.filter(data => data.jurusan_info.id == this.state.jadwalBaru.jurusan).map((kelas, key) => 
-                                                        <option key={key} value={kelas.id}>{kelas.nama}</option>
+                                                        <option key={key} value={kelas.id}>{kelas.nama} | Angkatan - {kelas.angkatan}</option>
                                                     )
                                                 }
                                             </select>
@@ -381,8 +455,13 @@ class Jadwal extends Component {
                                     </div>
                                     <div className="form-group row"><label className="col-lg-2 col-form-label">Dosen</label>
                                         <div className="col-lg-10">
-                                            <select value={this.state.jadwalBaru.dosen} onChange={this.onChangeDosen} className="form-control m-b" name="account">
-                                                <option>Pilih Dosen</option>
+                                            <select 
+                                                value={this.state.jadwalBaru.dosen} 
+                                                onChange={this.onChangeDosen} 
+                                                disabled="disabled"
+                                                className="form-control m-b" 
+                                                name="account">
+                                                <option value="">Pilih Dosen</option>
                                                 {
                                                     this.state.dosens.map((dosen, key) => 
                                                         <option key={key} value={dosen.id}>{dosen.nama}</option>

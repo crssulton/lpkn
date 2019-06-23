@@ -23,7 +23,7 @@ class Calon_Mahasiswa extends Component {
       mahasiswas: [],
       mahasiswa,
       jurusans: [],
-      kampus: [],
+      kampus: {},
       kwitansi: [],
       calon: {},
       check: false,
@@ -57,22 +57,8 @@ class Calon_Mahasiswa extends Component {
 
   componentDidMount() {
     const self = this;
-    fetch(BASE_URL + "/api/mahasiswa/?kampus=1", {
-      method: "get",
-      headers: {
-        Authorization: "JWT " + window.sessionStorage.getItem("token")
-      }
-    })
-      .then(function(response) {
-        return response.json();
-      })
-      .then(function(data) {
-        console.log(data)
-        self.setState({
-          mahasiswas: data,
-          loading: !self.state.loading
-        });
-      });
+    
+    this.getCalonMahasiswa()
 
     fetch(BASE_URL + "/api/jurusan/", {
       method: "get",
@@ -89,7 +75,9 @@ class Calon_Mahasiswa extends Component {
         });
       });
 
-    fetch(BASE_URL + "/api/kampus/", {
+    let kampus = window.sessionStorage.getItem("kampus_id")
+
+    fetch(BASE_URL + `/api/kampus/${kampus}/`, {
       method: "get",
       headers: {
         Authorization: "JWT " + window.sessionStorage.getItem("token")
@@ -100,7 +88,30 @@ class Calon_Mahasiswa extends Component {
       })
       .then(function(data) {
         self.setState({
-          kampus: data.results
+          kampus: data
+        });
+      });
+  }
+
+  getCalonMahasiswa = () => {
+    const self = this;
+
+    this.setState({loading: true})
+
+    fetch(BASE_URL + "/api/mahasiswa/?calon=1", {
+      method: "get",
+      headers: {
+        Authorization: "JWT " + window.sessionStorage.getItem("token")
+      }
+    })
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(data) {
+        console.log(data)
+        self.setState({
+          mahasiswas: data,
+          loading: false
         });
       });
   }
@@ -143,11 +154,11 @@ class Calon_Mahasiswa extends Component {
     // this.exportData();
     key.tahun_angkatan = key.tahun_angkatan == null ? moment(new Date()).format("YYYY") : key.tahun_angkatan
     if (key.angkatan == null || key.tahun_angkatan == null) {
-      toastr.error("Angkatan & Tahun Angkatan tidak boleh kosong", "Gagal ! ");
+      toastr.warning("Angkatan & Tahun Angkatan tidak boleh kosong", "Gagal ! ");
     } else {
       if (key.dp != null) {
         if (key.account == null || key.account_tujuan == null) {
-          toastr.error("Akun & Akun Tujuan tidak boleh kosong", "Gagal ! ");
+          toastr.warning("Akun & Akun Tujuan tidak boleh kosong", "Gagal ! ");
           return
         }
       }
@@ -206,8 +217,9 @@ class Calon_Mahasiswa extends Component {
       .then(function(response) {
         if (response.status == 200) {
           let mahasiswas = self.state.mahasiswas.filter(data => data.id != key.id)
-          self.setState({ profil: false, check: false, mahasiswas});
+          self.setState({ profil: false, check: false, mahasiswas, loadingApprove: false});
           toastr.success("Mahasiswa telah diterima", "Sukses ! ");
+          self.getCalonMahasiswa()
         } else {
           toastr.warning("Mahasiswa gagal diterima", "Gagal ! ");
         }
@@ -233,6 +245,31 @@ class Calon_Mahasiswa extends Component {
         }
       });
   };
+
+  onFilterData = ()=> {
+    const self = this;
+
+    this.setState({loading: true})
+
+    let pendaftar = this.state.selectedPendaftar
+
+    fetch(BASE_URL + "/api/mahasiswa/?mahasiswa=" + pendaftar, {
+      method: "get",
+      headers: {
+        Authorization: "JWT " + window.sessionStorage.getItem("token")
+      }
+    })
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(data) {
+        console.log(data)
+        self.setState({
+          mahasiswas: data.filter(x => x.calon == true),
+          loading: false
+        });
+      });
+  }
 
   handleDeletemahasiswa = key => {
     const self = this;
@@ -318,6 +355,52 @@ class Calon_Mahasiswa extends Component {
                   </h5>
                 </div>
                 <div className="ibox-content">
+                  <div className="row">
+                    <div className="col-lg-4">
+                      <label className="form-label">Nama Calon Mahasiswa: </label>
+                    </div>
+                    <div className="col-lg-3" />
+                  </div>
+                  <div className="row">
+                    <div className="col-lg-5">
+                      <input 
+                          type="text"
+                          placeholder="Nama Calon Mahasiswa"
+                          className="form-control"
+                            value={this.state.selectedPendaftar}
+                            onChange={e => {
+                              this.setState({ selectedPendaftar: e.target.value });
+                            }}
+                      />
+                    </div>
+                    
+                    <div className="col-lg-6">
+                      <button
+                        onClick={this.onFilterData}
+                        className="btn btn-info"
+                        type="button"
+                      >
+                        <i className="fa fa-filter" /> Filter
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          const self = this
+                          this.setState({
+                            selectedPendaftar: ""
+                          });
+                          this.getCalonMahasiswa()
+                        }}
+                        style={{ marginLeft: "5px" }}
+                        className="btn btn-warning"
+                        type="button"
+                      >
+                        <i className="fa fa-close" /> Reset
+                      </button>
+                    </div>
+                  </div>
+                  <div className="hr-line-dashed"></div>
+
                   <div style={{ display: "none" }}>
                     <div className="row" id="print_data">
                       <img
@@ -437,10 +520,7 @@ class Calon_Mahasiswa extends Component {
                           >
                             :{" "}
                             {this.state.mahasiswa.jurusan != null
-                              ? this.state.jurusans.find(
-                                  data =>
-                                    data.id == this.state.mahasiswa.jurusan
-                                ).nama
+                              ? this.state.mahasiswa.jurusan_info.nama
                               : null}
                           </td>
                         </tr>
@@ -464,7 +544,11 @@ class Calon_Mahasiswa extends Component {
                         <div className="col-md-4">
                           <p style={{ textAlign: "center" }}>
                             <b>
-                              Mataram, {moment(new Date()).format("DD-MM-YYYY")}
+                              {this.state.check
+                                  ? this.state.kwitansi.transaksi[0].kwitansi[0].kampus_info.kota
+                                  : null}, {moment(this.state.check
+                                ? this.state.kwitansi.transaksi[0].kwitansi[0].tanggal
+                                : null).format("DD-MM-YYYY")}
                             </b>
                           </p>
                         </div>
@@ -517,9 +601,9 @@ class Calon_Mahasiswa extends Component {
                           </p>
                         </div>
                         <p style={{ textAlign: "center" }}>
-                          Kampus : Jl. Pejanggik 60 Pajang Timur, Mataram, Tlp.
-                          0370-632437 <br />
-                          e-mail : lpknmataram@yahoo.com
+                          Kampus : {this.state.kampus.alamat}, {this.state.kampus.kota}
+                          <br />
+                          e-mail : {this.state.kampus.email}
                         </p>
                       </div>
                     </div>
@@ -550,14 +634,7 @@ class Calon_Mahasiswa extends Component {
                               <tr key={key}>
                                 <td>{key + 1}</td>
                                 <td>{mahasiswa.nama}</td>
-                                <td>
-                                  {this.state.jurusans.length === 0
-                                    ? null
-                                    : this.state.jurusans.find(
-                                        jurusan =>
-                                          jurusan.id == mahasiswa.jurusan
-                                      ).nama}
-                                </td>
+                                <td>{mahasiswa.jurusan_info.nama}</td>
                                 <td>
                                   <center>
                                     <button
@@ -1047,6 +1124,25 @@ class Calon_Mahasiswa extends Component {
                           </div>
                           <div role="tabpanel" id="tab-3" className="tab-pane">
                             <div className="panel-body">
+                              <div className="form-group row">
+                                <label className="col-lg-3 col-form-label">
+                                  Keterangan
+                                </label>
+                                <div className="col-lg-9">
+                                  <input
+                                      onChange={e => {
+                                        let mahasiswa = [];
+                                        mahasiswa = this.state.mahasiswa;
+                                        mahasiswa.keterangan = e.target.value;
+                                        this.setState({ mahasiswa });
+                                      }}
+                                      value={this.state.mahasiswa.keterangan}
+                                      type="text"
+                                      className="form-control m-b"
+                                      name="account"
+                                  />
+                                </div>
+                              </div>
                               <div className="form-group row">
                                 <label className="col-lg-3 col-form-label">
                                   Jurusan

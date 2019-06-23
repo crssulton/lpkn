@@ -172,7 +172,7 @@ class Absensi extends Component {
 			if(data.id != null || data.id != undefined){
 				addButton[0].removeAttribute("disabled")
 				let absensi = []
-
+				
 	        	absensi = self.state.absensi
 	        	absensi.push(data)
 
@@ -395,7 +395,7 @@ class Absensi extends Component {
                                                     <option value="">Pilih Kelas</option>
                                                     {
                                                         this.state.kelas.map((data, i) => 
-                                                            <option key={i} value={data.id}>{data.nama}</option>
+                                                            <option key={i} value={data.id}>{data.nama} - {data.jurusan_info.nama} ( {data.angkatan} )</option>
                                                         )
                                                     }
                                                 </select>
@@ -446,7 +446,7 @@ class Absensi extends Component {
 	                                    <div className="form-group row"><label className="col-lg-3 col-form-label">Kelas</label>
 	                                        <div className="col-lg-9">
                                                 <select 
-                                                    value={this.state.kelas.filter(data => data.id === this.state.selected)[0].kelas}
+                                                    value={this.state.absensi.filter(data => data.id === this.state.selected)[0].kelas}
                                                     onChange={this.handleChangeKelas}
                                                     className="form-control m-b">
                                                     <option value="">Pilih Kelas</option>

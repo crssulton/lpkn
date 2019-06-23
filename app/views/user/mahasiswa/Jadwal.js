@@ -139,6 +139,7 @@ class Jadwal extends Component {
                             <th>MATA KULIAH</th>
                             <th>RUANGAN</th>
                             <th>WAKTU</th>
+                            <th>DOSEN</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -178,6 +179,7 @@ class Jadwal extends Component {
                                     " - " +
                                     jadwal.jam_selesai}
                                 </td>
+                                <td>{jadwal.dosen_info.nama}</td>
                               </tr>
                             ))}
                         </tbody>

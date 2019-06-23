@@ -83,7 +83,7 @@ class Login extends Component {
                 </div><br/>
                 <form onSubmit={this.handleSubmit}>
                   <div className="form-group">
-                      <input type="text" className="form-control" placeholder="Username" required="" onChange={this.handleUsername}/>
+                      <input type="text" autoFocus={true} className="form-control" placeholder="Username" required="" onChange={this.handleUsername}/>
                   </div>
                   <div className="form-group">
                       <input type="password" className="form-control" placeholder="Password" required="" onChange={this.handlePassword}/>
@@ -93,6 +93,10 @@ class Login extends Component {
                   <p className="text-muted text-center"><small>Tidak terdaftar sebagai mahasiswa?</small></p>
                   <Link to="registrasi" className="btn btn-sm btn-white btn-block"> Registrasi </Link>
                 </form>
+              </div>
+              <br/>
+              <div className="text-center">
+                <a className="text-muted text-center"><small>Unduh LPKN Mobile</small></a>
               </div>
             </div>
           </div>

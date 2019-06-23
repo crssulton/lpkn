@@ -34,7 +34,8 @@ class List_pendaftar extends Component {
       profil: false,
       key: null,
       loadingApprove: false,
-      account:[]
+      account:[],
+      kampus: {}
     };
   }
 
@@ -52,26 +53,8 @@ class List_pendaftar extends Component {
 
   componentDidMount() {
     const self = this;
-    fetch(BASE_URL + "/api/pendaftaran/?approved=0&online=1", {
-      method: "get",
-      headers: {
-        Authorization: "JWT " + window.sessionStorage.getItem("token")
-      }
-    })
-      .then(function(response) {
-        return response.json();
-      })
-      .then(function(data) {
-        console.log(data)
-        self.setState({
-          pendaftars: data,
-          numPage: data.num_pages,
-          dataCount: data.count,
-          next: data.next,
-          previous: data.previous,
-          loading: !self.state.loading
-        });
-      });
+    
+    this.getPendaftar()
 
     fetch(BASE_URL + "/api/jurusan/", {
       method: "get",
@@ -105,7 +88,9 @@ class List_pendaftar extends Component {
           });
         });
 
-    fetch(BASE_URL + "/api/kampus/", {
+    let kampus = window.sessionStorage.getItem("kampus_id")
+
+    fetch(BASE_URL + `/api/kampus/${kampus}/`, {
       method: "get",
       headers: {
         Authorization: "JWT " + window.sessionStorage.getItem("token")
@@ -116,7 +101,33 @@ class List_pendaftar extends Component {
       })
       .then(function(data) {
         self.setState({
-          kampus: data.results
+          kampus: data
+        });
+      });
+  }
+
+  getPendaftar = () => {
+    const self = this;
+
+    this.setState({loading: true})
+
+    fetch(BASE_URL + "/api/pendaftaran/?approved=0&online=1", {
+      method: "get",
+      headers: {
+        Authorization: "JWT " + window.sessionStorage.getItem("token")
+      }
+    })
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(data) {
+        self.setState({
+          pendaftars: data,
+          numPage: data.num_pages,
+          dataCount: data.count,
+          next: data.next,
+          previous: data.previous,
+          loading: false
         });
       });
   }
@@ -195,53 +206,105 @@ class List_pendaftar extends Component {
     const id = this.state.pendaftar.id
 
     let pendaftar = { ...this.state.pendaftar };
+
+    console.log(pendaftar.biaya_pendaftaran)
+
     if (pendaftar.biaya_pendaftaran == "true") {
-      pendaftar.biaya_pendaftaran_nominal = 250000;
-    }
-    
-    swal({
-      title: "Approve " + this.state.pendaftar.nama + " ?",
-      icon: "warning",
-      buttons: true,
-      dangerMode: true
-    }).then(willTerima => {
-      if (willTerima) {
-        self.setState({loadingApprove: true})
-        fetch(BASE_URL + "/api/pendaftaran/" + this.state.pendaftar.id + "/", {
-          method: "patch",
-          headers: {
-            Authorization: "JWT " + window.sessionStorage.getItem("token"),
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'
-          },
-          body: JSON.stringify(pendaftar)
-        })
-          .then(function(response) {
-            if (response.status == 200) {
-              self.handleTerimaCalon(id)
-            }
-            return response.json();
-          })
-          .then(function(data) {
-            console.log(JSON.stringify(data))
-            if (data.id != null) {
-              self.setState(
-                {
-                  kwitansi: data
-                },
-                () => {
-                  if (typeof(data.transaksi[0]) !== 'undefined'){
-                    self.setState({check: true})
-                    setTimeout(() => {
-                      self.exportData()
-                    }, 100)
-                  }
+        pendaftar.biaya_pendaftaran_nominal = 250000;
+
+        if(pendaftar.account_tujuan != null){
+        swal({
+          title: "Approve " + this.state.pendaftar.nama + " ?",
+          icon: "warning",
+          buttons: true,
+          dangerMode: true
+        }).then(willTerima => {
+          if (willTerima) {
+            self.setState({loadingApprove: true})
+            fetch(BASE_URL + "/api/pendaftaran/" + this.state.pendaftar.id + "/", {
+              method: "patch",
+              headers: {
+                Authorization: "JWT " + window.sessionStorage.getItem("token"),
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+              },
+              body: JSON.stringify(pendaftar)
+            })
+              .then(function(response) {
+                if (response.status == 200) {
+                  self.handleTerimaCalon(id)
                 }
-              );
-            }
-          });
+                return response.json();
+              })
+              .then(function(data) {
+
+                if (data.id != null) {
+                  self.setState(
+                    {
+                      kwitansi: data
+                    },
+                    () => {
+                      if (typeof(data.transaksi[0]) !== 'undefined'){
+                        self.setState({check: true})
+                        setTimeout(() => {
+                          self.exportData()
+                        }, 100)
+                      }
+                    }
+                  );
+                }
+              });
+          }
+        });
+      }else{
+        toastr.warning("Silahkan mengisi akun tujuan")
       }
-    });
+    }else{
+      swal({
+          title: "Approve " + this.state.pendaftar.nama + " ?",
+          icon: "warning",
+          buttons: true,
+          dangerMode: true
+        }).then(willTerima => {
+          if (willTerima) {
+            self.setState({loadingApprove: true})
+            fetch(BASE_URL + "/api/pendaftaran/" + this.state.pendaftar.id + "/", {
+              method: "patch",
+              headers: {
+                Authorization: "JWT " + window.sessionStorage.getItem("token"),
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+              },
+              body: JSON.stringify(pendaftar)
+            })
+              .then(function(response) {
+                if (response.status == 200) {
+                  self.handleTerimaCalon(id)
+                }
+                return response.json();
+              })
+              .then(function(data) {
+
+                if (data.id != null) {
+                  self.setState(
+                    {
+                      kwitansi: data
+                    },
+                    () => {
+                      if (typeof(data.transaksi[0]) !== 'undefined'){
+                        self.setState({check: true})
+                        setTimeout(() => {
+                          self.exportData()
+                        }, 100)
+                      }
+                    }
+                  );
+                }
+              });
+          }
+        });
+    }
+
   }
 
   handleTerimaCalon = key => {
@@ -256,32 +319,33 @@ class List_pendaftar extends Component {
         if (response.status == 201) {
           toastr.success("Calon mahasiswa berhasil ditambahkan", "Sukses ! ");
           let pendaftars = [];
+
           pendaftars = self.state.pendaftars.filter(data => data.id != key)
           self.setState({
             profil: false,
             loadingApprove: false,
             pendaftars
           });
+          self.getPendaftar()
         }
         return response.json();
       })
       .then(function(data) {
-        console.log(data)
-        // if (data.id != null) {
-        //   self.setState(
-        //     {
-        //       kwitansi: data
-        //     },
-        //     () => {
-        //       if (typeof(data.transaksi[0]) !== 'undefined'){
-        //         self.setState({check: true})
-        //         setTimeout(() => {
-        //           self.exportData()
-        //         }, 100)
-        //       }
-        //     }
-        //   );
-        // }
+        if (data.id != null) {
+          self.setState(
+            {
+              kwitansi: data
+            },
+            () => {
+              if (typeof(data.transaksi[0]) !== 'undefined'){
+                self.setState({check: true})
+                setTimeout(() => {
+                  self.exportData()
+                }, 100)
+              }
+            }
+          );
+        }
       });
   };
 
@@ -331,6 +395,34 @@ class List_pendaftar extends Component {
   formatNumber = num => {
     return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
   };
+
+  onFilterData = () => {
+    const self = this;
+
+    this.setState({loading: true})
+
+    let pendaftar = this.state.selectedPendaftar
+
+    fetch(BASE_URL + `/api/pendaftaran/?pendaftar=${pendaftar}`, {
+      method: "get",
+      headers: {
+        Authorization: "JWT " + window.sessionStorage.getItem("token")
+      }
+    })
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(data) {
+        self.setState({
+          pendaftars: data.filter(x => x.approved == false && x.online_register == true),
+          numPage: data.num_pages,
+          dataCount: data.count,
+          next: data.next,
+          previous: data.previous,
+          loading: false
+        });
+      });
+  }
 
   render() {
 
@@ -568,13 +660,59 @@ class List_pendaftar extends Component {
                           </p>
                         </div>
                         <p style={{ textAlign: "center" }}>
-                          Kampus : Jl. Pejanggik 60 Pajang Timur, Mataram, Tlp.
-                          0370-632437 <br />
-                          e-mail : lpknmataram@yahoo.com
+                          Kampus : {this.state.kampus.alamat}
+                          <br />
+                          e-mail : {this.state.kampus.email}
                         </p>
                       </div>
                     </div>
                   </div>
+
+                  <div className="row">
+                    <div className="col-lg-4">
+                      <label className="form-label">Nama Pendaftar: </label>
+                    </div>
+                    <div className="col-lg-3" />
+                  </div>
+                  <div className="row">
+                    <div className="col-lg-5">
+                      <input 
+                          type="text"
+                          placeholder="Nama Pendaftar"
+                          className="form-control"
+                            value={this.state.selectedPendaftar}
+                            onChange={e => {
+                              this.setState({ selectedPendaftar: e.target.value });
+                            }}
+                      />
+                    </div>
+                    
+                    <div className="col-lg-6">
+                      <button
+                        onClick={this.onFilterData}
+                        className="btn btn-info"
+                        type="button"
+                      >
+                        <i className="fa fa-filter" /> Filter
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          const self = this
+                          this.setState({
+                            selectedPendaftar: ""
+                          });
+                          this.getPendaftar()
+                        }}
+                        style={{ marginLeft: "5px" }}
+                        className="btn btn-warning"
+                        type="button"
+                      >
+                        <i className="fa fa-close" /> Reset
+                      </button>
+                    </div>
+                  </div>
+                  <div className="hr-line-dashed"></div>
 
                   {this.state.loading ? (
                     <div className="spiner-example">
