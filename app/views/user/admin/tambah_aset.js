@@ -388,7 +388,7 @@ class Tagihan extends Component {
           <div className="col-lg-10">
             <h2>Tambah Aset Kampus</h2>
             <ol className="breadcrumb">
-              Dashboard
+              Dashboard/
               <li className="breadcrumb-item active">
                 <strong>Tambah Aset</strong>
               </li>
@@ -409,18 +409,6 @@ class Tagihan extends Component {
                 </h5>
               </div>
               <div className="ibox-content">
-              <div className="form-group row"><label className="col-lg-2 col-form-label">Kode</label>
-                    <div className="col-lg-4">
-                        <input 
-                          type="text" 
-                          className="form-control m-b" 
-                          name="transaksi"
-                          value={this.state.transaksiBaru.kode}
-                          onChange={this.addtransaksiKode}
-                          />
-                    </div>
-                </div>
-
                 <div className="form-group row"><label className="col-lg-2 col-form-label">Akun Sumber</label>
                   <div className="col-lg-4">
                   <Select

@@ -55,6 +55,7 @@ class Mahasiswa extends Component {
                 return response.json();
             })
             .then(function (data) {
+                console.log(JSON.stringify(data))
                 self.setState({
                     mahasiswas: data,
                     loading: !self.state.loading
@@ -407,7 +408,7 @@ class Mahasiswa extends Component {
             <div>
                 <div className="row wrapper border-bottom white-bg page-heading">
                     <div className="col-lg-8">
-                        <h2>Daftar Mahasiswa</h2>
+                        <h2>Daftar Mahasiswa Tidak Aktif</h2>
                         <ol className="breadcrumb">
                             <li className="breadcrumb-item">Dashboard</li>
                             <li className="breadcrumb-item active">
@@ -555,7 +556,7 @@ class Mahasiswa extends Component {
                                                 </thead>
                                                 <tbody>
                                                 {this.state.mahasiswas
-                                                    .filter(x => x.calon == false)
+                                                    .filter(x => x.calon == false && x.lulus == false)
                                                     .map((mahasiswa, key) => (
                                                         <tr key={key}>
                                                             <td>{mahasiswa.nim}</td>
@@ -991,17 +992,6 @@ class Mahasiswa extends Component {
                                                     </button>
                                                 </div>
                                                 <div className="col-sm-6">
-                                                    {
-                                                        this.state.mahasiswa.sisa_bayar == 0 ?
-                                                            <button
-                                                                className="btn btn-success btn-block"
-                                                                type="button"
-                                                                onClick={this.updateStatusMahasiswa}
-                                                            >
-                                                                Lulus
-                                                            </button>
-                                                            : null
-                                                    }
 
                                                 </div>
                                             </div>
@@ -1063,7 +1053,7 @@ class Mahasiswa extends Component {
                             </thead>
                             <tbody>
                             {this.state.mahasiswas
-                                .filter(x => x.calon == false)
+                                .filter(x => x.calon == false && x.lulus == false)
                                 .map((data, key) => (
                                     <tr>
                                         <td>

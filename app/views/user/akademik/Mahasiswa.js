@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {BASE_URL} from "../../../config/config.js";
 import {Link} from "react-router";
+import swal from "sweetalert";
 
 class Mahasiswa extends Component {
     constructor(props) {
@@ -273,6 +274,7 @@ class Mahasiswa extends Component {
     updateStatusMahasiswa = () => {
         const self = this;
         let mahasiswa = this.state.mahasiswa;
+        console.log(mahasiswa.keterangan)
         let status = ""
         let kirim = {}
         if (
@@ -283,7 +285,7 @@ class Mahasiswa extends Component {
                 kirim = {
                     status : "aktif"
                 }
-            } else if (this.state.selectedStatus == "aktif") {
+            } else if (this.state.selectedStatus == "tidak_aktif") {
                 kirim = {
                     status: "tidak_aktif",
                     keterangan: mahasiswa.keterangan
@@ -389,6 +391,40 @@ class Mahasiswa extends Component {
                 });
         }
     };
+
+    updateLulusMahasiswa = () => {
+        let kirim = {
+            lulus: true
+        }
+        const self = this
+        swal({
+            title: "Luluskan Mahasiswa ?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    fetch(BASE_URL + '/api/mahasiswa/' + this.state.mahasiswa.id + "/", {
+                        method: 'patch',
+                        headers: {
+                            'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(kirim)
+                    }).then(function (response) {
+                        if (response.status == 200) {
+                            self.fetchBekerja()
+                            toastr.success("Mahasiswa telah lulus", "Sukses ! ");
+                            self.setState({selectedStatus: null, profil: false});
+                            self.fetchMahasiswa();
+                        } else toastr.warning("Data gagal diubah", "Gagal ! ");
+                    }).then(function (data) {
+
+                    });
+                }
+            });
+    }
 
     formatNumber = (num) => {
         return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
@@ -555,7 +591,7 @@ class Mahasiswa extends Component {
                                                 </thead>
                                                 <tbody>
                                                 {this.state.mahasiswas
-                                                    .filter(x => x.calon == false)
+                                                    .filter(x => x.calon == false && x.lulus == false)
                                                     .map((mahasiswa, key) => (
                                                         <tr key={key}>
                                                             <td>{mahasiswa.nim}</td>
@@ -768,9 +804,9 @@ class Mahasiswa extends Component {
                                                         <input
                                                             value={this.state.mahasiswa.keteranngan}
                                                             onChange={e => {
-                                                                let sendKeterangan = {...this.state.sendKeterangan};
-                                                                sendKeterangan.keterangan = e.target.value;
-                                                                this.setState({sendKeterangan});
+                                                                let mahasiswa = {...this.state.mahasiswa};
+                                                                mahasiswa.keterangan = e.target.value;
+                                                                this.setState({mahasiswa});
                                                             }}
                                                             type="text"
                                                             disabled=""
@@ -907,7 +943,7 @@ class Mahasiswa extends Component {
                                                     <td>
                                                         <b>Agama</b>
                                                     </td>
-                                                    <td>: {this.state.mahasiswa.agama.toUpperCase()}</td>
+                                                    <td>: {this.state.mahasiswa.agama}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
@@ -996,7 +1032,7 @@ class Mahasiswa extends Component {
                                                         <button
                                                             className="btn btn-success btn-block"
                                                             type="button"
-                                                            onClick={this.updateStatusMahasiswa}
+                                                            onClick={this.updateLulusMahasiswa}
                                                         >
                                                             Lulus
                                                         </button>
@@ -1063,7 +1099,7 @@ class Mahasiswa extends Component {
                             </thead>
                             <tbody>
                             {this.state.mahasiswas
-                                .filter(x => x.calon == false)
+                                .filter(x => x.calon == false && x.lulus == false)
                                 .map((data, key) => (
                                     <tr>
                                         <td>

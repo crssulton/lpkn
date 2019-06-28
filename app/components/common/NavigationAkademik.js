@@ -69,6 +69,9 @@ class Navigation extends Component {
                             <li className={this.activeRoute("/pindah")}>
                                 <Link to="/pindah"><span className="nav-label">Pindah Jurusan</span></Link>
                             </li>
+                            <li className={this.activeRoute("/lulus")}>
+                                <Link to="/lulus"><span className="nav-label">Alumni</span></Link>
+                            </li>
                         </ul>
                     </li>
                     <li className={this.activeRoute("/matkul")}>

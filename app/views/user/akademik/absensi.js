@@ -395,7 +395,7 @@ class Absensi extends Component {
                                                     <option value="">Pilih Kelas</option>
                                                     {
                                                         this.state.kelas.map((data, i) => 
-                                                            <option key={i} value={data.id}>{data.nama} - {data.jurusan_info.nama} ( {data.angkatan} )</option>
+                                                            <option key={i} value={data.id}>{data.nama} - {data.jurusan_info.nama} ( Angkatan  {data.angkatan} )</option>
                                                         )
                                                     }
                                                 </select>

@@ -60,6 +60,7 @@ import DaftarMahasiswaAkademik from '../views/user/akademik/Mahasiswa';
 import MahasiswaMagang from '../views/user/akademik/mahasiswa_magang';
 import MahasiswaBekerja from '../views/user/akademik/mahasiswa_bekerja';
 import MahasiswaNonaktif from '../views/user/akademik/mahasiswa_nonaktif';
+import MahasiswaLulus from '../views/user/akademik/mahasiswa_lulus';
 import MahasiswaPindah from '../views/user/akademik/mahasiswa_pindah';
 import MataKuliahAkademik from '../views/user/akademik/Mata_Kuliah';
 import JadwalAkademik from '../views/user/akademik/Jadwal';
@@ -232,6 +233,7 @@ if (window.sessionStorage.getItem('access') !== 'undefined' && window.sessionSto
                 <Route path="dashboard" component={DashboardAkademikView}> </Route>
                 <Route path="mahasiswa" component={DaftarMahasiswaAkademik}> </Route>
                 <Route path="nonaktif" component={MahasiswaNonaktif}> </Route>
+                <Route path="lulus" component={MahasiswaLulus}> </Route>
                 <Route path="bekerja" component={MahasiswaBekerja}> </Route>
                 <Route path="magang" component={MahasiswaMagang}> </Route>
                 <Route path="pindah" component={MahasiswaPindah}> </Route>

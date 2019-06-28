@@ -82,9 +82,9 @@ class RekapMahasiswa extends Component {
     onFilterData = () => {
     	const self = this
 
-    	let jurusan = this.state.selectedJurusan
-    	let kelas = this.state.selectedKelas
-    	let matkul = this.state.selectedMatkul
+    	let jurusan = this.state.selectedJurusan;
+    	let kelas = this.state.selectedKelas;
+    	let matkul = this.state.selectedMatkul;
 
     	if (this.state.selectedMatkul != "" && this.state.selectedJurusan != "" && this.state.selectedKelas != "") {
     		this.setState({loading:true})
@@ -97,6 +97,7 @@ class RekapMahasiswa extends Component {
 			}).then(function(response) {
 				return response.json();
 			}).then(function(data) {
+				console.log(JSON.stringify(data.results))
 				self.setState({
 					absensi: data.results
 				})
@@ -281,14 +282,16 @@ class RekapMahasiswa extends Component {
 								            <br/><br/>
                                         	<table className="table table-bordered">
                                         		<thead>
+													<tr>
+														<th rowSpan={2} style={{'width': '5%'}}>NIM</th>
+														<th rowSpan={2} style={{'width': '15%'}}>NAMA MAHASISWA</th>
+														<th colSpan={this.state.jadwal.length} style={{textAlign: 'center'}}>PERTEMUAN</th>
+													</tr>
                                         			<tr>
-	                                        			<th style={{'width': '5%'}}>NIM</th>
-	                                        			<th style={{'width': '15%'}}>NAMA MAHASISWA</th>
 	                                        			{
 	                                        				this.state.jadwal.map((data, key) =>
 	                                        					<th style={{'width': '5%'}}>
-	                                        						Pertemuan {key+1} <br/>
-	                                        						<small> ( {moment(data.start).format("DD/MM/YYYY")} )</small>
+	                                        						<small>{moment(data.start).format("DD/MM/YYYY")}</small>
 	                                        					</th>
 	                                        				)
 	                                        			}

@@ -37,7 +37,7 @@ class Mahasiswa extends Component {
             showModal:true,
             maxWidth:'1300',
             font_size:'8pt',
-            documentTitle:'DAFTAR MAHASISWA BEKERJA',
+            documentTitle:'DAFTAR MAHASISWA LULUS',
             targetStyles: ['*']
         })
     }
@@ -45,7 +45,7 @@ class Mahasiswa extends Component {
     componentDidMount() {
         const self = this;
 
-        fetch(BASE_URL + "/api/mahasiswa/?status=bekerja", {
+        fetch(BASE_URL + "/api/mahasiswa/?kampus=" + window.sessionStorage.getItem("kampus_id"), {
             method: "get",
             headers: {
                 Authorization: "JWT " + window.sessionStorage.getItem("token")
@@ -115,7 +115,7 @@ class Mahasiswa extends Component {
 
     fetchBekerja = () => {
         const self = this
-        fetch(BASE_URL + "/api/bekerja/?kampus=" + window.sessionStorage.getItem("kampus_id"), {
+        fetch(BASE_URL + "/api/bekerja/", {
             method: "get",
             headers: {
                 Authorization: "JWT " + window.sessionStorage.getItem("token")
@@ -126,7 +126,7 @@ class Mahasiswa extends Component {
             })
             .then(function (data) {
                 self.setState({
-                    bekerja: data
+                    bekerja: data.results
                 });
             });
     }
@@ -187,7 +187,7 @@ class Mahasiswa extends Component {
 
         this.setState({loading: true})
 
-        fetch(BASE_URL + "/api/mahasiswa/?status=bekerja", {
+        fetch(BASE_URL + "/api/mahasiswa/?kampus=" + window.sessionStorage.getItem("kampus_id"), {
             method: "get",
             headers: {
                 Authorization: "JWT " + window.sessionStorage.getItem("token")
@@ -407,7 +407,7 @@ class Mahasiswa extends Component {
             <div>
                 <div className="row wrapper border-bottom white-bg page-heading">
                     <div className="col-lg-8">
-                        <h2>Daftar Mahasiswa Bekerja</h2>
+                        <h2>Daftar Mahasiswa Alumni</h2>
                         <ol className="breadcrumb">
                             <li className="breadcrumb-item">Dashboard</li>
                             <li className="breadcrumb-item active">
@@ -555,7 +555,7 @@ class Mahasiswa extends Component {
                                                 </thead>
                                                 <tbody>
                                                 {this.state.mahasiswas
-                                                    .filter(x => x.calon == false && x.lulus == false)
+                                                    .filter(x => x.calon == false && x.lulus == true)
                                                     .map((mahasiswa, key) => (
                                                         <tr key={key}>
                                                             <td>{mahasiswa.nim}</td>
@@ -569,8 +569,8 @@ class Mahasiswa extends Component {
                                                                     ).nama}
                                                             </td>
                                                             <td>
-                                                                <span className="badge badge-warning">
-                                                                    BEKERJA
+                                                                <span className="badge badge-secondary">
+                                                                    LULUS
                                                                 </span>
                                                             </td>
                                                             <td>
@@ -992,7 +992,6 @@ class Mahasiswa extends Component {
                                                 </div>
                                                 <div className="col-sm-6">
 
-
                                                 </div>
                                             </div>
 
@@ -1027,6 +1026,16 @@ class Mahasiswa extends Component {
                                 <th
 
                                 >
+                                    TMPT LAHIR
+                                </th>
+                                <th
+
+                                >
+                                    TGL LAHIR
+                                </th>
+                                <th
+
+                                >
                                     JK
                                 </th>
                                 <th
@@ -1039,13 +1048,11 @@ class Mahasiswa extends Component {
                                 >
                                     ANGKATAN
                                 </th>
-                                <th>LOKASI</th>
-                                <th>TANGGAL</th>
                             </tr>
                             </thead>
                             <tbody>
                             {this.state.mahasiswas
-                                .filter(x => x.calon == false && x.lulus == false)
+                                .filter(x => x.calon == false && x.lulus == true)
                                 .map((data, key) => (
                                     <tr>
                                         <td>
@@ -1061,6 +1068,12 @@ class Mahasiswa extends Component {
                                             {data.alamat}
                                         </td>
                                         <td>
+                                            {data.tempat_lahir}
+                                        </td>
+                                        <td>
+                                            {moment(data.tgl_lahir).format("DD-MM-YYYY")}
+                                        </td>
+                                        <td>
                                             {data.jenis_kelamin}
                                         </td>
                                         <td>
@@ -1068,18 +1081,6 @@ class Mahasiswa extends Component {
                                         </td>
                                         <td>
                                             {data.tahun_angkatan}
-                                        </td>
-                                        <td>
-                                            {this.state.bekerja.find(
-                                                x =>
-                                                    x.mahasiswa == data.id
-                                            ).tempat}
-                                        </td>
-                                        <td>
-                                            {moment(this.state.bekerja.find(
-                                                x =>
-                                                    x.mahasiswa == data.id
-                                            ).tanggal_mulai).format("DD-MM-YYYY")}
                                         </td>
                                     </tr>
                                 ))}
