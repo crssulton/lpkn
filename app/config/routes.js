@@ -26,6 +26,7 @@ import List_pendaftar from '../views/user/admin/List_pendaftar'
 import List_pendaftar_online from '../views/user/admin/List_pendaftar_online'
 import Cetak_kuitansi from '../views/user/admin/Cetak_kuitansi';
 import Anggaran from '../views/user/admin/Anggaran';
+import Users from '../views/user/admin/users';
 import addDosen from '../views/user/admin/addDosen';
 import editDosen from '../views/user/admin/editDosen';
 import Approve from '../views/user/admin/Approve';
@@ -41,7 +42,8 @@ import PengajuanAdmin from '../views/user/admin/pengajuan';
 import PembayaranAdmin from '../views/user/admin/pembayaran';
 import AsetAdmin from '../views/user/admin/aset';
 import TambahAset from '../views/user/admin/tambah_aset';
-// Folder Keuangan (Role 4)
+import DaftarTransaksiAdmin from '../views/user/admin/daftar-transaksi';
+// Folder Keuangan (Role 4)DaftarTransaksi
 import MainKeuangan from '../components/layouts/MainKeuangan';
 import AkunKeuangan from '../views/user/keuangan/akun';
 import TransaksiKeuangan from '../views/user/keuangan/transaksi';
@@ -107,6 +109,7 @@ import DosenOwner from '../views/user/owner/dosen';
 import DashboardOwner from '../views/user/owner/Dashboard';
 import KampusOwner from '../views/user/owner/Kampus';
 import HRDOwner from '../views/user/owner/HRD';
+import PerubahanTransaksi from '../views/user/owner/perubahan_transaksi';
 import Form_add_staffOwner from '../views/user/owner/Form_add_staff';
 import Form_edit_staffOwner from '../views/user/owner/Form_edit_staff';
 import KepalaCabangOwner from '../views/user/owner/Kepala_cabang';
@@ -180,6 +183,7 @@ if (window.sessionStorage.getItem('access') !== 'undefined' && window.sessionSto
                 <Route path="broadcast" component={Broadcast}> </Route>
                 <Route path="approve" component={Approve}> </Route>
                 <Route path="tambah-dosen" component={addDosen}> </Route>
+                <Route path="users" component={Users}> </Route>
                 <Route path="edit-dosen" component={editDosen}> </Route>
                 <Route path="inventaris" component={Inventaris}> </Route>
                 <Route path="perubahan" component={Perubahan}> </Route>
@@ -194,6 +198,7 @@ if (window.sessionStorage.getItem('access') !== 'undefined' && window.sessionSto
                 <Route path="pengajuan" component={PengajuanAdmin}> </Route>
                 <Route path="pembayaran" component={PembayaranAdmin}> </Route>
                 <Route path="akun" component={Akun}> </Route>
+                <Route path="daftar-transaksi" component={DaftarTransaksiAdmin}> </Route>
             </Route>
             <Route path="invoice-print" component={InvoicePrint}> </Route>
         </Router>)
@@ -327,6 +332,7 @@ if (window.sessionStorage.getItem('access') !== 'undefined' && window.sessionSto
                 <Route path="kepala" component={KepalaCabangOwner}> </Route>
                 <Route path="hrd" component={HRDOwner}> </Route>
                 <Route path="anggaran" component={AnggaranOwner}> </Route>
+                <Route path="perubahan-transaksi" component={PerubahanTransaksi}> </Route>
                 <Route path="pengajuan-gaji" component={PengajuanGajiOwner}> </Route>
                 <Route path="pengajuan-anggaran" component={PengajuanAnggaranOwner}> </Route>
                 <Route path="add-staff" component={Form_add_staffOwner}> </Route>

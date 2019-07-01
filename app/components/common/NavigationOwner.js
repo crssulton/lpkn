@@ -67,6 +67,9 @@ class Navigation extends Component {
                     <li className={this.activeRoute("/pengajuan-gaji")}>
                         <Link to="/pengajuan-gaji"><i className="fa fa-check"></i> <span className="nav-label">Approve Gaji Pegawai</span></Link>
                     </li>
+                    <li className={this.activeRoute("/perubahan-transaksi")}>
+                        <Link to="/perubahan-transaksi"><i className="fa fa-check"></i> <span className="nav-label">Perubahan Transaksi</span></Link>
+                    </li>
                     <li>
                         <a><i className="fa fa-database"></i> <span className="nav-label">View Cabang</span> <span
                             className="fa arrow"></span></a>

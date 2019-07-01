@@ -38,7 +38,9 @@ class Navigation extends Component {
                              </span> <span className="text-muted text-xs block">Setting <b className="caret"></b></span> </span>
                             </a>
                             <ul className="dropdown-menu animated fadeInLeft m-t-xs">
-                                <Link to="/akun"><li><a> Akun</a></li></Link>
+                                <Link to="/akun">
+                                    <li><a> Akun</a></li>
+                                </Link>
                                 <li><a onClick={this.handleLogout}> Logout</a></li>
                             </ul>
                         </div>
@@ -105,6 +107,13 @@ class Navigation extends Component {
                             </li>
                             <li><Link to="/aset">Daftar Aset</Link></li>
                         </ul>
+                    </li>
+                    <li className={this.activeRoute("/daftar-transaksi")}>
+                        <Link to="/daftar-transaksi"><i className="fa fa-book"></i><span className="nav-label"> Daftar Transaksi</span></Link>
+                    </li>
+                    <li className={this.activeRoute("/users")}>
+                        <Link to="/users"><i className="fa fa-group"></i> <span
+                            className="nav-label">Users</span></Link>
                     </li>
                 </ul>
             </nav>

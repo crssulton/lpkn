@@ -15,7 +15,8 @@ export default class Akun extends Component {
 
     componentDidMount() {
         const self = this
-        fetch(BASE_URL + '/api/users/', {
+        let id = window.sessionStorage.getItem('user')
+        fetch(BASE_URL + `/api/users/${id}/` , {
             method: 'get',
             headers: {
                 'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
@@ -24,9 +25,9 @@ export default class Akun extends Component {
         }).then(function (response) {
             return response.json();
         }).then(function (data) {
-            console.log(data.results)
+            console.log(data)
             self.setState({
-                akun: data.results[0]
+                akun: data
             })
         });
     }

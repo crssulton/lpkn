@@ -356,7 +356,7 @@ class Jadwal extends Component {
                                                     <th>AKUN SUMBER</th>
                                                     <th>AKUN TUJUAN</th>
                                                     <th>KAMPUS</th>
-                                                    <th>AKSI</th>
+                                                    <th style={{width: '12%'}}>AKSI</th>
                                                 </tr>
                                                 </thead>
                                                 <tbody>
@@ -374,22 +374,58 @@ class Jadwal extends Component {
                                                             <td>{transaksi.kampus_info.nama}</td>
                                                             <td>
                                                                 <center>
-                                                                    <button
-                                                                        style={{'margin' : '0 5px'}}
-                                                                        className="btn btn-secondary btn-sm"
-                                                                        type="button"
-                                                                        onClick={() => {
-                                                                            const self = this
-                                                                            swal({
-                                                                                title: "Anda harus mencetak kwitansi terlebih dahulu !",
-                                                                                icon: "warning"
-                                                                            }).then(() => {
-                                                                                self.setState({kwitansi: transaksi.kwitansi[0]}, () => self.exportData())
-                                                                            })
-                                                                        }}
-                                                                    >
-                                                                        <i className="fa fa-edit"></i></button>
+                                                                    {
+                                                                        transaksi.nominal_sebelum != 0 && transaksi.pengajuan_edit == true ?
 
+                                                                            <button
+                                                                                style={{'margin': '0 5px'}}
+                                                                                className="btn btn-primary btn-sm"
+                                                                                type="button"
+                                                                                data-toggle="modal"
+                                                                                data-target="#ModalTransaksiHistori"
+                                                                                onClick={() => {
+                                                                                    this.setState({transaksi_selected: transaksi})
+                                                                                }}
+                                                                            >
+                                                                                <i className="fa fa-eye"></i></button>
+                                                                            :
+                                                                            null
+                                                                    }
+                                                                    {
+                                                                        !transaksi.pengajuan_edit ?
+                                                                            <button
+                                                                                style={{'margin': '0 5px'}}
+                                                                                className="btn btn-secondary btn-sm"
+                                                                                type="button"
+                                                                                onClick={() => {
+                                                                                    const self = this;
+                                                                                    swal({
+                                                                                        title: "Ajukan perubahan transaksi ?",
+                                                                                        icon: "warning",
+                                                                                        buttons: true
+                                                                                    }).then((willTerima) => {
+                                                                                        if (willTerima) {
+                                                                                            swal({
+                                                                                                title: "Anda harus mencetak kwitansi terlebih dahulu !",
+                                                                                                icon: "warning"
+                                                                                            }).then(() => {
+                                                                                                self.setState({
+                                                                                                    kwitansi: transaksi.kwitansi[0],
+                                                                                                    id_transaksi: transaksi.id
+                                                                                                }, () => {
+                                                                                                    self.exportData()
+                                                                                                    self.editTransaksi()
+                                                                                                })
+                                                                                            })
+                                                                                        }
+                                                                                    });
+
+                                                                                }}
+                                                                            >
+                                                                                <i className="fa fa-edit"></i></button>
+                                                                            :
+                                                                            null
+                                                                    }
                                                                     <button
                                                                         onClick={() => {
                                                                             this.setState({kwitansi: transaksi.kwitansi[0]}, () => this.exportData())
@@ -406,35 +442,12 @@ class Jadwal extends Component {
                                             </table>
                                         </div>
                                     )}
-                                    <div className="text-center">
-                                        <div className="btn-group">
-                                            <button
-                                                disabled={
-                                                    this.state.previous == null ? "disabled" : null
-                                                }
-                                                onClick={this.getPreviousData}
-                                                className="btn btn-white"
-                                                type="button"
-                                            >
-                                                <i className="fa fa-chevron-left"/> Sebelumnya{" "}
-                                            </button>
-                                            <button
-                                                disabled={this.state.next == null ? "disabled" : null}
-                                                onClick={this.getNextData}
-                                                className="btn btn-white"
-                                                type="button"
-                                            >
-                                                {" "}
-                                                Selanjutnya <i className="fa fa-chevron-right"/>{" "}
-                                            </button>
-                                        </div>
-                                    </div>
                                 </div>
 
                             </div>
                         </div>
                     </div>
-                {/*    Kwitansi*/}
+                    {/*    Kwitansi*/}
                     <div style={{display: "none"}}>
                         <div className="row" id="print_data">
                             <img
@@ -644,6 +657,83 @@ class Jadwal extends Component {
                                         ? this.state.kwitansi.kampus_info.email
                                         : null}
                                 </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    className="modal inmodal"
+                    id="ModalTransaksiHistori"
+                    tabIndex="-1"
+                    role="dialog"
+                    aria-hidden="true"
+                >
+                    <div className="modal-dialog">
+                        <div className="modal-content animated bounceInRight">
+                            <div className="modal-header">
+                                <button
+                                    type="button"
+                                    className="close"
+                                    data-dismiss="modal"
+                                >
+                                    <span aria-hidden="true">&times;</span>
+                                    <span className="sr-only">Close</span>
+                                </button>
+                                <h4 className="modal-title">Rincian Histori Transaksi</h4>
+                            </div>
+                            <div className="modal-body">
+                                <div className="form-group row">
+                                    <label className="col-lg-2 col-form-label">Kode TRX</label>
+                                    <div className="col-lg-10">
+                                        <p>: {this.state.transaksi_selected != null ? this.state.transaksi_selected.kode : null}</p>
+                                    </div>
+                                </div>
+                                <div className="form-group row">
+                                    <label className="col-lg-2 col-form-label">Tanggal</label>
+                                    <div className="col-lg-10">
+                                        <p>: {this.state.transaksi_selected != null ? moment(this.state.transaksi_selected.tanggal).format("DD/MM/YYYY") : null}</p>
+                                    </div>
+                                </div>
+                                <div className="form-group row">
+                                    <label className="col-lg-2 col-form-label">Uraian</label>
+                                    <div className="col-lg-10">
+                                        <p>: {this.state.transaksi_selected != null ? this.state.transaksi_selected.uraian : null}</p>
+                                    </div>
+                                </div>
+                                <div className="form-group row">
+                                    <label className="col-lg-2 col-form-label">Nominal Sebelumnya</label>
+                                    <div className="col-lg-10">
+                                        <p>:
+                                            Rp. {this.state.transaksi_selected != null ? this.formatNumber(this.state.transaksi_selected.nominal_sebelum) : null}</p>
+                                    </div>
+                                </div>
+                                <div className="form-group row">
+                                    <label className="col-lg-2 col-form-label">Akun Sumber</label>
+                                    <div className="col-lg-10">
+                                        <p>: {this.state.transaksi_selected != null ? this.state.transaksi_selected.account_info.nama : null}</p>
+                                    </div>
+                                </div>
+                                <div className="form-group row">
+                                    <label className="col-lg-2 col-form-label">Akun Tujuan</label>
+                                    <div className="col-lg-10">
+                                        <p>: {this.state.transaksi_selected != null ? this.state.transaksi_selected.account_tujuan_info.nama : null}</p>
+                                    </div>
+                                </div>
+                                <div className="form-group row">
+                                    <label className="col-lg-2 col-form-label">Kampus</label>
+                                    <div className="col-lg-10">
+                                        <p>: {this.state.transaksi_selected != null ? this.state.transaksi_selected.kampus_info.nama : null}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="modal-footer">
+                                <button
+                                    type="button"
+                                    className="btn btn-white"
+                                    data-dismiss="modal"
+                                >
+                                    Tutup
+                                </button>
                             </div>
                         </div>
                     </div>
