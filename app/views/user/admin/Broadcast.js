@@ -1,11 +1,11 @@
-import React, {Component} from 'react';
-import {BASE_URL} from '../../../config/config.js'
+import React, { Component } from 'react'
+import { BASE_URL } from '../../../config/config.js'
 import moment from 'moment'
 import swal from "sweetalert";
 
-class Broadcast extends Component {
 
-    constructor() {
+class Broadcast extends Component {
+    constructor () {
         super()
         this.state = {
             tags: [],
@@ -23,7 +23,7 @@ class Broadcast extends Component {
         this.handleKirim = this.handleKirim.bind(this)
     }
 
-    componentDidMount() {
+    componentDidMount () {
         const self = this
         fetch(BASE_URL + '/api/jurusan/', {
             method: 'get',
@@ -31,12 +31,12 @@ class Broadcast extends Component {
                 'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
             }
         }).then(function (response) {
-            return response.json();
+            return response.json()
         }).then(function (data) {
             self.setState({
                 jurusans: data.results
             })
-        });
+        })
 
         fetch(BASE_URL + '/api/pengumuman/', {
             method: 'get',
@@ -44,12 +44,12 @@ class Broadcast extends Component {
                 'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
             }
         }).then(function (response) {
-            return response.json();
+            return response.json()
         }).then(function (data) {
             self.setState({
                 pengumuman: data.results
             })
-        });
+        })
 
         fetch(BASE_URL + '/api/kelas/', {
             method: 'get',
@@ -57,35 +57,40 @@ class Broadcast extends Component {
                 'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
             }
         }).then(function (response) {
-            return response.json();
+            return response.json()
         }).then(function (data) {
             self.setState({
                 kelas: data.results
             })
-        });
+        })
     }
 
-    handleKirim(key) {
+    handleKirim (key) {
         const self = this
-        var jurusan = true;
-        var jurusanSatu = '';
-        var kelas = '';
+        var jurusan = true
+        var jurusanSatu = ''
+        var kelas = ''
 
-        if (self.state.selectedJurusan === "0" || self.state.selectedJurusan === "") {
-            jurusan = true;
-            jurusanSatu = null;
-        } else {
-            jurusan = false;
-            jurusanSatu = self.state.selectedJurusan;
+        if (self.state.selectedJurusan == '0') {
+            jurusan = true
+            jurusanSatu = null
+        }
+        else if (self.state.selectedJurusan == '') {
+            jurusan = false
+            jurusanSatu = null
+        }
+        else {
+            jurusan = false
+            jurusanSatu = self.state.selectedJurusan
         }
 
-        if (self.state.selectedKelas === "0" || self.state.selectedKelas === "") {
-            kelas = null;
+        if (self.state.selectedKelas == '0' || self.state.selectedKelas == '') {
+            kelas = null
         } else {
-            kelas = self.state.selectedKelas;
+            kelas = self.state.selectedKelas
         }
 
-        var kirimPengumuman = {
+        const kirimPengumuman = {
             untuk_dosen: self.state.selectedDosen,
             untuk_mhs: self.state.selectedMahasiswa,
             untuk_semua_jurusan: jurusan,
@@ -94,7 +99,6 @@ class Broadcast extends Component {
             judul: self.state.judulPengumuman,
             isi: self.state.isiPengumuman
         }
-        console.log(JSON.stringify(kirimPengumuman))
         fetch(BASE_URL + '/api/pengumuman/', {
             method: 'post',
             headers: {
@@ -104,17 +108,17 @@ class Broadcast extends Component {
             },
             body: JSON.stringify(kirimPengumuman)
         }).then(function (response) {
-            console.log(response.status)
             if (response.status === 201 || response.status === 200) {
-                toastr.success("Pengumuman berhasil ditambahkan", "Sukses ! ")
+                toastr.success('Pengumuman berhasil ditambahkan', 'Sukses ! ')
                 self.setState({
                     selectedMahasiswa: false,
                     selectedDosen: false,
-                    selectedSemuaJurusan: '',
+                    selectedSemuaJurusan: "",
+                    selectedJurusan: "",
                     selectedKelas: '',
                     kirimPengumuman: [],
                     judulPengumuman: '',
-                    isiPengumuman: '',
+                    isiPengumuman: ''
                 })
                 fetch(BASE_URL + '/api/pengumuman/', {
                     method: 'get',
@@ -122,26 +126,27 @@ class Broadcast extends Component {
                         'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
                     }
                 }).then(function (response) {
-                    return response.json();
+                    return response.json()
                 }).then(function (data) {
                     self.setState({
                         pengumuman: data.results
                     })
-                });
+                })
             } else {
-                toastr.error("Pengumuman gagal ditambahkan", "Error ! ")
+                toastr.error('Pengumuman gagal ditambahkan', 'Error ! ')
                 self.setState({
                     selectedMahasiswa: false,
                     selectedDosen: false,
-                    selectedSemuaJurusan: '',
+                    selectedJurusan: "",
+                    selectedSemuaJurusan: "",
                     selectedKelas: '',
                     kirimPengumuman: [],
                     judulPengumuman: '',
-                    isiPengumuman: '',
+                    isiPengumuman: ''
                 })
             }
         }).then(function (data) {
-        });
+        })
     }
 
     handleDeletePengumuman = (id) => {
@@ -175,18 +180,18 @@ class Broadcast extends Component {
             });
     }
 
-    render() {
+    render () {
         return (
-            <div>
+            <div >
                 <div className="row wrapper border-bottom white-bg page-heading">
                     <div className="col-lg-8">
-                        <h2>Pengumuman Administrator</h2>
+                        <h2>Pengumuman Akademik</h2>
                         <ol className="breadcrumb">
                             <li className="breadcrumb-item">
                                 Dashboard
                             </li>
                             <li className="breadcrumb-item active">
-                                <strong>Broadcast</strong>
+                                <strong>Pengumuman</strong>
                             </li>
                         </ol>
                     </div>
@@ -195,8 +200,7 @@ class Broadcast extends Component {
                 </div>
                 <div className="tabs-container"><br/>
                     <ul className="nav nav-tabs" role="tablist">
-                        <li className="active"><a className="nav-link" data-toggle="tab" href="#tab-1"> Buat
-                            Pengumuman</a></li>
+                        <li className="active"><a className="nav-link" data-toggle="tab" href="#tab-1"> Buat Pengumuman</a></li>
                         <li><a className="nav-link" data-toggle="tab" href="#tab-2"> Daftar Pengumuman</a></li>
                     </ul>
                     <div className="tab-content">
@@ -204,18 +208,13 @@ class Broadcast extends Component {
                             <div className="panel-body">
                                 <div className="ibox-content">
                                     <div className="form-group row">
-                                        <div className="col-md-12"><input type="text" className="form-control"
-                                                                          value={this.state.judulPengumuman}
-                                                                          onChange={(e) => this.setState({judulPengumuman: e.target.value})}
-                                                                          placeholder="Judul Pengumuman"/>
+                                        <div className="col-md-12"><input type="text" className="form-control" value={this.state.judulPengumuman} onChange={(e) => this.setState({ judulPengumuman: e.target.value })} placeholder="Judul Pengumuman" />
                                         </div>
                                     </div>
 
                                     <div className="form-group row">
                                         <div className="col-md-12">
-                                            <textarea className="form-control" rows="10"
-                                                      value={this.state.isiPengumuman}
-                                                      onChange={(e) => this.setState({isiPengumuman: e.target.value})}></textarea>
+                                            <textarea className="form-control" rows="10" value={this.state.isiPengumuman} onChange={(e) => this.setState({ isiPengumuman: e.target.value })}></textarea>
                                         </div>
                                     </div>
 
@@ -226,11 +225,9 @@ class Broadcast extends Component {
                                         <div>
                                             <div className="pretty p-switch p-fill">
                                                 {
-                                                    (this.state.selectedMahasiswa) ?
-                                                        <input type="checkbox" checked
-                                                               onChange={(e) => this.setState({selectedMahasiswa: !this.state.selectedMahasiswa})}/> :
-                                                        <input type="checkbox"
-                                                               onChange={(e) => this.setState({selectedMahasiswa: !this.state.selectedMahasiswa})}/>
+                                                    (this.state.selectedMahasiswa)
+                                                        ? <input type="checkbox" checked onChange={(e) => this.setState({ selectedMahasiswa: !this.state.selectedMahasiswa }) } />
+                                                        : <input type="checkbox" onChange={(e) => this.setState({ selectedMahasiswa: !this.state.selectedMahasiswa }) } />
                                                 }
                                                 <div className="state">
                                                     <label>Mahasiswa</label>
@@ -238,11 +235,9 @@ class Broadcast extends Component {
                                             </div>
                                             <div className="pretty p-switch p-fill">
                                                 {
-                                                    (this.state.selectedDosen) ?
-                                                        <input type="checkbox" checked
-                                                               onChange={(e) => this.setState({selectedDosen: !this.state.selectedDosen})}/> :
-                                                        <input type="checkbox"
-                                                               onChange={(e) => this.setState({selectedDosen: !this.state.selectedDosen})}/>
+                                                    (this.state.selectedDosen)
+                                                        ? <input type="checkbox" checked onChange={(e) => this.setState({ selectedDosen: !this.state.selectedDosen }) } />
+                                                        : <input type="checkbox" onChange={(e) => this.setState({ selectedDosen: !this.state.selectedDosen }) } />
                                                 }
                                                 <div className="state">
                                                     <label>Dosen</label>
@@ -253,60 +248,58 @@ class Broadcast extends Component {
 
                                         <br/>
                                         {
-                                            this.state.selectedMahasiswa ?
-                                                <div className="row">
+                                            this.state.selectedMahasiswa
+                                                ? <div className="row">
                                                     <div className="col-lg-6">
                                                         <label className="col-sm-2 col-form-label">Jurusan </label>
                                                         <div className="col-sm-8">
                                                             <select
                                                                 value={this.state.selectedJurusan}
                                                                 onChange={(e) =>
-                                                                    this.setState({selectedJurusan: e.target.value})}
+                                                                    this.setState({ selectedJurusan: e.target.value })}
                                                                 className="form-control">
                                                                 <option value="">Pilih</option>
                                                                 <option value="0">Semua Jurusan</option>
                                                                 {
                                                                     this.state.jurusans.map((jurusan, i) =>
-                                                                        <option key={i}
-                                                                                value={jurusan.id}>{jurusan.nama}</option>
+                                                                        <option key={i} value={jurusan.id}>{jurusan.nama}</option>
                                                                     )
                                                                 }
                                                             </select>
                                                         </div>
                                                     </div>
-                                                    {
-                                                        (this.state.selectedJurusan === "0" || this.state.selectedJurusan === "" || this.state.selectedJurusan === undefined) ? null :
-                                                            <div className="col-lg-6">
-                                                                <label
-                                                                    className="col-sm-2 col-form-label">Kelas </label>
-                                                                <div className="col-sm-8">
-                                                                    <select
-                                                                        value={this.state.selectedKelas}
-                                                                        onChange={(e) =>
-                                                                            this.setState({selectedKelas: e.target.value})}
-                                                                        className="form-control">
-                                                                        <option value="">Pilih</option>
-                                                                        <option value="0">Semua Kelas</option>
-                                                                        {
-                                                                            this.state.kelas.filter(kel => kel.jurusan == this.state.selectedJurusan).map((kelas, key) =>
-                                                                                <option key={key}
-                                                                                        value={kelas.id}>Kelas {kelas.nama}</option>
-                                                                            )
-                                                                        }
-                                                                    </select>
-                                                                </div>
-                                                            </div>
-                                                    }
+                                                </div>
+                                                : null
+                                        }
+                                        <br/><br/>
+                                        {
+                                            this.state.selectedMahasiswa && this.state.selectedJurusan && this.state.selectedJurusan != "0"
+                                                ? <div className="row">
+                                                    <div className="col-lg-6">
+                                                        <label className="col-sm-2 col-form-label">Kelas </label>
+                                                        <div className="col-sm-8">
+                                                            <select
+                                                                value={this.state.selectedKelas}
+                                                                onChange={(e) =>
+                                                                    this.setState({ selectedKelas: e.target.value })}
+                                                                className="form-control">
+                                                                <option value="0">Semua Kelas</option>
+                                                                {
+                                                                    this.state.kelas.filter(x => x.jurusan_info.id == this.state.selectedJurusan).map((item, i) =>
+                                                                        <option key={i} value={item.id}>{item.nama}</option>
+                                                                    )
+                                                                }
+                                                            </select>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 : null
                                         }
 
-
                                     </div>
                                     <div className="hr-line-dashed"></div>
                                     <div className="form-group row">
-                                        <button className="btn btn-primary btn-sm" onClick={this.handleKirim}>Kirim
-                                        </button>
+                                        <button className="btn btn-primary btn-sm" onClick={this.handleKirim}>Kirim</button>
                                     </div>
                                 </div>
                             </div>
@@ -316,11 +309,11 @@ class Broadcast extends Component {
                                 <table className="table">
                                     <thead>
                                     <tr>
-                                        <th style={{'width': '4%'}}>No</th>
-                                        <th style={{'width': '20%'}}>Judul</th>
-                                        <th style={{'width': '40%'}}>Pengumuman</th>
-                                        <th style={{'width': '10%'}}>Tanggal</th>
-                                        <th style={{'width': '26%'}}>Penerima</th>
+                                        <th style={{ 'width': '4%' }}>No</th>
+                                        <th style={{ 'width': '20%' }}>Judul</th>
+                                        <th style={{ 'width': '40%' }}>Pengumuman</th>
+                                        <th style={{ 'width': '10%' }}>Tanggal</th>
+                                        <th style={{ 'width': '26%' }}>Penerima</th>
                                         <th></th>
                                     </tr>
                                     </thead>
@@ -335,17 +328,17 @@ class Broadcast extends Component {
                                                 <td>{moment(pengumuman.create).format('D MMM YYYY')}</td>
                                                 <td>
                                                     {
-                                                        (pengumuman.untuk_dosen) ? " Semua Dosen, " : null
+                                                        (pengumuman.untuk_dosen) ? ' Semua Dosen, ' : null
                                                     }{
-                                                    (pengumuman.untuk_semua_jurusan) ? " Semua Jurusan, " : null
+                                                    (pengumuman.untuk_semua_jurusan) ? ' Semua Jurusan, ' : null
                                                 }{
-                                                    (pengumuman.untuk_jurusan !== null) ? " " +
+                                                    (pengumuman.untuk_jurusan !== null) ? ' ' +
                                                         this.state.jurusans.find((jurus) =>
-                                                            (jurus.id == pengumuman.untuk_jurusan)).nama + ", " : null
+                                                            (jurus.id == pengumuman.untuk_jurusan)).nama + ', ' : null
                                                 }{
-                                                    (pengumuman.untuk_kelas !== null) ? " Kelas " +
+                                                    (pengumuman.untuk_kelas !== null) ? ' Kelas ' +
                                                         this.state.kelas.find((kel) =>
-                                                            (kel.id == pengumuman.untuk_kelas)).nama + ", " : null
+                                                            (kel.id == pengumuman.untuk_kelas)).nama + ', ' : null
                                                 }
                                                 </td>
                                                 <td>
@@ -371,7 +364,6 @@ class Broadcast extends Component {
             </div>
         )
     }
-
 }
 
 export default Broadcast

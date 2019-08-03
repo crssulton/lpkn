@@ -6,6 +6,7 @@ import {terbilang} from "../../../config/terbilang.js";
 import Select from "react-select";
 import moment from "moment";
 import "react-select/dist/react-select.css";
+import CurrencyInput from "react-currency-input";
 import {BASE_URL} from "../../../config/config.js";
 
 let account = []
@@ -658,14 +659,19 @@ class Approve extends Component {
                                                     <div className="form-group row">
                                                         <label className="col-lg-2 col-form-label">Nominal</label>
                                                         <div className="col-lg-10">
-                                                            <input
-                                                                type="text"
-                                                                className="form-control"
+                                                            <CurrencyInput
+                                                                precision="0"
+                                                                className="form-control m-b"
+                                                                prefix="Rp "
                                                                 value={this.state.selectedData != null ? this.state.selectedData.nominal : null}
-                                                                onChange={(e) => {
+                                                                onChangeEvent={(
+                                                                    e,
+                                                                    maskedvalue,
+                                                                    floatvalue
+                                                                ) => {
                                                                     let selectedData = this.state.selectedData
-                                                                    selectedData.nominal = e.target.value
-                                                                    this.setState({ selectedData })
+                                                                    selectedData.nominal = floatvalue;
+                                                                    this.setState({ selectedData });
                                                                 }}
                                                             />
                                                         </div>

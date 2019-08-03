@@ -71,10 +71,33 @@ class Navigation extends Component {
                         <Link to="/perubahan-transaksi"><i className="fa fa-check"></i> <span className="nav-label">Perubahan Transaksi</span></Link>
                     </li>
                     <li>
-                        <a><i className="fa fa-database"></i> <span className="nav-label">View Cabang</span> <span
+                        <a><i className="fa fa-users"></i> <span className="nav-label">Data Mahasiswa</span>
+                            <span className="fa arrow"></span></a>
+                        <ul className="nav nav-second-level collapse">
+                            <li className={this.activeRoute("/mahasiswa")}>
+                                <Link to="/mahasiswa"><span className="nav-label">Aktif</span></Link>
+                            </li>
+                            <li className={this.activeRoute("/nonaktif")}>
+                                <Link to="/nonaktif"><span className="nav-label">Tidak Aktif</span></Link>
+                            </li>
+                            <li className={this.activeRoute("/magang")}>
+                                <Link to="/magang"><span className="nav-label">Magang</span></Link>
+                            </li>
+                            <li className={this.activeRoute("/bekerja")}>
+                                <Link to="/bekerja"><span className="nav-label">Bekerja</span></Link>
+                            </li>
+                            <li className={this.activeRoute("/pindah")}>
+                                <Link to="/pindah"><span className="nav-label">Pindah Jurusan</span></Link>
+                            </li>
+                            <li className={this.activeRoute("/lulus")}>
+                                <Link to="/lulus"><span className="nav-label">Alumni</span></Link>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a><i className="fa fa-database"></i> <span className="nav-label">Data Cabang</span> <span
                             className="fa arrow"></span></a>
                         <ul className="nav nav-second-level collapse">
-                            <li><Link to="/mahasiswa">Mahasiswa</Link></li>
                             <li><Link to="/tagihan">Pembayaran Mahasiswa</Link></li>
                             <li><Link to="/dosen">Dosen</Link></li>
                             <li><Link to="/staff">Staff</Link></li>

@@ -295,7 +295,7 @@ class Jadwal extends Component {
     broadcastJadwal = (jadwalBaru) => {
         const self = this;
         const kirimPengumuman = {
-            untuk_dosen: false,
+            untuk_dosen: true,
             untuk_mhs: true,
             untuk_semua_jurusan: false,
             untuk_jurusan: jadwalBaru.jurusan,

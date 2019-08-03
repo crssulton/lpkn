@@ -70,15 +70,20 @@ class Pengumuman extends Component {
     var jurusanSatu = ''
     var kelas = ''
 
-    if (self.state.selectedJurusan === '0' || self.state.selectedJurusan === '') {
+    if (self.state.selectedJurusan == '0') {
       jurusan = true
       jurusanSatu = null
-    } else {
+    }
+    else if (self.state.selectedJurusan == '') {
+      jurusan = false
+      jurusanSatu = null
+    }
+    else {
       jurusan = false
       jurusanSatu = self.state.selectedJurusan
     }
 
-    if (self.state.selectedKelas === '0' || self.state.selectedKelas === '') {
+    if (self.state.selectedKelas == '0' || self.state.selectedKelas == '') {
       kelas = null
     } else {
       kelas = self.state.selectedKelas
@@ -93,7 +98,6 @@ class Pengumuman extends Component {
       judul: self.state.judulPengumuman,
       isi: self.state.isiPengumuman
     }
-    console.log(JSON.stringify(kirimPengumuman))
     fetch(BASE_URL + '/api/pengumuman/', {
       method: 'post',
       headers: {
@@ -108,7 +112,8 @@ class Pengumuman extends Component {
         self.setState({
           selectedMahasiswa: false,
           selectedDosen: false,
-          selectedSemuaJurusan: '',
+          selectedSemuaJurusan: "",
+          selectedJurusan: "",
           selectedKelas: '',
           kirimPengumuman: [],
           judulPengumuman: '',
@@ -131,7 +136,8 @@ class Pengumuman extends Component {
         self.setState({
           selectedMahasiswa: false,
           selectedDosen: false,
-          selectedSemuaJurusan: '',
+          selectedJurusan: "",
+          selectedSemuaJurusan: "",
           selectedKelas: '',
           kirimPengumuman: [],
           judulPengumuman: '',
@@ -263,6 +269,30 @@ class Pengumuman extends Component {
                           </div>
                         </div>
                         : null
+                    }
+                    <br/><br/>
+                    {
+                      this.state.selectedMahasiswa && this.state.selectedJurusan && this.state.selectedJurusan != "0"
+                          ? <div className="row">
+                            <div className="col-lg-6">
+                              <label className="col-sm-2 col-form-label">Kelas </label>
+                              <div className="col-sm-8">
+                                <select
+                                    value={this.state.selectedKelas}
+                                    onChange={(e) =>
+                                        this.setState({ selectedKelas: e.target.value })}
+                                    className="form-control">
+                                  <option value="0">Semua Kelas</option>
+                                  {
+                                    this.state.kelas.filter(x => x.jurusan_info.id == this.state.selectedJurusan).map((item, i) =>
+                                        <option key={i} value={item.id}>{item.nama}</option>
+                                    )
+                                  }
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                          : null
                     }
 
                   </div>

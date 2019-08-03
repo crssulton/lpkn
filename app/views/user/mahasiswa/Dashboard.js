@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {BASE_URL} from '../../../config/config.js'
 
 
@@ -66,7 +66,7 @@ class Dashboard extends Component {
 		if(mahasiswa.pekerjaan_ibu != null) formData.append('pekerjaan_ibu', mahasiswa.pekerjaan_ibu)
 		if(mahasiswa.alamat_wali != null) formData.append('alamat_wali', mahasiswa.alamat_wali)
 		if( this.state.fotoMhs != null) formData.append('foto', this.state.fotoMhs)
-		console.log(formData)
+
 		fetch(BASE_URL + '/api/mahasiswa/' +  window.sessionStorage.getItem('user_id') +'/', {
 			method: 'patch',
 			headers: {
@@ -245,11 +245,11 @@ class Dashboard extends Component {
 		                {
 		                	this.state.loading?
 		                	<div className="spiner-example">
-                                <div className="sk-spinner sk-spinner-double-bounce">
-                                    <div className="sk-double-bounce1"></div>
-                                    <div className="sk-double-bounce2"></div>
-                                </div>
-                            </div>
+												<div className="sk-spinner sk-spinner-double-bounce">
+													<div className="sk-double-bounce1"></div>
+													<div className="sk-double-bounce2"></div>
+												</div>
+											</div>
 		                	:
 		                	<div>
 			                	<div className="col-md-4">
@@ -269,7 +269,9 @@ class Dashboard extends Component {
 				                            <div className="ibox-content profile-content">
 				                                <h3 style={{'textAlign': 'center'}}><strong>{this.state.mahasiswa.nama}</strong></h3>
 				                                <p style={{'textAlign': 'center'}}>{this.state.mahasiswa.nim}</p>
-				                                <p style={{'textAlign': 'center'}}><span className="badge badge-primary">{this.state.mahasiswa.status}</span></p>
+																			<p style={{'textAlign': 'center'}}><span
+																				className="badge badge-primary">{this.state.mahasiswa.status.toUpperCase()}</span>
+																			</p>
 
 				                                <div>
 												    <div className="full-height-scroll">
@@ -531,7 +533,7 @@ class Dashboard extends Component {
 																	                	data.dari == 5 ?
 																	                	"AKADEMIK"
 																	                	:
-																	                	"ADMINISTRATOR"
+																											"ADMIN"
 																	                }
 																	            </a>
 																	        </td>

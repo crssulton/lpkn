@@ -104,7 +104,13 @@ import editPegawaiHRD from '../views/user/hrd/edit_pegawai';
 import CetakPegawaiHRD from '../views/user/hrd/cetak_pegawai';
 // Folder Owner (Role 8)
 import MainOwner from '../components/layouts/MainOwner';
-import MahasiswaOwner from '../views/user/owner/mahasiswa';
+// import MahasiswaOwner from '../views/user/owner/mahasiswa_old';
+import MahasiswaOwner from '../views/user/owner/Mahasiswa';
+import MahasiswaMagangOwner from '../views/user/owner/mahasiswa_magang';
+import MahasiswaBekerjaOwner from '../views/user/owner/mahasiswa_bekerja';
+import MahasiswaNonaktifOwner from '../views/user/owner/mahasiswa_nonaktif';
+import MahasiswaLulusOwner from '../views/user/owner/mahasiswa_lulus';
+import MahasiswaPindahOwner from '../views/user/owner/mahasiswa_pindah';
 import DosenOwner from '../views/user/owner/dosen';
 import DashboardOwner from '../views/user/owner/Dashboard';
 import KampusOwner from '../views/user/owner/Kampus';
@@ -121,12 +127,7 @@ import AnggaranOwner from '../views/user/owner/Anggaran';
 import StaffOwner from '../views/user/owner/staff';
 // REPORT
 import ReportMahasiswaAkademik from '../views/user/report/mahasiswa_akademik';
-// import Ajp from '../views/user/keuangan/ajp';
-// import JurnalPenutup from '../views/user/keuangan/jurnal_penutup';
-// import ReportDosen from '../views/user/report/dosen';
-// import ReportStaff from '../views/user/report/staff';
-// import ReportPegawai from '../views/user/report/pegawai';
-// import ReportPegawaiGaji from '../views/user/report/pegawai_gaji';
+
 
 let komponen = null;
 
@@ -136,6 +137,7 @@ if (window.sessionStorage.getItem('access') === null || window.sessionStorage.ge
             <Route path="/" component={Login}/>
             <Route path="login" component={Login}/>
             <Route path="registrasi" component={Registrasi}/>
+            <Route path='*' exact={true} component={Login} />
         </Router>)
 }
 
@@ -284,7 +286,13 @@ if (window.sessionStorage.getItem('access') !== 'undefined' && window.sessionSto
                 <Route path="anggaran" component={AnggaranKepalaCabang}> </Route>
                 <Route path="pengajuan" component={PengajuanKepalaCabang}> </Route>
                 <Route path="perubahan" component={Perubahan}> </Route>
-                <Route path="mahasiswa" component={MahasiswaKepalaCabang}> </Route>
+                <Route path="mahasiswa" component={DaftarMahasiswaAkademik}> </Route>
+                <Route path="nonaktif" component={MahasiswaNonaktif}> </Route>
+
+                <Route path="lulus" component={MahasiswaLulus}> </Route>
+                <Route path="bekerja" component={MahasiswaBekerja}> </Route>
+                <Route path="magang" component={MahasiswaMagang}> </Route>
+                <Route path="pindah" component={MahasiswaPindah}> </Route>
                 <Route path="dosen" component={DosenKepalaCabang}> </Route>
                 <Route path="staff" component={StaffKepalaCabang}> </Route>
                 <Route path="transaksi-buku-besar" component={TransaksiBukuBesar}> </Route>
@@ -340,7 +348,13 @@ if (window.sessionStorage.getItem('access') !== 'undefined' && window.sessionSto
                 <Route path="kelompok-account" component={KelompokAkunOwner}> </Route>
                 <Route path="approve-gaji" component={ApproveGajiOwner}> </Route>
                 <Route path="daftar-transaksi" component={DaftarTransaksi}> </Route>
+                {/*<Route path="mahasiswa" component={MahasiswaOwner}> </Route>*/}
                 <Route path="mahasiswa" component={MahasiswaOwner}> </Route>
+                <Route path="nonaktif" component={MahasiswaNonaktifOwner}> </Route>
+                <Route path="lulus" component={MahasiswaLulusOwner}> </Route>
+                <Route path="bekerja" component={MahasiswaBekerjaOwner}> </Route>
+                <Route path="magang" component={MahasiswaMagangOwner}> </Route>
+                <Route path="pindah" component={MahasiswaPindahOwner}> </Route>
                 <Route path="dosen" component={DosenOwner}> </Route>
                 <Route path="transaksi-buku-besar" component={TransaksiBukuBesar}> </Route>
                 <Route path="aset" component={AsetAdmin}> </Route>

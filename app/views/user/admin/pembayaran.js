@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import {BASE_URL} from "../../../config/config.js";
 import CurrencyInput from "react-currency-input";
 import {terbilang} from "../../../config/terbilang.js";
+import {titleCase} from "../../../config/capitalize.js";
 import Select from "react-select";
 import logo from "../../../../public/assets/assets 1/img/logo_bw.png";
 import moment from "moment";
@@ -31,7 +32,10 @@ class Tagihan extends Component {
             tagihan: [],
             loading: true,
             jurusan: null,
-            judul: null
+            judul: null,
+            search: false,
+            mahasiswa_selected: false,
+            check_pembayaran: 1
         };
     }
 
@@ -49,23 +53,6 @@ class Tagihan extends Component {
 
     componentWillMount() {
         const self = this;
-        fetch(BASE_URL + "/api/mahasiswa/?kampus=" + window.sessionStorage.getItem("kampus_id"), {
-            method: "GET",
-            headers: {
-                Authorization: "JWT " + window.sessionStorage.getItem("token"),
-                "Content-Type": "application/json",
-                Accept: "application/json"
-            }
-        })
-            .then(function (response) {
-                return response.json();
-            })
-            .then(function (data) {
-                self.setState({
-                    mahasiswa: data.filter(x => x.calon == false),
-                    loading: false
-                });
-            });
 
         fetch(BASE_URL + "/api/account/", {
             method: "get",
@@ -97,8 +84,42 @@ class Tagihan extends Component {
             })
             .then(function (data) {
                 self.setState({
-                    kampus: data
+                    kampus: data,
+                    loading: false
                 });
+            });
+    }
+
+    getMahasiswa = (query) => {
+        const self = this;
+
+        this.setState({search: true})
+
+        fetch(BASE_URL + `/api/mahasiswa/?mahasiswa=${query}`, {
+            method: "GET",
+            headers: {
+                Authorization: "JWT " + window.sessionStorage.getItem("token"),
+                "Content-Type": "application/json",
+                Accept: "application/json"
+            }
+        })
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (data) {
+                if (typeof(data.results) !== 'undefined'){
+                    self.setState({
+                        mahasiswa: data.results.filter(x => x.calon == false),
+                        search: false
+                    });
+                } else {
+                    if (data.length != 0) {
+                        self.setState({
+                            mahasiswa: data.filter(x => x.calon == false),
+                            search: false
+                        });
+                    }
+                }
             });
     }
 
@@ -178,7 +199,12 @@ class Tagihan extends Component {
             });
     };
 
+    isRealValue = (obj) => {
+        return obj && obj !== 'null' && obj !== 'undefined';
+    }
+
     render() {
+
         account = [...this.state.account];
         this.state.account.map((data, key) => {
             account[key].value = data.id;
@@ -437,7 +463,7 @@ class Tagihan extends Component {
                                         </div>
                                     </div>
                                 ) : (
-                                    <div>
+                                    <div className="row">
                                         <div className="form-group row">
                                             <label className="col-lg-2 col-form-label">
                                                 NIM Mahasiswa
@@ -446,126 +472,159 @@ class Tagihan extends Component {
                                                 <Select
                                                     name="form-field-name"
                                                     value={this.state.pembayaran.mahasiswa}
-                                                    onChange={selectedOption => {
-                                                        let pembayaran = {...this.state.pembayaran};
-                                                        pembayaran.mahasiswa =
-                                                            selectedOption != null ? selectedOption.nim : null;
-                                                        this.setState({pembayaran});
-                                                        this.getTagihan(pembayaran.mahasiswa);
+                                                    onChange={(selectedOption) => {
+                                                        if (selectedOption != null) {
+                                                            let pembayaran = {...this.state.pembayaran};
+                                                            let check_pembayaran;
+                                                            pembayaran.mahasiswa =
+                                                                selectedOption != null ? selectedOption.nim : null;
+                                                            check_pembayaran =
+                                                                selectedOption != null ? selectedOption.sisa_bayar : null;
+                                                            this.setState({pembayaran, check_pembayaran});
+                                                            this.getTagihan(pembayaran.mahasiswa);
+                                                        }
+                                                    }}
+                                                    onInputChange={(inputValue) => {
+                                                        if (inputValue != "") this.getMahasiswa(inputValue);
                                                     }}
                                                     options={mahasiswa}
                                                 />
                                             </div>
-                                        </div>
 
-                                        <div className="form-group row">
-                                            <label className="col-lg-2 col-form-label">
-                                                Biaya Pendidikan
-                                            </label>
-                                            <div className="col-lg-4">
-                                                <select
-                                                    value={this.state.pembayaran.bayar_kuliah}
-                                                    onChange={e => {
-                                                        let pembayaran = [];
-                                                        pembayaran = this.state.pembayaran;
-                                                        pembayaran.bayar_kuliah = e.target.value;
-                                                        this.setState({pembayaran});
-                                                    }}
-                                                    defaultValue={false}
-                                                    className="form-control m-b"
-                                                >
-                                                    <option value={false}>Tidak</option>
-                                                    <option value={true}>Ya</option>
-                                                </select>
-                                            </div>
+                                            {
+                                                this.state.search ?
+                                                    <h3 className="text-warning">Mencari Mahasiswa ... </h3>
+                                                    :
+                                                    null
+                                            }
                                         </div>
-                                        {this.state.pembayaran.bayar_kuliah == "true" && this.state.pembayaran.mahasiswa != null ? (
-                                                <div>
+                                        <div>
+                                            {
+                                                this.state.check_pembayaran > 0 ?
+                                                    this.state.pembayaran.mahasiswa != null ?
+                                                        <div>
+                                                            <div className="form-group row">
+                                                                <label className="col-lg-2 col-form-label">
+                                                                    Biaya Pendidikan
+                                                                </label>
+                                                                <div className="col-lg-4">
+                                                                    <select
+                                                                        value={this.state.pembayaran.bayar_kuliah}
+                                                                        onChange={e => {
+                                                                            let pembayaran = [];
+                                                                            pembayaran = this.state.pembayaran;
+                                                                            pembayaran.bayar_kuliah = e.target.value;
+                                                                            this.setState({pembayaran});
+                                                                        }}
+                                                                        defaultValue={false}
+                                                                        className="form-control m-b"
+                                                                    >
+                                                                        <option value={false}>Tidak</option>
+                                                                        <option value={true}>Ya</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                            {
+                                                                this.state.pembayaran.bayar_kuliah == "true" ? (
+                                                                    <div>
+                                                                        <div className="form-group row">
+                                                                            <label className="col-lg-2 col-form-label">
+                                                                                Nominal Tagihan (Rp.)
+                                                                            </label>
+                                                                            <div className="col-lg-4">
+                                                                                <input
+                                                                                    type="text"
+                                                                                    className="form-control m-b"
+                                                                                    disabled="disabled"
+                                                                                    value={
+                                                                                        this.state.tagihan != 0 ?
+                                                                                            this.formatNumber(
+                                                                                                this.state.tagihan
+                                                                                                    .find(
+                                                                                                        data =>
+                                                                                                            data.mahasiswa_info.nim ==
+                                                                                                            this.state.pembayaran.mahasiswa && data.status == false
+                                                                                                    ).nominal.toFixed(2)
+                                                                                            )
+                                                                                            : "Mencari nilai tagihan..."
+                                                                                    }
+                                                                                />
+                                                                            </div>
+                                                                        </div>
+                                                                        <div className="form-group row">
+                                                                            <label className="col-lg-2 col-form-label">
+                                                                                Masa Tagihan
+                                                                            </label>
+                                                                            <div className="col-lg-4">
+                                                                                <select
+                                                                                    disabled={
+                                                                                        this.state.pembayaran.mahasiswa == null
+                                                                                            ? "disabled"
+                                                                                            : null
+                                                                                    }
+                                                                                    value={this.state.pembayaran.tagihan}
+                                                                                    onChange={e => {
+                                                                                        let pembayaran = [];
+                                                                                        pembayaran = this.state.pembayaran;
+                                                                                        pembayaran.tagihan = e.target.value;
+                                                                                        this.setState({pembayaran});
+                                                                                    }}
+                                                                                    defaultValue={true}
+                                                                                    className="form-control m-b"
+                                                                                >
+                                                                                    <option value="">Pilih Masa Tagihan</option>
+                                                                                    {this.state.tagihan
+                                                                                        .filter(
+                                                                                            data =>
+                                                                                                data.mahasiswa_info.nim ==
+                                                                                                this.state.pembayaran.mahasiswa &&
+                                                                                                data.status == false
+                                                                                        )
+                                                                                        .map((tagihan, key) => (
+                                                                                            <option value={tagihan.id}>
+                                                                                                Bulan{" "}
+                                                                                                {moment(tagihan.tanggal).format("MM-YYYY")}
+                                                                                            </option>
+                                                                                        ))}
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                ) :
+                                                                <div className="form-group row">
+                                                                    <label className="col-lg-2 col-form-label">Uraian</label>
+                                                                    <div className="col-lg-4">
+                                                                        <input
+                                                                            type="text"
+                                                                            disabled=""
+                                                                            value={this.state.pembayaran.judul}
+                                                                            onChange={e => {
+                                                                                let pembayaran = {...this.state.pembayaran};
+                                                                                pembayaran.judul = e.target.value;
+                                                                                this.setState({pembayaran});
+                                                                            }}
+                                                                            name="pekerjaan_ayah"
+                                                                            placeholder="Uraian transaksi"
+                                                                            className="form-control"
+                                                                        />
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                        :
+                                                        null
+                                                :
                                                     <div className="form-group row">
                                                         <label className="col-lg-2 col-form-label">
-                                                            Nominal Tagihan (Rp.)
                                                         </label>
                                                         <div className="col-lg-4">
-                                                            <input
-                                                                type="text"
-                                                                className="form-control m-b"
-                                                                disabled="disabled"
-                                                                value={
-                                                                    this.state.tagihan != 0 ?
-                                                                        this.formatNumber(
-                                                                            this.state.tagihan
-                                                                                .find(
-                                                                                    data =>
-                                                                                        data.mahasiswa_info.nim ==
-                                                                                        this.state.pembayaran.mahasiswa && data.status == false
-                                                                                ).nominal.toFixed(2)
-                                                                        )
-                                                                        : "Mencari nilai tagihan..."
-                                                                }
-                                                            />
+                                                            <div className="alert alert-success">
+                                                                <strong>Pembayaran Biaya Pendidikan Telah Selesai</strong>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                    <div className="form-group row">
-                                                        <label className="col-lg-2 col-form-label">
-                                                            Masa Tagihan
-                                                        </label>
-                                                        <div className="col-lg-4">
-                                                            <select
-                                                                disabled={
-                                                                    this.state.pembayaran.mahasiswa == null
-                                                                        ? "disabled"
-                                                                        : null
-                                                                }
-                                                                value={this.state.pembayaran.tagihan}
-                                                                onChange={e => {
-                                                                    let pembayaran = [];
-                                                                    pembayaran = this.state.pembayaran;
-                                                                    pembayaran.tagihan = e.target.value;
-                                                                    this.setState({pembayaran});
-                                                                }}
-                                                                defaultValue={true}
-                                                                className="form-control m-b"
-                                                            >
-                                                                <option value="">Pilih Masa Tagihan</option>
-                                                                {this.state.tagihan
-                                                                    .filter(
-                                                                        data =>
-                                                                            data.mahasiswa_info.nim ==
-                                                                            this.state.pembayaran.mahasiswa &&
-                                                                            data.status == false
-                                                                    )
-                                                                    .map((tagihan, key) => (
-                                                                        <option value={tagihan.id}>
-                                                                            Bulan{" "}
-                                                                            {moment(tagihan.tanggal).format("MM-YYYY")}
-                                                                        </option>
-                                                                    ))}
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            ) :
-                                            <div className="form-group row">
-                                                <label className="col-lg-2 col-form-label">Uraian</label>
-                                                <div className="col-lg-4">
-                                                    <input
-                                                        type="text"
-                                                        disabled=""
-                                                        value={this.state.pembayaran.judul}
-                                                        onChange={e => {
-                                                            let pembayaran = {...this.state.pembayaran};
-                                                            pembayaran.judul = e.target.value;
-                                                            this.setState({pembayaran});
-                                                        }}
-                                                        name="pekerjaan_ayah"
-                                                        placeholder="Uraian transaksi"
-                                                        className="form-control"
-                                                    />
-                                                </div>
-                                            </div>
-
-                                        }
-
+                                            }
+                                        </div>
                                         <div className="form-group row">
                                             <label className="col-lg-2 col-form-label">Tanggal</label>
                                             <div className="col-lg-4">

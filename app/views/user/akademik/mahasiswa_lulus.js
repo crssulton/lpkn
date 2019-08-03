@@ -1,6 +1,7 @@
 import React, {Component} from "react";
 import {BASE_URL} from "../../../config/config.js";
 import {Link} from "react-router";
+import $ from "jquery";
 
 class Mahasiswa extends Component {
     constructor(props) {
@@ -25,7 +26,8 @@ class Mahasiswa extends Component {
             selectedMahasiswa: "",
             selectedJurusan: "",
             selectedKelas: "",
-            kelas: []
+            kelas: [],
+            fotoMhs: null
         };
     }
 
@@ -182,6 +184,10 @@ class Mahasiswa extends Component {
         });
     };
 
+    onChangeFoto = e => {
+        this.setState({fotoMhs : e.target.files[0]})
+    }
+
     fetchMahasiswa = () => {
         const self = this;
 
@@ -241,7 +247,8 @@ class Mahasiswa extends Component {
             })
             .then(function (data) {
                 self.setState({
-                    kelas: data.results
+                    kelas: data.results,
+                    selectedKelas: ""
                 });
             });
     };
@@ -389,6 +396,37 @@ class Mahasiswa extends Component {
                 });
         }
     };
+
+    updateQuotes = () => {
+        const self = this
+        let formData = new FormData()
+        let mahasiswa = {...this.state.mahasiswa}
+
+        if( this.state.fotoMhs != null) formData.append('foto', this.state.fotoMhs)
+        if(mahasiswa.kesan != null) formData.append('kesan', mahasiswa.kesan)
+
+        fetch(BASE_URL + '/api/mahasiswa/' + this.state.mahasiswa.id +'/', {
+            method: 'patch',
+            headers: {
+                'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+            },
+            body: formData
+        }).then(function(response) {
+            if(response.status == 200){
+                toastr.success("Data berhasil diubah", "Sukses ! ")
+                self.fetchMahasiswa();
+            }else{
+                toastr.warning("Gagal mengubah Data", "Gagal ! ")
+            }
+            return response.json()
+        })
+            .then(function(data) {
+                let mahasiswa = self.state.mahasiswa
+                mahasiswa.foto = data.foto
+                self.setState({mahasiswa})
+            })
+
+    }
 
     formatNumber = (num) => {
         return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
@@ -627,6 +665,7 @@ class Mahasiswa extends Component {
                                         {" "}
                                         <i className="fa fa-user"/> Profil Mahasiswa
                                     </h5>
+                                    <a  onClick={() => $('#ModalEditQuotes').modal('show')} className="pull-right" style={{color:'white'}}><i className="fa fa-pencil"></i></a>
                                 </div>
                                 <div className="ibox-content">
                                     {this.state.profil ? (
@@ -665,10 +704,14 @@ class Mahasiswa extends Component {
                                                 <p style={{textAlign: "center"}}>
                                                     {this.state.mahasiswa.nim}
                                                 </p>
+                                                <blockquote style={{textAlign: "center", fontSize: "10pt"}}>
+                                                    <i>{this.state.mahasiswa.kesan}</i>
+                                                </blockquote>
                                                 <p style={{textAlign: "center"}}>
                                                     <select
                                                         value={this.state.selectedStatus}
                                                         onChange={e =>
+
                                                             this.setState({selectedStatus: e.target.value})
                                                         }
                                                         style={{width: "50%", margin: "0 auto"}}
@@ -676,11 +719,7 @@ class Mahasiswa extends Component {
                                                         name="account"
                                                     >
                                                         <option value="">--Status--</option>
-                                                        <option value="aktif">Aktif</option>
-                                                        <option value="tidak_aktif">Tidak Aktif</option>
-                                                        <option value="magang">Magang</option>
                                                         <option value="bekerja">Bekerja</option>
-                                                        <option value="pindah">Pindah Jurusan</option>
                                                     </select>
                                                 </p>
                                                 {this.state.selectedStatus == "magang" ? (
@@ -783,9 +822,7 @@ class Mahasiswa extends Component {
                                                     null
                                             }
 
-                                            {this.state.bekerja.find(
-                                                data => data.mahasiswa == this.state.mahasiswa.id
-                                            ) != null ? (
+                                            {this.state.mahasiswa.bekerja.length != 0 ? (
                                                 <table className="table">
                                                     <tbody>
                                                     <tr>
@@ -795,10 +832,7 @@ class Mahasiswa extends Component {
                                                         <td>
                                                             :{" "}
                                                             {
-                                                                this.state.bekerja.find(
-                                                                    data =>
-                                                                        data.mahasiswa == this.state.mahasiswa.id
-                                                                ).tempat
+                                                                this.state.mahasiswa.bekerja[0].tempat
                                                             }
                                                         </td>
                                                     </tr>
@@ -809,10 +843,7 @@ class Mahasiswa extends Component {
                                                         <td>
                                                             :{" "}
                                                             {
-                                                                moment(this.state.bekerja.find(
-                                                                    data =>
-                                                                        data.mahasiswa == this.state.mahasiswa.id
-                                                                ).tanggal_mulai).format("DD-MM-YYYY")
+                                                                moment(this.state.mahasiswa.bekerja[0].tanggal_mulai).format("DD-MM-YYYY")
                                                             }
                                                         </td>
                                                     </tr>
@@ -820,9 +851,7 @@ class Mahasiswa extends Component {
                                                 </table>
                                             ) : null}
 
-                                            {this.state.magang.find(
-                                                data => data.mahasiswa == this.state.mahasiswa.id
-                                            ) != null ? (
+                                            {this.state.mahasiswa.magang.length != 0 ? (
                                                 <table className="table">
                                                     <tbody>
                                                     <tr>
@@ -832,10 +861,7 @@ class Mahasiswa extends Component {
                                                         <td>
                                                             :{" "}
                                                             {
-                                                                this.state.magang.find(
-                                                                    data =>
-                                                                        data.mahasiswa == this.state.mahasiswa.id
-                                                                ).tempat
+                                                                this.state.mahasiswa.magang[0].tempat
                                                             }
                                                         </td>
                                                     </tr>
@@ -846,10 +872,7 @@ class Mahasiswa extends Component {
                                                         <td>
                                                             :{" "}
                                                             {
-                                                                moment(this.state.magang.find(
-                                                                    data =>
-                                                                        data.mahasiswa == this.state.mahasiswa.id
-                                                                ).tanggal_mulai).format("DD-MM-YYYY")
+                                                                moment(this.state.mahasiswa.magang[0].tanggal_mulai).format("DD-MM-YYYY")
                                                             }
                                                         </td>
                                                     </tr>
@@ -860,10 +883,7 @@ class Mahasiswa extends Component {
                                                         <td>
                                                             :{" "}
                                                             {
-                                                                moment(this.state.magang.find(
-                                                                    data =>
-                                                                        data.mahasiswa == this.state.mahasiswa.id
-                                                                ).tanggal_selesai).format("DD-MM-YYYY")
+                                                                moment(this.state.mahasiswa.magang[0].tanggal_selesai).format("DD-MM-YYYY")
                                                             }
                                                         </td>
                                                     </tr>
@@ -907,7 +927,7 @@ class Mahasiswa extends Component {
                                                     <td>
                                                         <b>Agama</b>
                                                     </td>
-                                                    <td>: {this.state.mahasiswa.agama.toUpperCase()}</td>
+                                                    <td>: {this.state.mahasiswa.agama}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
@@ -997,6 +1017,56 @@ class Mahasiswa extends Component {
 
                                         </div>
                                     ) : null}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="ModalEditQuotes" className="modal fade">
+                        <div className="modal-dialog">
+                            <div className="modal-content">
+                                <div className="modal-header">
+                                    <button type="button" className="close" data-dismiss="modal"><span aria-hidden="true">×</span> <span className="sr-only">close</span></button>
+                                    <h4 id="modalTitle" className="modal-title">Tambah Kesan Mahasiswa</h4>
+                                </div>
+                                <div className="modal-body">
+                                    <div className="table-responsive">
+                                        {
+                                            this.state.mahasiswa != null ?
+                                                <div className="ibox-content">
+                                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Foto</label>
+                                                        <div className="col-lg-10">
+                                                            <input
+                                                                type="file"
+                                                                disabled=""
+                                                                onChange={this.onChangeFoto}
+                                                                className="form-control"/>
+                                                        </div>
+                                                    </div>
+                                                    <div className="form-group row"><label className="col-lg-2 col-form-label">Kesan</label>
+                                                    <div className="col-lg-10">
+                                                        <input
+                                                            type="text"
+                                                            disabled=""
+                                                            value={this.state.mahasiswa.kesan}
+                                                            onChange={(e) => {
+                                                                let mahasiswa = this.state.mahasiswa
+                                                                mahasiswa.kesan = e.target.value
+                                                                this.setState({mahasiswa})
+                                                            }}
+                                                            className="form-control"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                :
+                                                null
+                                        }
+
+                                    </div>
+                                </div>
+                                <div className="modal-footer">
+                                    <button type="button" className="btn btn-default" data-dismiss="modal">Tutup</button>
+                                    <button onClick={this.updateQuotes} type="button" className="btn btn-success" data-dismiss="modal">Simpan</button>
                                 </div>
                             </div>
                         </div>

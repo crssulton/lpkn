@@ -108,7 +108,6 @@ class Calon_Mahasiswa extends Component {
         return response.json();
       })
       .then(function(data) {
-        console.log(data)
         self.setState({
           mahasiswas: data,
           loading: false
@@ -179,7 +178,6 @@ class Calon_Mahasiswa extends Component {
           return response.json()
         })
         .then(function(data) {
-          console.log(data)
 
         });
     }
@@ -263,7 +261,6 @@ class Calon_Mahasiswa extends Component {
         return response.json();
       })
       .then(function(data) {
-        console.log(data)
         self.setState({
           mahasiswas: data.filter(x => x.calon == true),
           loading: false

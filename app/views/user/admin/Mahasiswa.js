@@ -126,7 +126,6 @@ class Calon_Mahasiswa extends Component {
                 return response.json();
             })
             .then(function(data) {
-                console.log(data);
                 self.setState({
                     mahasiswas: data,
                     num_pages: data.num_pages,

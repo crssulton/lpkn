@@ -58,7 +58,6 @@ export default class Form_add_staff extends Component {
             },
             body: formData
         }).then(function (response) {
-            console.log(response)
             if (response.status == 200) {
                 toastr.success("Data berhasil diubah", "Sukses ! ")
                 self.props.history.goBack()

@@ -99,7 +99,6 @@ class List_pendaftar extends Component {
         return response.json();
       })
       .then(function(data) {
-        console.log(data)
         self.setState({
           pendaftars: data.filter(x => x.approved == false && x.online_register == false),
           numPage: data.num_pages,

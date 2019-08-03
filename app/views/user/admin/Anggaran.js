@@ -36,7 +36,6 @@ class Anggaran extends Component {
         }).then(function (response) {
             return response.json();
         }).then(function (data) {
-            console.log(data.results)
             self.setState({
                 pengajuan_anggaran: data.results,
                 loading: !self.state.loading
@@ -68,7 +67,6 @@ class Anggaran extends Component {
 
         let newPengajuan = {...this.state.newPengajuan}
 
-        console.log(JSON.stringify(this.state.newPengajuan))
         fetch(BASE_URL + '/api/pengajuan-anggaran/', {
             method: 'post',
             headers: {

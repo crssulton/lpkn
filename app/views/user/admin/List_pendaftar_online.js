@@ -205,8 +205,6 @@ class List_pendaftar extends Component {
 
         let pendaftar = {...this.state.pendaftar};
 
-        console.log(pendaftar.biaya_pendaftaran)
-
         if (pendaftar.biaya_pendaftaran == "true") {
             pendaftar.biaya_pendaftaran_nominal = 250000;
 
@@ -235,22 +233,6 @@ class List_pendaftar extends Component {
                                 return response.json();
                             })
                             .then(function (data) {
-
-                                if (data.id != null) {
-                                    self.setState(
-                                        {
-                                            kwitansi: data
-                                        },
-                                        () => {
-                                            if (typeof (data.transaksi[0]) !== 'undefined') {
-                                                self.setState({check: true})
-                                                setTimeout(() => {
-                                                    self.exportData()
-                                                }, 100)
-                                            }
-                                        }
-                                    );
-                                }
                             });
                     }
                 });
@@ -282,22 +264,6 @@ class List_pendaftar extends Component {
                             return response.json();
                         })
                         .then(function (data) {
-
-                            if (data.id != null) {
-                                self.setState(
-                                    {
-                                        kwitansi: data
-                                    },
-                                    () => {
-                                        if (typeof (data.transaksi[0]) !== 'undefined') {
-                                            self.setState({check: true})
-                                            setTimeout(() => {
-                                                self.exportData()
-                                            }, 100)
-                                        }
-                                    }
-                                );
-                            }
                         });
                 }
             });
@@ -336,10 +302,11 @@ class List_pendaftar extends Component {
                         },
                         () => {
                             if (typeof (data.transaksi[0]) !== 'undefined') {
-                                self.setState({check: true})
-                                setTimeout(() => {
-                                    self.exportData()
-                                }, 100)
+                                self.setState({check: true}, () => {
+                                    setTimeout(() => {
+                                        self.exportData()
+                                    }, 100)
+                                })
                             }
                         }
                     );

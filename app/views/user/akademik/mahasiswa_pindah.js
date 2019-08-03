@@ -241,7 +241,8 @@ class Mahasiswa extends Component {
             })
             .then(function (data) {
                 self.setState({
-                    kelas: data.results
+                    kelas: data.results,
+                    selectedKelas: ""
                 });
             });
     };
@@ -665,24 +666,6 @@ class Mahasiswa extends Component {
                                                 <p style={{textAlign: "center"}}>
                                                     {this.state.mahasiswa.nim}
                                                 </p>
-                                                <p style={{textAlign: "center"}}>
-                                                    <select
-                                                        value={this.state.selectedStatus}
-                                                        onChange={e =>
-                                                            this.setState({selectedStatus: e.target.value})
-                                                        }
-                                                        style={{width: "50%", margin: "0 auto"}}
-                                                        className="form-control m-b"
-                                                        name="account"
-                                                    >
-                                                        <option value="">--Status--</option>
-                                                        <option value="aktif">Aktif</option>
-                                                        <option value="tidak_aktif">Tidak Aktif</option>
-                                                        <option value="magang">Magang</option>
-                                                        <option value="bekerja">Bekerja</option>
-                                                        <option value="pindah">Pindah Jurusan</option>
-                                                    </select>
-                                                </p>
                                                 {this.state.selectedStatus == "magang" ? (
                                                     <div>
                                                         <label>Lokasi Magang</label>
@@ -783,9 +766,7 @@ class Mahasiswa extends Component {
                                                     null
                                             }
 
-                                            {this.state.bekerja.find(
-                                                data => data.mahasiswa == this.state.mahasiswa.id
-                                            ) != null ? (
+                                            {this.state.mahasiswa.bekerja.length != 0 ? (
                                                 <table className="table">
                                                     <tbody>
                                                     <tr>
@@ -795,10 +776,7 @@ class Mahasiswa extends Component {
                                                         <td>
                                                             :{" "}
                                                             {
-                                                                this.state.bekerja.find(
-                                                                    data =>
-                                                                        data.mahasiswa == this.state.mahasiswa.id
-                                                                ).tempat
+                                                                this.state.mahasiswa.bekerja[0].tempat
                                                             }
                                                         </td>
                                                     </tr>
@@ -809,10 +787,7 @@ class Mahasiswa extends Component {
                                                         <td>
                                                             :{" "}
                                                             {
-                                                                moment(this.state.bekerja.find(
-                                                                    data =>
-                                                                        data.mahasiswa == this.state.mahasiswa.id
-                                                                ).tanggal_mulai).format("DD-MM-YYYY")
+                                                                moment(this.state.mahasiswa.bekerja[0].tanggal_mulai).format("DD-MM-YYYY")
                                                             }
                                                         </td>
                                                     </tr>
@@ -820,9 +795,7 @@ class Mahasiswa extends Component {
                                                 </table>
                                             ) : null}
 
-                                            {this.state.magang.find(
-                                                data => data.mahasiswa == this.state.mahasiswa.id
-                                            ) != null ? (
+                                            {this.state.mahasiswa.magang.length != 0 ? (
                                                 <table className="table">
                                                     <tbody>
                                                     <tr>
@@ -832,10 +805,7 @@ class Mahasiswa extends Component {
                                                         <td>
                                                             :{" "}
                                                             {
-                                                                this.state.magang.find(
-                                                                    data =>
-                                                                        data.mahasiswa == this.state.mahasiswa.id
-                                                                ).tempat
+                                                                this.state.mahasiswa.magang[0].tempat
                                                             }
                                                         </td>
                                                     </tr>
@@ -846,10 +816,7 @@ class Mahasiswa extends Component {
                                                         <td>
                                                             :{" "}
                                                             {
-                                                                moment(this.state.magang.find(
-                                                                    data =>
-                                                                        data.mahasiswa == this.state.mahasiswa.id
-                                                                ).tanggal_mulai).format("DD-MM-YYYY")
+                                                                moment(this.state.mahasiswa.magang[0].tanggal_mulai).format("DD-MM-YYYY")
                                                             }
                                                         </td>
                                                     </tr>
@@ -860,10 +827,7 @@ class Mahasiswa extends Component {
                                                         <td>
                                                             :{" "}
                                                             {
-                                                                moment(this.state.magang.find(
-                                                                    data =>
-                                                                        data.mahasiswa == this.state.mahasiswa.id
-                                                                ).tanggal_selesai).format("DD-MM-YYYY")
+                                                                moment(this.state.mahasiswa.magang[0].tanggal_selesai).format("DD-MM-YYYY")
                                                             }
                                                         </td>
                                                     </tr>
@@ -907,7 +871,7 @@ class Mahasiswa extends Component {
                                                     <td>
                                                         <b>Agama</b>
                                                     </td>
-                                                    <td>: {this.state.mahasiswa.agama.toUpperCase()}</td>
+                                                    <td>: {this.state.mahasiswa.agama}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
@@ -979,22 +943,6 @@ class Mahasiswa extends Component {
                                                 </tr>
                                                 </tbody>
                                             </table>
-
-                                            <div>
-                                                <div className="col-sm-6">
-                                                    <button
-                                                        className="btn btn-info btn-block"
-                                                        type="button"
-                                                        onClick={this.updateStatusMahasiswa}
-                                                    >
-                                                        Ubah
-                                                    </button>
-                                                </div>
-                                                <div className="col-sm-6">
-
-                                                </div>
-                                            </div>
-
                                         </div>
                                     ) : null}
                                 </div>

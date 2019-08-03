@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {BASE_URL} from '../../config/config.js'
 import swal from "sweetalert";
-
+//TODO url akun double, ada akun untuk keuangan sama akun untuk akun user, ubah url nya
 export default class Akun extends Component {
 
     constructor(props) {

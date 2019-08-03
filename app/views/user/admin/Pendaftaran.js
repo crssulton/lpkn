@@ -109,7 +109,6 @@ class Pendaftaran extends Component {
       pendaftar.biaya_pendaftaran_nominal = 250000;
     }
 
-    console.log(JSON.stringify(pendaftar));
     fetch(BASE_URL + "/api/pendaftaran/", {
       method: "post",
       headers: {
@@ -149,7 +148,6 @@ class Pendaftaran extends Component {
         return response.json();
       })
       .then(function(data) {
-        console.log(JSON.stringify(data))
         if (data.id != null) {
           self.setState(
             {

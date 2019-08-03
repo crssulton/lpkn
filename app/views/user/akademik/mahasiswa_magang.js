@@ -241,7 +241,8 @@ class Mahasiswa extends Component {
             })
             .then(function (data) {
                 self.setState({
-                    kelas: data.results
+                    kelas: data.results,
+                    selectedKelas: ""
                 });
             });
     };
@@ -783,9 +784,7 @@ class Mahasiswa extends Component {
                                                     null
                                             }
 
-                                            {this.state.bekerja.find(
-                                                data => data.mahasiswa == this.state.mahasiswa.id
-                                            ) != null ? (
+                                            {this.state.mahasiswa.bekerja.length != 0 ? (
                                                 <table className="table">
                                                     <tbody>
                                                     <tr>
@@ -795,10 +794,7 @@ class Mahasiswa extends Component {
                                                         <td>
                                                             :{" "}
                                                             {
-                                                                this.state.bekerja.find(
-                                                                    data =>
-                                                                        data.mahasiswa == this.state.mahasiswa.id
-                                                                ).tempat
+                                                                this.state.mahasiswa.bekerja[0].tempat
                                                             }
                                                         </td>
                                                     </tr>
@@ -809,10 +805,7 @@ class Mahasiswa extends Component {
                                                         <td>
                                                             :{" "}
                                                             {
-                                                                moment(this.state.bekerja.find(
-                                                                    data =>
-                                                                        data.mahasiswa == this.state.mahasiswa.id
-                                                                ).tanggal_mulai).format("DD-MM-YYYY")
+                                                                moment(this.state.mahasiswa.bekerja[0].tanggal_mulai).format("DD-MM-YYYY")
                                                             }
                                                         </td>
                                                     </tr>
@@ -820,9 +813,7 @@ class Mahasiswa extends Component {
                                                 </table>
                                             ) : null}
 
-                                            {this.state.magang.find(
-                                                data => data.mahasiswa == this.state.mahasiswa.id
-                                            ) != null ? (
+                                            {this.state.mahasiswa.magang.length != 0 ? (
                                                 <table className="table">
                                                     <tbody>
                                                     <tr>
@@ -832,10 +823,7 @@ class Mahasiswa extends Component {
                                                         <td>
                                                             :{" "}
                                                             {
-                                                                this.state.magang.find(
-                                                                    data =>
-                                                                        data.mahasiswa == this.state.mahasiswa.id
-                                                                ).tempat
+                                                                this.state.mahasiswa.magang[0].tempat
                                                             }
                                                         </td>
                                                     </tr>
@@ -846,10 +834,7 @@ class Mahasiswa extends Component {
                                                         <td>
                                                             :{" "}
                                                             {
-                                                                moment(this.state.magang.find(
-                                                                    data =>
-                                                                        data.mahasiswa == this.state.mahasiswa.id
-                                                                ).tanggal_mulai).format("DD-MM-YYYY")
+                                                                moment(this.state.mahasiswa.magang[0].tanggal_mulai).format("DD-MM-YYYY")
                                                             }
                                                         </td>
                                                     </tr>
@@ -860,10 +845,7 @@ class Mahasiswa extends Component {
                                                         <td>
                                                             :{" "}
                                                             {
-                                                                moment(this.state.magang.find(
-                                                                    data =>
-                                                                        data.mahasiswa == this.state.mahasiswa.id
-                                                                ).tanggal_selesai).format("DD-MM-YYYY")
+                                                                moment(this.state.mahasiswa.magang[0].tanggal_selesai).format("DD-MM-YYYY")
                                                             }
                                                         </td>
                                                     </tr>
@@ -907,7 +889,7 @@ class Mahasiswa extends Component {
                                                     <td>
                                                         <b>Agama</b>
                                                     </td>
-                                                    <td>: {this.state.mahasiswa.agama.toUpperCase()}</td>
+                                                    <td>: {this.state.mahasiswa.agama}</td>
                                                 </tr>
                                                 <tr>
                                                     <td>
@@ -1070,22 +1052,13 @@ class Mahasiswa extends Component {
                                             {data.tahun_angkatan}
                                         </td>
                                         <td>
-                                            {this.state.magang.find(
-                                                data =>
-                                                    data.mahasiswa == data.id
-                                            ).tempat}
+                                            {data.magang[0].tempat}
                                         </td>
                                         <td>
-                                            {moment(this.state.magang.find(
-                                                data =>
-                                                    data.mahasiswa == data.id
-                                            ).tanggal_mulai).format("DD-MM-YYYY")}
+                                            {moment(data.magang[0].tanggal_mulai).format("DD-MM-YYYY")}
                                         </td>
                                         <td>
-                                            {moment(this.state.magang.find(
-                                                data =>
-                                                    data.mahasiswa == data.id
-                                            ).tanggal_selesai).format("DD-MM-YYYY")}
+                                            {moment(data.magang[0].tanggal_selesai).format("DD-MM-YYYY")}
                                         </td>
                                     </tr>
                                 ))}

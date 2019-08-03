@@ -88,7 +88,7 @@ class Nilai_Mahasiswa extends Component {
                 kelas: data.results
             })
         });
-    }
+    };
 
     handlePilih(event){
         this.setState({ 
@@ -219,8 +219,8 @@ class Nilai_Mahasiswa extends Component {
                                         selectedMatkul: "",
                                         selectedKelas: ""
                                     }, () =>{
-                                        this.getMatkul()
-                                        this.getKelas()
+                                        this.getMatkul();
+                                        this.getKelas();
                                     })
                                   }}
                                   className="form-control"

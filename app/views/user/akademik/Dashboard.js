@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {BASE_URL} from '../../../config/config.js'
-import { QRCode } from "react-qr-svg";
+import {QRCode} from "react-qr-svg";
 
 class Dashboard extends Component {
 
@@ -25,15 +25,22 @@ class Dashboard extends Component {
             loading: false,
             openQR:false,
             selectedID: null,
-            data: null
+            data: null,
+			loop: true
         }
     }
 
     componentDidMount(){
-    	this.getJadwal()
+    	this.fetchJadwal()
     }
 
-    getJadwal = () => {
+    getJadwal = (id) => {
+
+		if(id.dosen_hadir){
+			this.setState({loop: false})
+			return;
+		}
+
     	const self = this
     	let d = new Date(),
         month = '' + (d.getMonth() + 1),
@@ -49,30 +56,71 @@ class Dashboard extends Component {
 			headers: {
 				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
 			}
-		}).then(function(response) {
+		}).then(function (response) {
 			return response.json();
-		}).then(function(data) {
+		}).then(function (data) {
+			let newData = data.results.find(x => x.id == id.id);
+			self.setState({
+				jadwal: data.results,
+				data: newData
+			});
+
+			if (newData.dosen_hadir){
+				self.setState({loop: false, loading: true})
+			}
+			setTimeout(() => {
+				self.setState({loading: false})
+			}, 1000)
+		})
+    }
+
+	fetchJadwal = () => {
+		const self = this
+		let d = new Date(),
+			month = '' + (d.getMonth() + 1),
+			day = '' + d.getDate(),
+			year = d.getFullYear();
+
+		if (month.length < 2) month = '0' + month;
+		if (day.length < 2) day = '0' + day;
+		let tanggal = [year, month, day].join('-')
+
+		fetch(BASE_URL + '/api/jadwal/?tanggal=' + tanggal, {
+			method: 'get',
+			headers: {
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+			}
+		}).then(function (response) {
+			return response.json();
+		}).then(function (data) {
 			self.setState({
 				jadwal: data.results
 			})
 		});
-    }
+	}
 
     generateQrCode = (id) => {
+		this.setState({loop: true})
 
     	this.setState({
     		openQR: true,
     		selectedID: id.id,
     		data: id,
 			loading: !this.state.loading
-		})
+		});
 		
     	setTimeout(() => {
     		this.setState({
 				QRCode: id.id.toString(),
 				loading: !this.state.loading
 			})
-    	}, 1000)
+    	}, 1000);
+
+		let interval = setInterval(() => {
+			if(!this.state.loop) clearInterval(interval)
+			else this.getJadwal(id)
+		}, 1500);
+
     }
 
     handleAbsenDosen = () => {

@@ -81,11 +81,11 @@ class Users extends Component {
 
     onFilterData = () => {
         const self = this;
-        username = this.state.username;
+        let username = this.state.username;
 
         this.setState({loading: true});
 
-        fetch(BASE_URL + `/api/users/${username}`, {
+        fetch(BASE_URL + `/api/users/?username=${username}`, {
             method: 'get',
             headers: {
                 'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
@@ -95,6 +95,7 @@ class Users extends Component {
         }).then(function (response) {
             return response.json();
         }).then(function (data) {
+            console.log(data)
             self.setState({
                 users: data,
                 loading: !self.state.loading
@@ -114,13 +115,13 @@ class Users extends Component {
             <div>
                 <div className="row wrapper border-bottom white-bg page-heading">
                     <div className="col-lg-8">
-                        <h2>Daftar Dosen</h2>
+                        <h2>Daftar Users</h2>
                         <ol className="breadcrumb">
                             <li className="breadcrumb-item">
                                 Dashboard
                             </li>
                             <li className="breadcrumb-item active">
-                                <strong>Dosen</strong>
+                                <strong>Users</strong>
                             </li>
                         </ol>
                     </div>
@@ -132,7 +133,7 @@ class Users extends Component {
                         <div className="col-lg-12">
                             <div className="ibox ">
                                 <div className="ibox-title" style={{'backgroundColor': '#1ab394', 'color': 'white'}}>
-                                    <h5><i className="fa fa-list "></i> Daftar Dosen</h5>
+                                    <h5><i className="fa fa-list "></i> Daftar Users</h5>
                                 </div>
                                 <div className="ibox-content">
                                     <div className="row">
@@ -219,15 +220,12 @@ class Users extends Component {
                                                     </tbody>
                                                 </table>
                                             </div>
-
                                     }
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-
             </div>
 
 

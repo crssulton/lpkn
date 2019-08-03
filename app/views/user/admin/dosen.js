@@ -265,7 +265,6 @@ class Administrator extends Component {
         let addButton = document.getElementsByClassName("btn-add")
         addButton[0].setAttribute("disabled", "disabled")
 
-        console.log(JSON.stringify(self.state.dosenBaru))
         fetch(BASE_URL + '/api/dosen/', {
             method: 'post',
             headers: {

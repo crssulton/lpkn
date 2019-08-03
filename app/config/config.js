@@ -1,1 +1,1 @@
-export const BASE_URL = 'http://lpkn.itec.my.id:9000'
+export const BASE_URL = 'http://api.lpkntrainingcenter.sch.id:9000';

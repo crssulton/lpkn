@@ -1,7 +1,6 @@
-import React, { Component } from 'react';	
+import React, {Component} from 'react';
 import {BASE_URL} from '../../../config/config.js'
 import moment from 'moment'
-import print from "print-js";
 
 class RekapMahasiswa extends Component {
 
@@ -50,7 +49,33 @@ class RekapMahasiswa extends Component {
 			})
 		});
 
-		fetch(BASE_URL + '/api/kelas/', {
+    }
+
+	onFilterData = () => {
+		const self = this
+
+		let jurusan = this.state.selectedJurusan;
+		let kelas = this.state.selectedKelas;
+		let matkul = this.state.selectedMatkul;
+
+		if (this.state.selectedMatkul != "" && this.state.selectedJurusan != "" && this.state.selectedKelas != "") {
+			this.setState({loading:true})
+
+		fetch(BASE_URL + `/api/absensi/?matkulid=${matkul}&kelas=${kelas}&jurusan=${jurusan}`, {
+			method: 'get',
+			headers: {
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+			}
+		}).then(function(response) {
+			return response.json();
+		}).then(function(data) {
+			console.log(JSON.stringify(data.results))
+			self.setState({
+				absensi: data.results
+			})
+		});
+
+		fetch(BASE_URL + `/api/jadwal/?matkul=${matkul}&jurusan=${jurusan}&kelas=${kelas}`, {
 			method: 'get',
 			headers: {
 				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
@@ -59,12 +84,18 @@ class RekapMahasiswa extends Component {
 			return response.json();
 		}).then(function(data) {
 			self.setState({
-				kelas: data.results,
+				jadwal: data.results.filter(x => x.kelas_info.id == kelas),
 				loading: false
 			})
 		});
+		}else{
+			toastr.warning("Silahkan melengkapi format filter data")
+		}
+	};
 
-		fetch(BASE_URL + '/api/mata-kuliah/', {
+	getKelas = () => {
+		const self = this
+		fetch(BASE_URL + '/api/kelas/?jurusan=' + this.state.selectedJurusan, {
 			method: 'get',
 			headers: {
 				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
@@ -72,54 +103,28 @@ class RekapMahasiswa extends Component {
 		}).then(function(response) {
 			return response.json();
 		}).then(function(data) {
+			self.setState({
+				kelas: data.results
+			})
+		});
+	};
+
+	getMatkul = () => {
+		const self = this
+		fetch(BASE_URL + '/api/mata-kuliah/?jurusan=' + this.state.selectedJurusan, {
+			method: 'get',
+			headers: {
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+			}
+		}).then(function(response) {
+			return response.json();
+		}).then(function(data) {
+			console.log(data)
 			self.setState({
 				matkul: data.results
 			})
 		});
-
-    }
-
-    onFilterData = () => {
-    	const self = this
-
-    	let jurusan = this.state.selectedJurusan;
-    	let kelas = this.state.selectedKelas;
-    	let matkul = this.state.selectedMatkul;
-
-    	if (this.state.selectedMatkul != "" && this.state.selectedJurusan != "" && this.state.selectedKelas != "") {
-    		this.setState({loading:true})
-
-			fetch(BASE_URL + `/api/absensi/?matkulid=${matkul}&kelas=${kelas}&jurusan=${jurusan}`, {
-				method: 'get',
-				headers: {
-					'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
-				}
-			}).then(function(response) {
-				return response.json();
-			}).then(function(data) {
-				console.log(JSON.stringify(data.results))
-				self.setState({
-					absensi: data.results
-				})
-			});
-			
-			fetch(BASE_URL + `/api/jadwal/?matkul=${matkul}&jurusan=${jurusan}&kelas=${kelas}`, {
-				method: 'get',
-				headers: {
-					'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
-				}
-			}).then(function(response) {
-				return response.json();
-			}).then(function(data) {
-				self.setState({
-					jadwal: data.results.filter(x => x.kelas_info.id == kelas),
-					loading: false
-				})
-			});
-    	}else{
-    		toastr.warning("Silahkan melengkapi format filter data")
-    	}
-    }
+	}
 
     render() {
         return (
@@ -172,7 +177,14 @@ class RekapMahasiswa extends Component {
 					                        <select
 					                          value={this.state.selectedJurusan}
 					                          onChange={e => {
-					                            this.setState({ selectedJurusan: e.target.value });
+																			this.setState({
+																				selectedJurusan: e.target.value,
+																				selectedMatkul: "",
+																				selectedKelas: ""
+																			}, () =>{
+																				this.getMatkul();
+																				this.getKelas();
+																			})
 					                          }}
 					                          className="form-control"
 					                        >
@@ -195,7 +207,6 @@ class RekapMahasiswa extends Component {
 					                        >
 					                          <option value="">Pilih Kelas</option>
 					                          {this.state.kelas
-					                          	.filter(item => item.jurusan_info.id == this.state.selectedJurusan)
 					                          	.map((kelas, key) => (
 					                              <option key={key} value={kelas.id}>
 					                                {kelas.nama} | Angkatan- {kelas.angkatan} 

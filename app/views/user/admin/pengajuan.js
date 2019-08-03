@@ -42,10 +42,6 @@ class Transaksi extends Component {
 
   handleChange = selectedOption => {
     this.setState({ selectedOption });
-    // selectedOption can be null when the `x` (close) button is clicked
-    if (selectedOption) {
-      console.log(`Selected: ${selectedOption.label}`);
-    }
   };
 
   componentDidMount() {
@@ -292,7 +288,6 @@ class Transaksi extends Component {
     }).then(function(response) {
         return response.json();
     }).then(function(data) {
-        console.log(data.results)
         self.setState({
             pengajuan: data
         })
