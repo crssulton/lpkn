@@ -465,12 +465,6 @@ class Transaksi extends Component {
                             {this.formatNumber(this.state.pengajuan.harga)}
                           </td>
                         </tr>
-                        <tr>
-                          <td>Sisa</td>
-                          <td>
-                            : Rp. {this.formatNumber(this.state.pengajuan.sisa)}
-                          </td>
-                        </tr>
                       </table>
                     </div>
                   </div>

@@ -1,7 +1,7 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import swal from "sweetalert";
-import { BASE_URL } from "../../../config/config.js";
-import { Link, Location } from "react-router";
+import {BASE_URL} from "../../../config/config.js";
+import {Link} from "react-router";
 
 class Kelas extends Component {
   constructor(props) {
@@ -183,45 +183,60 @@ class Kelas extends Component {
 
   addKelas = () => {
     const self = this;
+    let bentrok = false;
     let addButton = document.getElementsByClassName("btn-add");
     addButton[0].setAttribute("disabled", "disabled");
 
-    fetch(BASE_URL + "/api/kelas/", {
-      method: "post",
-      headers: {
-        Authorization: "JWT " + window.sessionStorage.getItem("token"),
-        "Content-Type": "application/json",
-        Accept: "application/json"
-      },
-      body: JSON.stringify(this.state.kelasBaru)
+    this.state.kelas.map(item => {
+      if (item.nama.toLowerCase() == self.state.kelasBaru.nama.toLowerCase()) {
+        swal({
+          icon: 'error',
+          text: `Kelas ${item.nama} telah dibuat untuk Jurusan ${item.jurusan_info.nama} Angkatan ke- ${item.angkatan_info.angkatan}. Silahkan Gunakan Nama Kelas Sesuai Dengan Angkatan`
+        });
+
+        bentrok = true;
+        addButton[0].removeAttribute("disabled");
+        return;
+      }
     })
-      .then(function(response) {
-        return response.json();
+
+    if (!bentrok)
+      fetch(BASE_URL + "/api/kelas/", {
+        method: "post",
+        headers: {
+          Authorization: "JWT " + window.sessionStorage.getItem("token"),
+          "Content-Type": "application/json",
+          Accept: "application/json"
+        },
+        body: JSON.stringify(this.state.kelasBaru)
       })
-      .then(function(data) {
-        if (data.id != null || data.id != undefined) {
-          addButton[0].removeAttribute("disabled");
-          let kelas = [];
-          let kelasBaru = self.state.kelasBaru;
-          kelasBaru.nama = null;
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(data) {
+          if (data.id != null || data.id != undefined) {
+            addButton[0].removeAttribute("disabled");
+            let kelas = [];
+            let kelasBaru = self.state.kelasBaru;
+            kelasBaru.nama = null;
 
-          kelas = self.state.kelas;
-          kelas.push(data);
+            kelas = self.state.kelas;
+            kelas.push(data);
 
-          self.setState({
-            addForm: true,
-            kelasBaru,
-            kelas
-          });
-          toastr.success("Kelas berhasil ditambahkan", "Sukses ! ");
-        } else {
-          addButton[0].removeAttribute("disabled");
-          self.setState({
-            addForm: true
-          });
-          toastr.warning("Gagal menambahkan Kelas", "Gagal ! ");
-        }
-      });
+            self.setState({
+              addForm: true,
+              kelasBaru,
+              kelas
+            });
+            toastr.success("Kelas berhasil ditambahkan", "Sukses ! ");
+          } else {
+            addButton[0].removeAttribute("disabled");
+            self.setState({
+              addForm: true
+            });
+            toastr.warning("Gagal menambahkan Kelas", "Gagal ! ");
+          }
+        });
   };
 
   onFilterData = () => {
@@ -492,20 +507,36 @@ class Kelas extends Component {
                                     <i className="fa fa-trash" />
                                   </button>
 
-                                  <Link
-                                    to={{
-                                      pathname: "daftar-kelas",
-                                      state: { kelas: data }
-                                    }}
-                                  >
+                                  <div className="btn-group">
                                     <button
                                       style={{ margin: "0 0 0 5px" }}
-                                      className="btn btn-primary btn-sm"
-                                      type="button"
-                                    >
+                                      data-toggle="dropdown"
+                                      className="btn btn-primary btn-sm dropdown-toggle">
                                       <i className="fa fa-address-card" />
                                     </button>
-                                  </Link>
+                                    <ul className="dropdown-menu">
+                                      <li>
+                                        <a href="#">
+                                          <Link
+                                            to={{
+                                              pathname: "daftar-kelas",
+                                              state: {kelas: data}
+                                            }}
+                                          >Tambah Mahasiswa</Link>
+                                        </a>
+                                      </li>
+                                      <li>
+                                        <a href="#">
+                                          <Link
+                                            to={{
+                                              pathname: "daftar-kelas-mahasiswa",
+                                              state: {kelas: data}
+                                            }}
+                                          >Daftar Mahasiswa</Link>
+                                        </a>
+                                      </li>
+                                    </ul>
+                                  </div>
                                 </center>
                               </td>
                             </tr>

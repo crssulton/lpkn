@@ -1,10 +1,9 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import swal from "sweetalert";
 import logo from "../../../../public/assets/assets 1/img/logo_bw.png";
-import { BASE_URL } from "../../../config/config.js";
-import { terbilang } from "../../../config/terbilang.js";
+import {BASE_URL} from "../../../config/config.js";
+import {terbilang} from "../../../config/terbilang.js";
 import CurrencyInput from "react-currency-input";
-import print from "print-js";
 import moment from "moment";
 import Select from "react-select";
 import "react-select/dist/react-select.css";
@@ -1214,6 +1213,15 @@ class Calon_Mahasiswa extends Component {
                                         this.setState({ mahasiswa });
                                       }}
                                     />
+                                  </div>
+                                </div>
+                                <div className="form-group row">
+                                  <label className="col-lg-3 col-form-label">
+                                  </label>
+                                  <div className="col-lg-9">
+                                    <div className="alert alert-warning" role="alert">
+                                      * Silahkan Pilih Akun KAS pada masing-masing Cabang !
+                                    </div>
                                   </div>
                                 </div>
                                 <div className="form-group row">

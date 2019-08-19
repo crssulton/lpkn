@@ -6,6 +6,7 @@ import print from "print-js";
 import moment from "moment";
 import Select from "react-select";
 import "react-select/dist/react-select.css";
+import swal from "sweetalert";
 
 let account = [];
 let accountTujuan = [];
@@ -98,6 +99,19 @@ class Pendaftaran extends Component {
     });
   }
 
+  acceptPendaftar = () => {
+    swal({
+      title: "Daftarkan Calon Mahasiswa ?",
+      icon: "info",
+      buttons: true,
+      dangerMode: true
+    }).then(willDelete => {
+      if (willDelete){
+        this.handleSubmit();
+      }
+    })
+  }
+
   handleSubmit = e => {
     const self = this;
     self.setState({
@@ -135,7 +149,6 @@ class Pendaftaran extends Component {
           toastr.success("Data mahasiswa berhasil ditambahkan", "Sukses ! ");
           self.setState({
             check: false,
-            loading: !self.state.loading,
             alert: !self.state.alert,
             pendaftar
           });
@@ -155,7 +168,7 @@ class Pendaftaran extends Component {
             },
             () => {
               if (typeof(data.transaksi[0]) !== 'undefined'){
-                self.setState({check: true})
+                self.setState({check: true, loading: false})
                 setTimeout(() => {
                   self.exportData()
                 }, 100)
@@ -174,7 +187,7 @@ class Pendaftaran extends Component {
     });
 
     accountTujuan = [...this.state.account];
-    this.state.account.map((data, key) => {
+    this.state.account.filter(item => item.id != 15).map((data, key) => {
       account[key].value = data.id;
       account[key].label = data.nama;
     });
@@ -659,22 +672,33 @@ class Pendaftaran extends Component {
                         </div>
                       ) : (
                         <div>
-                          <label className="col-lg-4 col-form-label">
-                            Akun Tujuan
-                          </label>
-                          <div className="text-right col-lg-8">
-                            <Select
-                              name="form-field-name"
-                              value={this.state.pendaftar.account_tujuan}
-                              onChange={selectedOption => {
-                                let pendaftar = [];
-                                pendaftar = this.state.pendaftar;
-                                pendaftar.account_tujuan = selectedOption.value;
-                                pendaftar.account = 15
-                                this.setState({ pendaftar });
-                              }}
-                              options={accountTujuan}
-                            />
+                          <div>
+                            <label className="col-lg-4 col-form-label">
+                            </label>
+                            <div className="text-right col-lg-8">
+                              <div className="alert alert-warning" role="alert">
+                                *** Silahkan Pilih Akun KAS pada masing-masing Cabang !
+                              </div>
+                            </div>
+                          </div>
+                          <div>
+                            <label className="col-lg-4 col-form-label">
+                              Akun Tujuan
+                            </label>
+                            <div className="text-right col-lg-8">
+                              <Select
+                                name="form-field-name"
+                                value={this.state.pendaftar.account_tujuan}
+                                onChange={selectedOption => {
+                                  let pendaftar = [];
+                                  pendaftar = this.state.pendaftar;
+                                  pendaftar.account_tujuan = selectedOption.value;
+                                  pendaftar.account = 15
+                                  this.setState({ pendaftar });
+                                }}
+                                options={accountTujuan}
+                              />
+                            </div>
                           </div>
                         </div>
                       )}
@@ -683,7 +707,7 @@ class Pendaftaran extends Component {
                     <div className="text-right col-lg-3">
                       <button
                         className="btn btn-primary block full-width m-b"
-                        onClick={this.handleSubmit}
+                        onClick={this.acceptPendaftar}
                       >
                         {this.state.loading ? (
                           "Loading..."

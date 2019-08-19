@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-unused-vars
 import React from 'react'
 import {browserHistory, IndexRedirect, Route, Router} from 'react-router';
 // Folder Landing (Role 0)
@@ -42,6 +43,9 @@ import PengajuanAdmin from '../views/user/admin/pengajuan';
 import PembayaranAdmin from '../views/user/admin/pembayaran';
 import AsetAdmin from '../views/user/admin/aset';
 import TambahAset from '../views/user/admin/tambah_aset';
+import ReportPendaftarOnline from '../views/user/admin/report_pendaftar_online';
+import ReportPendaftarManual from '../views/user/admin/report_pendaftar_manual';
+import ReportMahasiswa from '../views/user/admin/report_mahasiswa';
 import DaftarTransaksiAdmin from '../views/user/admin/daftar-transaksi';
 // Folder Keuangan (Role 4)DaftarTransaksi
 import MainKeuangan from '../components/layouts/MainKeuangan';
@@ -77,6 +81,7 @@ import TranskripNilaiMahasiswa from '../views/user/akademik/transkrip';
 import RekapAbsenDosen from '../views/user/akademik/rekap_dosen';
 import DosenAkademik from '../views/user/akademik/dosen';
 import DaftarKelasAkademik from '../views/user/akademik/daftar_kelas';
+import DaftarKelasMahasiswaAkademik from '../views/user/akademik/daftar_kelas_mahasiswa';
 import JadwalMahasiswaAkademik from '../views/user/akademik/jadwal_mahasiswa';
 import AbsensiAkademik from '../views/user/akademik/absensi';
 import DaftarAkademik from '../views/user/akademik/daftar';
@@ -200,6 +205,9 @@ if (window.sessionStorage.getItem('access') !== 'undefined' && window.sessionSto
                 <Route path="pengajuan" component={PengajuanAdmin}> </Route>
                 <Route path="pembayaran" component={PembayaranAdmin}> </Route>
                 <Route path="akun" component={Akun}> </Route>
+                <Route path="report-pendaftar-manual" component={ReportPendaftarManual}> </Route>
+                <Route path="report-pendaftar-online" component={ReportPendaftarOnline}> </Route>
+                <Route path="report-mahasiswa" component={ReportMahasiswa}> </Route>
                 <Route path="daftar-transaksi" component={DaftarTransaksiAdmin}> </Route>
             </Route>
             <Route path="invoice-print" component={InvoicePrint}> </Route>
@@ -253,6 +261,7 @@ if (window.sessionStorage.getItem('access') !== 'undefined' && window.sessionSto
                 <Route path="rekap-mahasiswa" component={RekapAbsenMahasiswa}> </Route>
                 <Route path="ruangan" component={RuanganAkademik}> </Route>
                 <Route path="daftar-kelas" component={DaftarKelasAkademik}> </Route>
+                <Route path="daftar-kelas-mahasiswa" component={DaftarKelasMahasiswaAkademik}> </Route>
                 <Route path="dosen" component={DosenAkademik}> </Route>
                 <Route path="daftar-dosen" component={Dosen}> </Route>
                 <Route path="rekap-dosen" component={RekapAbsenDosen}> </Route>

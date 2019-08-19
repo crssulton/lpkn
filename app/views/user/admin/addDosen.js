@@ -251,6 +251,7 @@ export default class addDosen extends Component {
                                                                     <option value="">Pilih</option>
                                                                     <option value="smp">SMP</option>
                                                                     <option value="sma/smk">SMA/SMK</option>
+                                                                    <option value="d3">D3</option>
                                                                     <option value="s1">S1</option>
                                                                     <option value="s2">S2</option>
                                                                     <option value="s3">S3</option>

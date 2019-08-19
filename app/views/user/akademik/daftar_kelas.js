@@ -259,7 +259,7 @@ class Daftar extends Component {
     }
 
     render() {
-
+		console.log(this.state.kelas)
         return (
             <div>
                 <div className="row wrapper border-bottom white-bg page-heading">
@@ -409,7 +409,7 @@ class Daftar extends Component {
 										        </thead>
 										        <tbody>
 										        {
-										        	this.state.mahasiswas.filter(mahasiswa => mahasiswa.calon == false)
+										        	this.state.mahasiswas.filter(mahasiswa => mahasiswa.calon == false && (mahasiswa.kelas == null || mahasiswa.kelas == this.state.kelas.id))
 										        	.map((mahasiswa, key) => 
 
 										        		<tr key={key}>

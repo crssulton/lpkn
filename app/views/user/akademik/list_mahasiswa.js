@@ -148,7 +148,7 @@ class ListMahasiswa extends Component {
                                                     .filter(item => item.jurusan_info.id == this.state.selectedJurusan)
                                                     .map((kelas, key) => (
                                                         <option key={key} value={kelas.id}>
-                                                            {kelas.nama} | Angkatan- {kelas.angkatan}
+                                                            {kelas.nama} | Angkatan- {kelas.angkatan_info.angkatan}
                                                         </option>
                                                     ))}
                                             </select>

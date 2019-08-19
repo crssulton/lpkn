@@ -703,8 +703,6 @@ class Tagihan extends Component {
                                                 />
                                             </div>
                                         </div>
-
-
                                         <div className="hr-line-dashed"/>
                                         <div className="form-group row">
                                             <div className="col-sm-4 col-sm-offset-2">

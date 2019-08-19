@@ -382,7 +382,7 @@ class Calon_Mahasiswa extends Component {
                                                     )
                                                     .map((kelas, key) => (
                                                         <option key={key} value={kelas.id}>
-                                                            {kelas.nama} | Angkatan {kelas.angkatan}
+                                                            {kelas.nama} | Angkatan {kelas.angkatan_info.angkatan}
                                                         </option>
                                                     ))}
                                             </select>

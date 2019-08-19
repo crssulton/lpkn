@@ -111,6 +111,17 @@ class Navigation extends Component {
                     <li className={this.activeRoute("/daftar-transaksi")}>
                         <Link to="/daftar-transaksi"><i className="fa fa-book"></i><span className="nav-label"> Daftar Transaksi</span></Link>
                     </li>
+                    <li>
+                        <a><i className="fa fa-book"></i> <span className="nav-label">Export Data</span> <span
+                          className="fa arrow"></span></a>
+                        <ul className="nav nav-second-level collapse">
+                            <li className={this.activeRoute("/tambah-aset")}>
+                                <Link to="/report-pendaftar-manual">Pendaftar Manual</Link>
+                            </li>
+                            <li><Link to="/report-pendaftar-online">Pendaftar Online</Link></li>
+                            <li><Link to="/report-mahasiswa">Calon Mahasiswa</Link></li>
+                        </ul>
+                    </li>
                     <li className={this.activeRoute("/users")}>
                         <Link to="/users"><i className="fa fa-group"></i> <span
                             className="nav-label">Users</span></Link>

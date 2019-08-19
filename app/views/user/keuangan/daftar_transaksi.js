@@ -305,7 +305,6 @@ class Jadwal extends Component {
                                                     }}
                                                 />
                                             </button>
-
                                         </div>
                                         <div className="col-lg-3">
                                             <button

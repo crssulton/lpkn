@@ -205,6 +205,9 @@ class Jadwal extends Component {
                   </h5>
                 </div>
                 <div className="ibox-content">
+                  <div className="alert alert-info" role="alert">
+                    <p className="mb-0">** Perhatian! Silahkan Filter Data terlebih dahulu sesuai Jurusan, Kelas, Mata Kuliah dan Tanggal.</p>
+                  </div>
                   <div className="row">
                     <div className="col-lg-2">
                       <label className="form-label">Jurusan : </label>
@@ -253,7 +256,7 @@ class Jadwal extends Component {
                           )
                           .map((kelas, key) => (
                             <option key={key} value={kelas.id}>
-                              {kelas.nama} | Angkatan ke-{kelas.angkatan}
+                              {kelas.nama} | Angkatan- {kelas.angkatan_info.angkatan}
                             </option>
                           ))}
                       </select>

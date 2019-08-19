@@ -17,6 +17,23 @@ class Login extends Component {
     this.handleSubmit = this.handleSubmit.bind(this)
   }
 
+  componentDidMount(){
+    const url = "http://103.228.236.74:8000/service/transaksi/website-info-kamar";
+    const self = this
+                fetch(url, {
+                  headers: { 
+                    'X-AUTH-TOKEN': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbi5wZXJhd2F0In0.4eqayOUxAO5q-layAP1K5XJ-IfyhwSS1-hInQWatPCjz2H_KLS8nlirL3iLbC4Jt5m3HbZQHiQyu9_2M55NRxg'
+
+                  }
+                })
+                .then(function(response) {
+                  return response.json();
+                })
+                .then(function(json) {
+                  console.log(json)
+                }); 
+  }
+
   handleUsername (event) {
     this.setState({ username: event.target.value })
   }
@@ -99,7 +116,7 @@ class Login extends Component {
                 <div className="ibox-content">
                   <div>
                     <br/>
-                    <h2 className="text-primary" style={{ textAlign: 'center' }}>Login Mahasiswa</h2>
+                    <h2 className="text-primary" style={{ textAlign: 'center' }}>Login SIA LPKN</h2>
                     <br/>
                     <form onSubmit={this.handleSubmit}>
                       <div className="form-group">

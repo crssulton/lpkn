@@ -1025,21 +1025,31 @@ class List_pendaftar extends Component {
                                                                     ) : (
                                                                         <div>
                                                                             <label className="col-lg-3 col-form-label">
-                                                                                Akun Tujuan
+
                                                                             </label>
                                                                             <div className="col-lg-9">
-                                                                                <Select
-                                                                                    name="form-field-name"
-                                                                                    value={this.state.pendaftar.account_tujuan}
-                                                                                    onChange={selectedOption => {
-                                                                                        let pendaftar = [];
-                                                                                        pendaftar = this.state.pendaftar;
-                                                                                        pendaftar.account = 15
-                                                                                        pendaftar.account_tujuan = selectedOption.value;
-                                                                                        this.setState({pendaftar});
-                                                                                    }}
-                                                                                    options={account}
-                                                                                />
+                                                                                <div className="alert alert-warning" role="alert">
+                                                                                    * Silahkan Pilih Akun KAS pada masing-masing Cabang !
+                                                                                </div>
+                                                                            </div>
+                                                                            <div>
+                                                                                <label className="col-lg-3 col-form-label">
+                                                                                    Akun Tujuan
+                                                                                </label>
+                                                                                <div className="col-lg-9">
+                                                                                    <Select
+                                                                                      name="form-field-name"
+                                                                                      value={this.state.pendaftar.account_tujuan}
+                                                                                      onChange={selectedOption => {
+                                                                                          let pendaftar = [];
+                                                                                          pendaftar = this.state.pendaftar;
+                                                                                          pendaftar.account = 15
+                                                                                          pendaftar.account_tujuan = selectedOption.value;
+                                                                                          this.setState({pendaftar});
+                                                                                      }}
+                                                                                      options={account}
+                                                                                    />
+                                                                                </div>
                                                                             </div>
                                                                         </div>
                                                                     )}
