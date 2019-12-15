@@ -17,23 +17,6 @@ class Login extends Component {
     this.handleSubmit = this.handleSubmit.bind(this)
   }
 
-  componentDidMount(){
-    const url = "http://103.228.236.74:8000/service/transaksi/website-info-kamar";
-    const self = this
-                fetch(url, {
-                  headers: { 
-                    'X-AUTH-TOKEN': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbi5wZXJhd2F0In0.4eqayOUxAO5q-layAP1K5XJ-IfyhwSS1-hInQWatPCjz2H_KLS8nlirL3iLbC4Jt5m3HbZQHiQyu9_2M55NRxg'
-
-                  }
-                })
-                .then(function(response) {
-                  return response.json();
-                })
-                .then(function(json) {
-                  console.log(json)
-                }); 
-  }
-
   handleUsername (event) {
     this.setState({ username: event.target.value })
   }
@@ -66,12 +49,13 @@ class Login extends Component {
       },
       body: JSON.stringify(user)
     }).then(function (response) {
-      return response.json()
-      swal({
-        icon: 'error',
-        title: 'Gagal !',
-        text: 'Gagal mendaftar secara online'
-      })
+      if(response.status != "200") {
+        toastr.error('Username atau password Salah', 'Gagal ! ')
+      }
+      if(response.status == "500") {
+        toastr.error('Terjadi kesalahan diserver', 'Gagal ! ')
+      }
+      return response.json();
     }).then(function (data) {
       if (data.non_field_errors == null) {
         if (data.user.role_display == 'Akademik') {
@@ -105,18 +89,17 @@ class Login extends Component {
   }
 
   render () {
-
     return (
-      <div className="bgImage">
+      <div>
         <TopHeader/>
-        <div className="bgColor" style={{height: '680px'}}>
-          <div className="passwordBox animated fadeInDown">
+        <div>
+          <div className="passwordBox">
             <div className="row">
               <div className="col-md-12">
                 <div className="ibox-content">
                   <div>
                     <br/>
-                    <h2 className="text-primary" style={{ textAlign: 'center' }}>Login SIA LPKN</h2>
+                    <h2 className="text-primary" style={{ textAlign: 'center' }}>Login LPKN</h2>
                     <br/>
                     <form onSubmit={this.handleSubmit}>
                       <div className="form-group">

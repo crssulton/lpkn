@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import swal from 'sweetalert';
 import {BASE_URL} from '../../../config/config.js'
-import Select from 'react-select';
 import 'react-select/dist/react-select.css';
-import DayPickerInput from 'react-day-picker/DayPickerInput';
 import 'react-day-picker/lib/style.css';
-import CurrencyInput from 'react-currency-input';
 
 let account = []
 let account_tujuan = []
@@ -47,8 +44,8 @@ class Transaksi extends Component {
 
     componentDidMount(){
       const self = this
-    
-    fetch(BASE_URL + '/api/transaksi/', {
+
+    fetch(BASE_URL + '/api/transaksi/?anggaran=' + this.state.pengajuan.id, {
       method: 'get',
       headers: {
         'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
@@ -58,8 +55,9 @@ class Transaksi extends Component {
     }).then(function(response) {
       return response.json();
     }).then(function(data) {
+
       self.setState({
-        transaksi: data.results,
+        transaksi: data,
         loading: !self.state.loading
       })
     });
@@ -169,7 +167,7 @@ class Transaksi extends Component {
         toastr.warning("Gagal mengubah transaksi", "Gagal ! ")
       }
     }).then(function(data) {
-      
+
     });
     }
 
@@ -177,26 +175,26 @@ class Transaksi extends Component {
       let transaksiBaru = {}
         transaksiBaru = this.state.transaksiBaru
         transaksiBaru.uraian = e.target.value
-        this.setState({transaksiBaru})  
+        this.setState({transaksiBaru})
     }
     addtransaksiTanggal = (e) => {
       let transaksiBaru = {}
         transaksiBaru = this.state.transaksiBaru
         transaksiBaru.tanggal = e.target.value
-        this.setState({transaksiBaru})  
+        this.setState({transaksiBaru})
     }
     addtransaksiNominal = (e, maskedvalue, floatvalue) => {
       let transaksiBaru = {}
         transaksiBaru = this.state.transaksiBaru
         transaksiBaru.nominal = floatvalue
-        this.setState({transaksiBaru})  
+        this.setState({transaksiBaru})
     }
     addtransaksiAkun = (selectedOption) => {
       if (selectedOption) {
         let transaksiBaru = {}
           transaksiBaru = this.state.transaksiBaru
           transaksiBaru.account = selectedOption.value
-          this.setState({transaksiBaru})  
+          this.setState({transaksiBaru})
       }
     }
     addtransaksiKelompokAkun = (selectedOption) => {
@@ -204,34 +202,34 @@ class Transaksi extends Component {
         let transaksiBaru = {}
           transaksiBaru = this.state.transaksiBaru
           transaksiBaru.kelompok_account = selectedOption.value
-          this.setState({transaksiBaru})  
+          this.setState({transaksiBaru})
       }
     }
     addtransaksiKode = (e) => {
       let transaksiBaru = {}
         transaksiBaru = this.state.transaksiBaru
         transaksiBaru.kode = e.target.value
-        this.setState({transaksiBaru})  
+        this.setState({transaksiBaru})
     }
     addtransaksiAkunAkunTujuan = (selectedOption) => {
       if (selectedOption) {
         let transaksiBaru = {}
           transaksiBaru = this.state.transaksiBaru
           transaksiBaru.account_tujuan = selectedOption.value
-          this.setState({transaksiBaru})  
+          this.setState({transaksiBaru})
       }
     }
     addtransaksiSaldoAwal = (e) => {
       let transaksiBaru = {}
         transaksiBaru = this.state.transaksiBaru
         transaksiBaru.saldo_awal = e.target.value
-        this.setState({transaksiBaru})  
+        this.setState({transaksiBaru})
     }
     addtransaksiJurusan = (e) => {
       let transaksiBaru = {}
         transaksiBaru = this.state.transaksiBaru
         transaksiBaru.jurusan = e.target.value
-        this.setState({transaksiBaru})  
+        this.setState({transaksiBaru})
     }
 
     addtransaksi = ()=> {
@@ -273,7 +271,7 @@ class Transaksi extends Component {
           addForm: true,
           transaksi,
           transaksiBaru : {}
-          
+
         })
         toastr.success("Akun berhasil ditambahkan", "Sukses ! ")
       }else{
@@ -369,7 +367,7 @@ class Transaksi extends Component {
                                 <div className="ibox-content">
                                   <div className="row">
                                       <div className="col-lg-6">
-                                        
+
                                       </div>
                                   </div>
                                   <div className="row">
@@ -434,13 +432,9 @@ class Transaksi extends Component {
                             </div>
                         </div>
                     </div>
-                    
-                    
                 </div>
-
-            
             </div>
-      
+
 
         )
     }

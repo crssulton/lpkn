@@ -42,7 +42,7 @@ class Tagihan extends Component {
         this.setState({selectedOption});
         // selectedOption can be null when the `x` (close) button is clicked
         if (selectedOption) {
-            console.log(`Selected: ${selectedOption.label}`);
+            // console.log(`Selected: ${selectedOption.label}`);
         }
     }
 
@@ -63,7 +63,6 @@ class Tagihan extends Component {
         }).then(function (response) {
             return response.json();
         }).then(function (data) {
-            console.log(data.results)
             self.setState({
                 transaksi: data.results,
                 loading: !self.state.loading
@@ -250,8 +249,8 @@ class Tagihan extends Component {
     }
     addtransaksiSaldoAwal = (e) => {
         let transaksiBaru = {}
-        transaksiBaru = this.state.transaksiBaru
-        transaksiBaru.saldo_awal = e.target.value
+        transaksiBaru = this.state.transaksiBaru;
+        transaksiBaru.saldo_awal = e.target.value;
         this.setState({transaksiBaru})
     }
     addtransaksiJurusan = (e) => {
@@ -274,9 +273,9 @@ class Tagihan extends Component {
     }
 
     addtransaksi = () => {
-        const self = this
-        let addButton = document.getElementsByClassName("btn-add")
-        console.log(JSON.stringify(this.state.transaksiBaru))
+        const self = this;
+        let addButton = document.getElementsByClassName("btn-add");
+        // console.log(JSON.stringify(this.state.transaksiBaru))
         addButton[0].setAttribute("disabled", "disabled")
 
         fetch(BASE_URL + '/api/transaksi/', {
@@ -294,35 +293,42 @@ class Tagihan extends Component {
                 addButton[0].removeAttribute("disabled")
                 let transaksi = []
                 let transaksiBaru = {}
-                transaksiBaru = self.state.transaksiBaru
+                transaksiBaru = self.state.transaksiBaru;
+                let saldo_awal = transaksiBaru.saldo_awal;
+                saldo_awal = saldo_awal == "true" ? true : false;
 
-                transaksi = self.state.transaksi
-                transaksi.push(data)
+                transaksi = self.state.transaksi;
+                transaksi.push(data);
 
-                transaksiBaru.kode = null
-                transaksiBaru.uraian = null
-                transaksiBaru.tanggal = null
-                transaksiBaru.nominal = null
-
+                transaksiBaru.kode = null;
+                transaksiBaru.uraian = "";
+                transaksiBaru.nominal = null;
+                transaksiBaru.account = null;
+                transaksiBaru.account_tujuan = null;
+                transaksiBaru.saldo_awal = "false";
+                // console.log(typeof saldo_awal);
                 self.setState({
                     addForm: true,
                     transaksi,
-                    transaksiBaru: {},
-                    kwitansi: data.kwitansi[0]
-
+                    transaksiBaru,
+                    kwitansi: !saldo_awal ? data.kwitansi[0] : self.state.kwitansi
                 }, () => {
-                    self.setState({check: true})
-                    setTimeout(() => {
-                        self.exportData()
-                    }, 100)
+                    if(saldo_awal) {
+                        // toastr.success("Saldo awal berhasil ditambahkan", "Sukses ! ")
+                    }else {
+                        self.setState({check: true})
+                        setTimeout(() => {
+                            self.exportData()
+                        }, 100)
+                    }
                 })
-                toastr.success("Akun berhasil ditambahkan", "Sukses ! ")
+                toastr.success("Transaksi berhasil ditambahkan", "Sukses ! ")
             } else {
                 addButton[0].removeAttribute("disabled")
                 self.setState({
                     addForm: true
                 })
-                toastr.warning("Gagal menambahkan Akun", "Gagal ! ")
+                toastr.warning("Gagal menambahkan Transaksi", "Gagal ! ")
             }
         });
     }
@@ -389,8 +395,9 @@ class Tagihan extends Component {
         this.state.account.map((data, key) => {
             account_tujuan[key].value = data.id
             account_tujuan[key].label = data.nama
-        })
+        });
 
+        console.log(this.state.kwitansi)
 
         return (
             <div>
@@ -419,36 +426,35 @@ class Tagihan extends Component {
                                 </h5>
                             </div>
                             <div className="ibox-content">
-                                <div className="form-group row"><label className="col-lg-2 col-form-label">Kode</label>
-                                    <div className="col-lg-4">
-                                        <input
-                                            type="text"
-                                            className="form-control m-b"
-                                            name="transaksi"
-                                            value={this.state.transaksiBaru.kode}
-                                            onChange={this.addtransaksiKode}
-                                        />
-                                    </div>
-                                </div>
+                                {/*<div className="form-group row"><label className="col-lg-2 col-form-label">Kode</label>*/}
+                                {/*    <div className="col-lg-4">*/}
+                                {/*        <input*/}
+                                {/*            type="text"*/}
+                                {/*            className="form-control m-b"*/}
+                                {/*            name="transaksi"*/}
+                                {/*            value={this.state.transaksiBaru.kode}*/}
+                                {/*            onChange={this.addtransaksiKode}*/}
+                                {/*        />*/}
+                                {/*    </div>*/}
+                                {/*</div>*/}
 
-                                <div className="form-group row"><label className="col-lg-2 col-form-label">Kelompok
-                                    Akun</label>
-                                    <div className="col-lg-4">
-                                        <Select
-                                            name="form-field-name"
-                                            value={this.state.transaksiBaru.kelompok_account}
-                                            onChange={this.addtransaksiKelompokAkun}
-                                            options={kelompok_account}
-                                        />
-                                    </div>
-                                </div>
+                                {/*<div className="form-group row"><label className="col-lg-2 col-form-label">Kelompok*/}
+                                {/*    Akun</label>*/}
+                                {/*    <div className="col-lg-4">*/}
+                                {/*        <Select*/}
+                                {/*            name="form-field-name"*/}
+                                {/*            value={this.state.transaksiBaru.kelompok_account}*/}
+                                {/*            onChange={this.addtransaksiKelompokAkun}*/}
+                                {/*            options={kelompok_account}*/}
+                                {/*        />*/}
+                                {/*    </div>*/}
+                                {/*</div>*/}
 
                                 <div className="form-group row"><label className="col-lg-2 col-form-label">Akun
                                     Sumber</label>
                                     <div className="col-lg-4">
                                         <Select
                                             name="form-field-name"
-                                            disabled={this.state.transaksiBaru.kelompok_account == null ? "disabled" : null}
                                             value={this.state.transaksiBaru.account}
                                             onChange={this.addtransaksiAkun}
                                             options={account}

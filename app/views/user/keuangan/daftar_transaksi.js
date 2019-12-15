@@ -199,6 +199,34 @@ class Jadwal extends Component {
             });
     };
 
+    editTransaksi = () => {
+        const self = this
+        let edit = {
+            pengajuan_edit: true
+        }
+        fetch(BASE_URL + '/api/transaksi/' + this.state.id_transaksi + '/', {
+            method: 'patch',
+            headers: {
+                'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(edit)
+        }).then(function (response) {
+            if (response.status == 200) {
+                toastr.success("Data transaksi telah diajukan untuk diubah", "Sukses ! ");
+                let transaksi = self.state.transaksi
+                transaksi.find(item => item.id == self.state.id_transaksi).pengajuan_edit = true
+                self.setState({transaksi})
+            } else {
+                toastr.warning("Data transaksi gagal untuk diubah", "Gagal ! ");
+            }
+            return response.json();
+        }).then(function (data) {
+
+        });
+    }
+
     exportData() {
         printJS({
             printable: "print_data",
@@ -412,8 +440,8 @@ class Jadwal extends Component {
                                                                                                     kwitansi: transaksi.kwitansi[0],
                                                                                                     id_transaksi: transaksi.id
                                                                                                 }, () => {
-                                                                                                    self.exportData()
-                                                                                                    self.editTransaksi()
+                                                                                                    self.exportData();
+                                                                                                    self.editTransaksi();
                                                                                                 })
                                                                                             })
                                                                                         }

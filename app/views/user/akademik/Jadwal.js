@@ -135,13 +135,13 @@ class Jadwal extends Component {
         let bentrok     = false;
         let addButton   = document.getElementsByClassName("btn-add");
         addButton[0].setAttribute("disabled", "disabled");
-        
+
         this.state.events.map(item => {
             self.state.listDay.map(day => {
                 if (item.start == moment(day).format('YYYY-MM-DD') && item.jam_mulai.substr(0, 5) == self.state.jadwalBaru.jam_mulai && item.ruangan == self.state.jadwalBaru.ruangan){
                     swal({
-                      icon: 'warning',
-                      text: `Jadwal Bentrok! Terdapat Mata Kuliah ${item.title} pada tgl ${moment(day).format('DD/MM/YYYY')} pukul ${item.jam_mulai.substr(0, 5)} di ${item.ruangan_info.nama}`
+                        icon: 'warning',
+                        text: `Jadwal Bentrok! Terdapat Mata Kuliah ${item.title} pada tgl ${moment(day).format('DD/MM/YYYY')} pukul ${item.jam_mulai.substr(0, 5)} di ${item.ruangan_info.nama}`
                     });
                     addButton[0].removeAttribute("disabled");
                     bentrok = true;
@@ -151,58 +151,60 @@ class Jadwal extends Component {
         });
 
         if (!bentrok)
-        this.state.listDay.map(data => {
-            let jadwalBaru = {};
-            let newJadwal = {};
-            jadwalBaru = this.state.jadwalBaru;
-            jadwalBaru.title = $("#namaMatkul option:selected").text();
-            jadwalBaru.start = moment(data).format('YYYY-MM-DD');
-            newJadwal.title = $("#namaMatkul option:selected").text();
-            newJadwal.start = moment(data).format('YYYY-MM-DD');
-            newJadwal.jam_mulai = jadwalBaru.jam_mulai;
-            newJadwal.ruangan = jadwalBaru.ruangan;
+            this.state.listDay.map(data => {
+                let jadwalBaru = {};
+                let newJadwal = {};
+                jadwalBaru = this.state.jadwalBaru;
+                jadwalBaru.title = $("#namaMatkul option:selected").text();
+                jadwalBaru.start = moment(data).format('YYYY-MM-DD');
+                newJadwal.title = $("#namaMatkul option:selected").text();
+                newJadwal.start = moment(data).format('YYYY-MM-DD');
+                newJadwal.jam_mulai = jadwalBaru.jam_mulai;
+                newJadwal.ruangan = jadwalBaru.ruangan;
 
-            fetch(BASE_URL + '/api/jadwal/', {
-                method: 'post',
-                headers: {
-                    'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-                body: JSON.stringify(self.state.jadwalBaru)
-            }).then(function (response) {
-                if (response.status == 400 || response.status == 500) {
-                    toastr.warning("Jadwal gagal ditambahkan", "Gagal ! ")
-                    addButton[0].removeAttribute("disabled")
-                } else {
-                    toggle += 1;
-                    let events = {...self.state.events}
-                    let jadwalBaru = {...self.state.jadwalBaru}
-                    events = Object.assign([], events)
-
-                    jadwalBaru.jam_mulai = null
-                    jadwalBaru.jam_selesai = null
-
-                    events.push(newJadwal);
-
-                    self.setState({
-                        events,
-                        jadwalBaru
-                    })
-
-                    if (toggle == self.state.listDay.length) {
-                        self.setState({listDay: []})
-                        toastr.success("Jadwal berhasil ditambahkan", "Sukses ! ")
+                fetch(BASE_URL + '/api/jadwal/', {
+                    method: 'post',
+                    headers: {
+                        'Authorization': 'JWT ' + window.sessionStorage.getItem('token'),
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(self.state.jadwalBaru)
+                }).then(function (response) {
+                    if (response.status == 400 || response.status == 500) {
+                        toastr.warning("Jadwal gagal ditambahkan", "Gagal ! ")
                         addButton[0].removeAttribute("disabled")
-
                     }
+                    return response.json();
+                }).then(function (data) {
+                    if (data.id != null && data.id != undefined) {
+                        toggle += 1;
+                        let events = {...self.state.events}
+                        let jadwalBaru = {...self.state.jadwalBaru}
+                        events = Object.assign([], events)
 
-                }
-            }).then(function (data) {
+                        jadwalBaru.jam_mulai = null;
+                        jadwalBaru.jam_selesai = null;
+
+                        newJadwal = data
+
+                        events.push(newJadwal);
+
+                        self.setState({
+                            events,
+                            jadwalBaru
+                        })
+
+                        if (toggle == self.state.listDay.length) {
+                            self.setState({listDay: []})
+                            toastr.success("Jadwal berhasil ditambahkan", "Sukses ! ")
+                            addButton[0].removeAttribute("disabled")
+
+                        }
+                    }
+                })
 
             })
-
-        })
     }
 
     deleteJadwal = () => {
@@ -270,12 +272,12 @@ class Jadwal extends Component {
     }
 
     onChangeMatkul = (e) => {
-        const self = this
-        let value = e.target.value
-        let jadwalBaru = {}
-        jadwalBaru = this.state.jadwalBaru
+        const self = this;
+        let value = e.target.value;
+        let jadwalBaru = {};
+        jadwalBaru = this.state.jadwalBaru;
 
-        let id = value
+        let id = value;
 
         fetch(BASE_URL + `/api/absensi/?matkulid=${id}`, {
             method: 'get',
@@ -286,11 +288,14 @@ class Jadwal extends Component {
             return response.json();
         }).then(function (data) {
             if (data.results.length != 0) {
-                jadwalBaru.mata_kuliah = value
+                jadwalBaru.mata_kuliah = value;
                 self.setState({
                     jadwalBaru,
                     selectedMatkul: value
                 })
+                if(jadwalBaru.kelas != null && jadwalBaru.kelas != undefined){
+                    self.getDosen();
+                }
             } else {
                 swal({
                     icon: 'warning',
@@ -376,7 +381,7 @@ class Jadwal extends Component {
           <div>
               <div className="row wrapper border-bottom white-bg page-heading">
                   <div className="col-lg-10">
-                      <h2>Jadwal Perkuliahan</h2>
+                      <h2>Jadwal</h2>
                       <ol className="breadcrumb">
                           <li className="breadcrumb-item">
                               Dashboard
@@ -488,7 +493,7 @@ class Jadwal extends Component {
                                       </div>
                                   </div>
                                   <div className="form-group row"><label
-                                    className="col-lg-2 col-form-label">Dosen</label>
+                                    className="col-lg-2 col-form-label">Trainer</label>
                                       <div className="col-lg-10">
                                           <select
                                             value={this.state.jadwalBaru.dosen}
@@ -496,7 +501,7 @@ class Jadwal extends Component {
                                             disabled="disabled"
                                             className="form-control m-b"
                                             name="account">
-                                              <option value="">Pilih Dosen</option>
+                                              <option value="">Pilih Trainer</option>
                                               {
                                                   this.state.dosens.map((dosen, key) =>
                                                     <option key={key} value={dosen.id}>{dosen.nama}</option>
@@ -629,7 +634,7 @@ class Jadwal extends Component {
                                                     <td>: {this.state.eventSelected.ruangan_info.nama}</td>
                                                 </tr>
                                                 <tr>
-                                                    <td><b>DOSEN</b></td>
+                                                    <td><b>TRAINER</b></td>
                                                     <td>: {this.state.eventSelected.dosen_info.nama}</td>
                                                 </tr>
                                             </table>

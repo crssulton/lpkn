@@ -1,142 +1,13 @@
-// eslint-disable-next-line no-unused-vars
 import React from 'react'
 import {browserHistory, IndexRedirect, Route, Router} from 'react-router';
-// Folder Landing (Role 0)
 import Akun from '../views/user/akun';
-import Login from '../views/landing/Login';
-import Registrasi from '../views/landing/Registrasi';
-// Folder Mahasiswa (Role 1)
-import MainMhs from '../components/layouts/MainMhs';
-import DashboardMhs from '../views/user/mahasiswa/Dashboard';
-import JadwalMhs from '../views/user/mahasiswa/Jadwal';
-import NilaiMhs from '../views/user/mahasiswa/Nilai';
-import PembayaranMhs from '../views/user/mahasiswa/Pembayaran';
-// Folder Dosen (Role 2)
-import MainDosen from '../components/layouts/MainDosen';
-import DashboardDosen from '../views/user/dosen/Main';
-import NilaiDosen from '../views/user/dosen/Input';
-import AbsenDosen from '../views/user/dosen/Absen';
-import RekapAbsensiDosen from '../views/user/dosen/rekap_absensi';
-import BapDosen from '../views/user/dosen/Bap';
-import DaftarHadirDosen from '../views/user/dosen/daftar_hadir';
-import PertemuanDosen from '../views/user/dosen/pertemuan';
-// Folder Admin (Role 3)
-import MainAdmin from '../components/layouts/MainAdmin';
-import Pendaftaran from '../views/user/admin/Pendaftaran';
-import List_pendaftar from '../views/user/admin/List_pendaftar'
-import List_pendaftar_online from '../views/user/admin/List_pendaftar_online'
-import Cetak_kuitansi from '../views/user/admin/Cetak_kuitansi';
-import Anggaran from '../views/user/admin/Anggaran';
-import Users from '../views/user/admin/users';
-import addDosen from '../views/user/admin/addDosen';
-import editDosen from '../views/user/admin/editDosen';
-import Approve from '../views/user/admin/Approve';
-import Broadcast from '../views/user/admin/Broadcast';
-import Inventaris from '../views/user/admin/Inventaris';
-import Perubahan from '../views/user/admin/Perubahan';
-import Status from '../views/user/admin/Status';
-import Dosen from '../views/user/admin/dosen';
-import CalonMahasiswa from '../views/user/admin/Calon_Mahasiswa';
-import MahasiswaAdmin from '../views/user/admin/Mahasiswa';
-import Tagihan from '../views/user/admin/Tagihan';
-import PengajuanAdmin from '../views/user/admin/pengajuan';
-import PembayaranAdmin from '../views/user/admin/pembayaran';
-import AsetAdmin from '../views/user/admin/aset';
-import TambahAset from '../views/user/admin/tambah_aset';
-import ReportPendaftarOnline from '../views/user/admin/report_pendaftar_online';
-import ReportPendaftarManual from '../views/user/admin/report_pendaftar_manual';
-import ReportMahasiswa from '../views/user/admin/report_mahasiswa';
-import DaftarTransaksiAdmin from '../views/user/admin/daftar-transaksi';
-// Folder Keuangan (Role 4)DaftarTransaksi
-import MainKeuangan from '../components/layouts/MainKeuangan';
-import AkunKeuangan from '../views/user/keuangan/akun';
-import TransaksiKeuangan from '../views/user/keuangan/transaksi';
-import DaftarTransaksi from '../views/user/keuangan/daftar_transaksi';
-import DataJurnalKeuangan from '../views/user/keuangan/data-jurnal';
-import TransaksiBukuBesar from '../views/user/keuangan/transaksi_buku_besar';
-import NeracaSaldoAkhir from '../views/user/keuangan/neraca_saldo_akhir';
-import JurnalUmum from '../views/user/keuangan/jurnal_umum';
-import BukuBesar from '../views/user/keuangan/buku_besar';
-import InvoicePrint from '../views/user/keuangan/invoice_print';
-import Laporan from '../views/user/keuangan/Laporan';
-// Folder Akademik (Role 5)
-import MainAkademik from '../components/layouts/MainAkademik';
-import DashboardAkademikView from '../views/user/akademik/Dashboard';
-import DaftarMahasiswaAkademik from '../views/user/akademik/Mahasiswa';
-import MahasiswaMagang from '../views/user/akademik/mahasiswa_magang';
-import MahasiswaBekerja from '../views/user/akademik/mahasiswa_bekerja';
-import MahasiswaNonaktif from '../views/user/akademik/mahasiswa_nonaktif';
-import MahasiswaLulus from '../views/user/akademik/mahasiswa_lulus';
-import MahasiswaPindah from '../views/user/akademik/mahasiswa_pindah';
-import MataKuliahAkademik from '../views/user/akademik/Mata_Kuliah';
-import JadwalAkademik from '../views/user/akademik/Jadwal';
-import ListJadwalAkademik from '../views/user/akademik/list_jadwal';
-import KehadiranAkademik from '../views/user/akademik/kehadiran';
-import RekapAbsenMahasiswa from '../views/user/akademik/rekap_mahasiswa';
-import PengumumanAkademik from '../views/user/akademik/Pengumuman';
-import RuanganAkademik from '../views/user/akademik/Ruangan';
-import KelasAkademik from '../views/user/akademik/kelas';
-import ListMahasiswaAkademik from '../views/user/akademik/list_mahasiswa';
-import TranskripNilaiMahasiswa from '../views/user/akademik/transkrip';
-import RekapAbsenDosen from '../views/user/akademik/rekap_dosen';
-import DosenAkademik from '../views/user/akademik/dosen';
-import DaftarKelasAkademik from '../views/user/akademik/daftar_kelas';
-import DaftarKelasMahasiswaAkademik from '../views/user/akademik/daftar_kelas_mahasiswa';
-import JadwalMahasiswaAkademik from '../views/user/akademik/jadwal_mahasiswa';
-import AbsensiAkademik from '../views/user/akademik/absensi';
-import DaftarAkademik from '../views/user/akademik/daftar';
-import NilaiMahasiswaAkademik from '../views/user/akademik/nilai_mahasiswa';
-// Folder Kepala Cabang (Role 6)
-import MainKepalaCabang from '../components/layouts/MainKepalaCabang';
-import AdministratorKepalaCabang from '../views/user/kepala_cabang/administrator';
-import AkademikKepalaCabang from '../views/user/kepala_cabang/akademik';
-import DashboardKepalaCabang from '../views/user/kepala_cabang/dashboard';
-import KeuanganKepalaCabang from '../views/user/kepala_cabang/keuangan';
-import JurusanKepalaCabang from '../views/user/kepala_cabang/jurusan';
-import PengajuanKepalaCabang from '../views/user/kepala_cabang/pengajuan';
-import AnggaranKepalaCabang from '../views/user/kepala_cabang/Anggaran';
-import MahasiswaKepalaCabang from '../views/user/kepala_cabang/mahasiswa';
-import DosenKepalaCabang from '../views/user/kepala_cabang/dosen';
-import StaffKepalaCabang from '../views/user/kepala_cabang/staff';
-// Folder HRD (Role 7)
-import MainHRD from '../components/layouts/MainHrd';
-import PegawaiHRD from '../views/user/hrd/pegawai';
-import JabatanHRD from '../views/user/hrd/jabatan';
-import PengajuanPegawaiHRD from '../views/user/hrd/pengajuan_pegawai';
-import PengajuanHRD from '../views/user/hrd/pengajuan';
-import addPegawaiHRD from '../views/user/hrd/add_pegawai';
-import editPegawaiHRD from '../views/user/hrd/edit_pegawai';
-import CetakPegawaiHRD from '../views/user/hrd/cetak_pegawai';
-// Folder Owner (Role 8)
-import MainOwner from '../components/layouts/MainOwner';
-// import MahasiswaOwner from '../views/user/owner/mahasiswa_old';
-import MahasiswaOwner from '../views/user/owner/Mahasiswa';
-import MahasiswaMagangOwner from '../views/user/owner/mahasiswa_magang';
-import MahasiswaBekerjaOwner from '../views/user/owner/mahasiswa_bekerja';
-import MahasiswaNonaktifOwner from '../views/user/owner/mahasiswa_nonaktif';
-import MahasiswaLulusOwner from '../views/user/owner/mahasiswa_lulus';
-import MahasiswaPindahOwner from '../views/user/owner/mahasiswa_pindah';
-import DosenOwner from '../views/user/owner/dosen';
-import DashboardOwner from '../views/user/owner/Dashboard';
-import KampusOwner from '../views/user/owner/Kampus';
-import HRDOwner from '../views/user/owner/HRD';
-import PerubahanTransaksi from '../views/user/owner/perubahan_transaksi';
-import Form_add_staffOwner from '../views/user/owner/Form_add_staff';
-import Form_edit_staffOwner from '../views/user/owner/Form_edit_staff';
-import KepalaCabangOwner from '../views/user/owner/Kepala_cabang';
-import KelompokAkunOwner from '../views/user/owner/kelompok_akun';
-import ApproveGajiOwner from '../views/user/owner/approve_gaji';
-import PengajuanGajiOwner from '../views/user/owner/pengajuan_gaji';
-import PengajuanAnggaranOwner from '../views/user/owner/pengajuan_anggaran';
-import AnggaranOwner from '../views/user/owner/Anggaran';
-import StaffOwner from '../views/user/owner/staff';
-// REPORT
-import ReportMahasiswaAkademik from '../views/user/report/mahasiswa_akademik';
-
 
 let komponen = null;
 
 if (window.sessionStorage.getItem('access') === null || window.sessionStorage.getItem('role') === null) {
+    let Login       = require('../views/landing/Login').default;
+    let Registrasi  = require('../views/landing/Registrasi').default;
+
     komponen = (
         <Router history={browserHistory}>
             <Route path="/" component={Login}/>
@@ -146,7 +17,13 @@ if (window.sessionStorage.getItem('access') === null || window.sessionStorage.ge
         </Router>)
 }
 
-if (window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStorage.getItem('role') == "1") {
+else if (window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStorage.getItem('role') == "1") {
+    let MainMhs = require('../components/layouts/MainMhs').default;
+    let DashboardMhs = require('../views/user/mahasiswa/Dashboard').default;
+    let JadwalMhs = require('../views/user/mahasiswa/Jadwal').default;
+    let NilaiMhs = require('../views/user/mahasiswa/Nilai').default;
+    let PembayaranMhs = require('../views/user/mahasiswa/Pembayaran').default;
+
     komponen = (
         <Router history={browserHistory}>
             <Route path="/" component={MainMhs}>
@@ -160,7 +37,16 @@ if (window.sessionStorage.getItem('access') !== 'undefined' && window.sessionSto
         </Router>)
 }
 
-if (window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStorage.getItem('role') === "2") {
+else if (window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStorage.getItem('role') === "2") {
+    let MainDosen = require('../components/layouts/MainDosen').default;
+    let DashboardDosen = require('../views/user/dosen/Main').default;
+    let NilaiDosen = require('../views/user/dosen/Input').default;
+    let AbsenDosen = require('../views/user/dosen/Absen').default;
+    let RekapAbsensiDosen = require('../views/user/dosen/rekap_absensi').default;
+    let BapDosen = require('../views/user/dosen/Bap').default;
+    let DaftarHadirDosen = require('../views/user/dosen/daftar_hadir').default;
+    let PertemuanDosen = require('../views/user/dosen/pertemuan').default;
+
     komponen = (
         <Router history={browserHistory}>
             <Route path="/" component={MainDosen}>
@@ -178,7 +64,35 @@ if (window.sessionStorage.getItem('access') !== 'undefined' && window.sessionSto
         </Router>)
 }
 
-if (window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStorage.getItem('role') === '3') {
+else if (window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStorage.getItem('role') === '3') {
+    let MainAdmin = require('../components/layouts/MainAdmin').default;
+    let Pendaftaran = require('../views/user/admin/Pendaftaran').default;
+    let List_pendaftar = require('../views/user/admin/List_pendaftar').default
+    let List_pendaftar_online = require('../views/user/admin/List_pendaftar_online').default;
+    let Cetak_kuitansi = require('../views/user/admin/Cetak_kuitansi').default;
+    let Anggaran = require('../views/user/admin/Anggaran').default;
+    let Users = require('../views/user/admin/users').default;
+    let addDosen = require('../views/user/admin/addDosen').default;
+    let editDosen = require('../views/user/admin/editDosen').default;
+    let Approve = require('../views/user/admin/Approve').default;
+    let Broadcast = require('../views/user/admin/Broadcast').default;
+    let Inventaris = require('../views/user/admin/Inventaris').default;
+    let Perubahan = require('../views/user/admin/Perubahan').default;
+    let Status = require('../views/user/admin/Status').default;
+    let Dosen = require('../views/user/admin/dosen').default;
+    let CalonMahasiswa = require('../views/user/admin/Calon_Mahasiswa').default;
+    let MahasiswaAdmin = require('../views/user/admin/Mahasiswa').default;
+    let EditMahasiswa = require('../views/user/admin/edit_mahasiswa').default;
+    let Tagihan = require('../views/user/admin/Tagihan').default;
+    let PengajuanAdmin = require('../views/user/admin/pengajuan').default;
+    let PembayaranAdmin = require('../views/user/admin/pembayaran').default;
+    let AsetAdmin = require('../views/user/admin/aset').default;
+    let TambahAset = require('../views/user/admin/tambah_aset').default;
+    let ReportPendaftarOnline = require('../views/user/admin/report_pendaftar_online').default;
+    let ReportPendaftarManual = require('../views/user/admin/report_pendaftar_manual').default;
+    let ReportMahasiswa = require('../views/user/admin/report_mahasiswa').default;
+    let DaftarTransaksiAdmin = require('../views/user/admin/daftar-transaksi').default;
+
     komponen = (
         <Router history={browserHistory}>
             <Route path="/" component={MainAdmin}>
@@ -201,6 +115,7 @@ if (window.sessionStorage.getItem('access') !== 'undefined' && window.sessionSto
                 <Route path="tambah-aset" component={TambahAset}> </Route>
                 <Route path="calon-mahasiswa" component={CalonMahasiswa}> </Route>
                 <Route path="mahasiswa" component={MahasiswaAdmin}> </Route>
+                <Route path="edit-mahasiswa" component={EditMahasiswa}> </Route>
                 <Route path="tagihan" component={Tagihan}> </Route>
                 <Route path="pengajuan" component={PengajuanAdmin}> </Route>
                 <Route path="pembayaran" component={PembayaranAdmin}> </Route>
@@ -210,15 +125,27 @@ if (window.sessionStorage.getItem('access') !== 'undefined' && window.sessionSto
                 <Route path="report-mahasiswa" component={ReportMahasiswa}> </Route>
                 <Route path="daftar-transaksi" component={DaftarTransaksiAdmin}> </Route>
             </Route>
-            <Route path="invoice-print" component={InvoicePrint}> </Route>
         </Router>)
 }
 
-if (window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStorage.getItem('role') === '4') {
+else if (window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStorage.getItem('role') === '4') {
+    let MainKeuangan = require('../components/layouts/MainKeuangan').default;
+    let AkunKeuangan = require('../views/user/keuangan/akun').default;
+    let TransaksiKeuangan = require('../views/user/keuangan/transaksi').default;
+    let DaftarTransaksi = require('../views/user/keuangan/daftar_transaksi').default;
+    let DataJurnalKeuangan = require('../views/user/keuangan/data-jurnal').default;
+    let TransaksiBukuBesar = require('../views/user/keuangan/transaksi_buku_besar').default;
+    let NeracaSaldoAkhir = require('../views/user/keuangan/neraca_saldo_akhir').default;
+    let JurnalUmum = require('../views/user/keuangan/jurnal_umum').default;
+    let BukuBesar = require('../views/user/keuangan/buku_besar').default;
+    let Laporan = require('../views/user/keuangan/Laporan').default;
+
     komponen = (
         <Router history={browserHistory}>
             <Route path="/" component={MainKeuangan}>
                 <IndexRedirect to="/akun"/>
+                <Route path="tambah-aset" component={TambahAset}> </Route>
+                <Route path="aset" component={AsetAdmin}> </Route>
                 <Route path="akun" component={AkunKeuangan}> </Route>
                 <Route path="transaksi" component={TransaksiKeuangan}> </Route>
                 <Route path="jurnal" component={DataJurnalKeuangan}> </Route>
@@ -240,7 +167,34 @@ if (window.sessionStorage.getItem('access') !== 'undefined' && window.sessionSto
         </Router>)
 }
 
-if (window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStorage.getItem('role') === '5') {
+else if (window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStorage.getItem('role') === '5') {
+    let MainAkademik = require('../components/layouts/MainAkademik').default;
+    let DashboardAkademikView = require('../views/user/akademik/Dashboard').default;
+    let DaftarMahasiswaAkademik = require('../views/user/akademik/Mahasiswa').default;
+    let MahasiswaMagang = require('../views/user/akademik/mahasiswa_magang').default;
+    let MahasiswaBekerja = require('../views/user/akademik/mahasiswa_bekerja').default;
+    let MahasiswaNonaktif = require('../views/user/akademik/mahasiswa_nonaktif').default;
+    let MahasiswaLulus = require('../views/user/akademik/mahasiswa_lulus').default;
+    let MahasiswaPindah = require('../views/user/akademik/mahasiswa_pindah').default;
+    let MataKuliahAkademik = require('../views/user/akademik/Mata_Kuliah').default;
+    let JadwalAkademik = require('../views/user/akademik/Jadwal').default;
+    let ListJadwalAkademik = require('../views/user/akademik/list_jadwal').default;
+    let KehadiranAkademik = require('../views/user/akademik/kehadiran').default;
+    let RekapAbsenMahasiswa = require('../views/user/akademik/rekap_mahasiswa').default;
+    let PengumumanAkademik = require('../views/user/akademik/Pengumuman').default;
+    let RuanganAkademik = require('../views/user/akademik/Ruangan').default;
+    let KelasAkademik = require('../views/user/akademik/kelas').default;
+    let ListMahasiswaAkademik = require('../views/user/akademik/list_mahasiswa').default;
+    let TranskripNilaiMahasiswa = require('../views/user/akademik/transkrip').default;
+    let RekapAbsenDosen = require('../views/user/akademik/rekap_dosen').default;
+    let DosenAkademik = require('../views/user/akademik/dosen').default;
+    let DaftarKelasAkademik = require('../views/user/akademik/daftar_kelas').default;
+    let DaftarKelasMahasiswaAkademik = require('../views/user/akademik/daftar_kelas_mahasiswa').default;
+    let JadwalMahasiswaAkademik = require('../views/user/akademik/jadwal_mahasiswa').default;
+    let AbsensiAkademik = require('../views/user/akademik/absensi').default;
+    let DaftarAkademik = require('../views/user/akademik/daftar').default;
+    let NilaiMahasiswaAkademik = require('../views/user/akademik/nilai_mahasiswa').default;
+
     komponen = (
         <Router history={browserHistory}>
             <Route path="/" component={MainAkademik}>
@@ -279,7 +233,19 @@ if (window.sessionStorage.getItem('access') !== 'undefined' && window.sessionSto
         </Router>)
 }
 
-if (window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStorage.getItem('role') === '6') {
+else if (window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStorage.getItem('role') === '6') {
+    let MainKepalaCabang = require('../components/layouts/MainKepalaCabang').default;
+    let AdministratorKepalaCabang = require('../views/user/kepala_cabang/administrator').default;
+    let AkademikKepalaCabang = require('../views/user/kepala_cabang/akademik').default;
+    let DashboardKepalaCabang = require('../views/user/kepala_cabang/dashboard').default;
+    let KeuanganKepalaCabang = require('../views/user/kepala_cabang/keuangan').default;
+    let JurusanKepalaCabang = require('../views/user/kepala_cabang/jurusan').default;
+    let PengajuanKepalaCabang = require('../views/user/kepala_cabang/pengajuan').default;
+    let AnggaranKepalaCabang = require('../views/user/kepala_cabang/Anggaran').default;
+    let MahasiswaKepalaCabang = require('../views/user/kepala_cabang/mahasiswa').default;
+    let DosenKepalaCabang = require('../views/user/kepala_cabang/dosen').default;
+    let StaffKepalaCabang = require('../views/user/kepala_cabang/staff').default;
+
     komponen = (
         <Router history={browserHistory}>
             <Route path="/" component={MainKepalaCabang}>
@@ -297,7 +263,6 @@ if (window.sessionStorage.getItem('access') !== 'undefined' && window.sessionSto
                 <Route path="perubahan" component={Perubahan}> </Route>
                 <Route path="mahasiswa" component={DaftarMahasiswaAkademik}> </Route>
                 <Route path="nonaktif" component={MahasiswaNonaktif}> </Route>
-
                 <Route path="lulus" component={MahasiswaLulus}> </Route>
                 <Route path="bekerja" component={MahasiswaBekerja}> </Route>
                 <Route path="magang" component={MahasiswaMagang}> </Route>
@@ -321,7 +286,18 @@ if (window.sessionStorage.getItem('access') !== 'undefined' && window.sessionSto
         </Router>)
 }
 
-if (window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStorage.getItem('role') === '7') {
+else if (window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStorage.getItem('role') === '7') {
+    let MainHRD = require('../components/layouts/MainHrd').default;
+    let PegawaiHRD = require('../views/user/hrd/pegawai').default;
+    let JabatanHRD = require('../views/user/hrd/jabatan').default;
+    let PengajuanPegawaiHRD = require('../views/user/hrd/pengajuan_pegawai').default;
+    let PengajuanHRD = require('../views/user/hrd/pengajuan').default;
+    let addPegawaiHRD = require('../views/user/hrd/add_pegawai').default;
+    let editPegawaiHRD = require('../views/user/hrd/edit_pegawai').default;
+    let CetakPegawaiHRD = require('../views/user/hrd/cetak_pegawai').default;
+
+// let MahasiswaOwner = require('../views/user/owner/mahasiswa_old').default;
+
     komponen = (
         <Router history={browserHistory}>
             <Route path="/" component={MainHRD}>
@@ -338,7 +314,32 @@ if (window.sessionStorage.getItem('access') !== 'undefined' && window.sessionSto
         </Router>)
 }
 
-if (window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStorage.getItem('role') === '8') {
+else if (window.sessionStorage.getItem('access') !== 'undefined' && window.sessionStorage.getItem('role') === '8') {
+    // Folder Owner (Role 8)
+    let MainOwner = require('../components/layouts/MainOwner').default;
+    let MahasiswaOwner = require('../views/user/owner/Mahasiswa').default;
+    let MahasiswaMagangOwner = require('../views/user/owner/mahasiswa_magang').default;
+    let MahasiswaBekerjaOwner = require('../views/user/owner/mahasiswa_bekerja').default;
+    let MahasiswaNonaktifOwner = require('../views/user/owner/mahasiswa_nonaktif').default;
+    let MahasiswaLulusOwner = require('../views/user/owner/mahasiswa_lulus').default;
+    let MahasiswaPindahOwner = require('../views/user/owner/mahasiswa_pindah').default;
+    let DosenOwner = require('../views/user/owner/dosen').default;
+    let DashboardOwner = require('../views/user/owner/Dashboard').default;
+    let KampusOwner = require('../views/user/owner/Kampus').default;
+    let HRDOwner = require('../views/user/owner/HRD').default;
+    let PerubahanTransaksi = require('../views/user/owner/perubahan_transaksi').default;
+    let Form_add_staffOwner = require('../views/user/owner/Form_add_staff').default;
+    let Form_edit_staffOwner = require('../views/user/owner/Form_edit_staff').default;
+    let KepalaCabangOwner = require('../views/user/owner/Kepala_cabang').default;
+    let KelompokAkunOwner = require('../views/user/owner/kelompok_akun').default;
+    let ApproveGajiOwner = require('../views/user/owner/approve_gaji').default;
+    let PengajuanGajiOwner = require('../views/user/owner/pengajuan_gaji').default;
+    let PengajuanAnggaranOwner = require('../views/user/owner/pengajuan_anggaran').default;
+    let AnggaranOwner = require('../views/user/owner/Anggaran').default;
+    let StaffOwner = require('../views/user/owner/staff').default;
+// REPORT
+    let ReportMahasiswaAkademik = require('../views/user/report/mahasiswa_akademik').default;
+
     komponen = (
         <Router history={browserHistory}>
             <Route path="/" component={MainOwner}>

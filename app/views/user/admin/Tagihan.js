@@ -455,7 +455,7 @@ class Tagihan extends Component {
                                                             this.state.selectedKampus != ""
                                                                 ? data.kampus_info.id ==
                                                                 this.state.selectedKampus
-                                                                : true
+                                                                : data.kampus_info.id == window.sessionStorage.getItem('kampus_id')
                                                         )
                                                         .map((jurusan, key) => (
                                                             <option key={key} value={jurusan.id}>

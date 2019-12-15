@@ -18,7 +18,7 @@ class Jadwal extends Component {
             jadwalBaru: {},
             selectedJurusan: null,
             selectedKelas: null,
-            mahasiswa: [],
+            mahaMahasiswa: [],
             eventSelected: null,
             selectedJurusan: "",
             selectedMatkul: "",
@@ -57,7 +57,6 @@ class Jadwal extends Component {
         }).then(function (response) {
             return response.json();
         }).then(function (data) {
-            console.log(data.results)
             self.setState({
                 jurusan: data.results.filter(item => item.kampus == kampus_id)
             })
@@ -126,6 +125,10 @@ class Jadwal extends Component {
                     jadwalBaru,
                     selectedMatkul: value
                 })
+
+                if(jadwalBaru.kelas != null && jadwalBaru.kelas != undefined){
+                    self.getDosen();
+                }
             } else {
                 swal({
                     icon: 'warning',
@@ -243,8 +246,9 @@ class Jadwal extends Component {
         }).then(function (response) {
             return response.json();
         }).then(function (data) {
-            let jadwalBaru = self.state.jadwalBaru
-            jadwalBaru.dosen = data.results.find(x => x.mata_kuliah === self.state.jadwalBaru.mata_kuliah && x.kelas === self.state.jadwalBaru.kelas).dosen
+            let jadwalBaru = self.state.jadwalBaru;
+
+            jadwalBaru.dosen = data.results.find(x => x.mata_kuliah == jadwalBaru.mata_kuliah && x.kelas == jadwalBaru.kelas).dosen
             self.setState({
                 jadwalBaru
             })
@@ -270,6 +274,7 @@ class Jadwal extends Component {
     editJadwal = () => {
         const self = this
         let jadwalBaru = this.state.jadwalBaru;
+        let jadwals    = this.state.jadwals;
         fetch(BASE_URL + '/api/jadwal/' + jadwalBaru.id + '/', {
             method: 'patch',
             headers: {
@@ -280,11 +285,17 @@ class Jadwal extends Component {
             body: JSON.stringify(jadwalBaru)
         }).then(function (response) {
             if (response.status === 200) {
-                self.broadcastJadwal(jadwalBaru)
-            } else {
+                self.broadcastJadwal(jadwalBaru);
             }
+            return response.json()
         }).then(function (data) {
-
+            // console.log(data)
+            if (data.id != null && data.id != undefined) {
+                for (let i = 0; i < jadwals.length; i++) {
+                    if (jadwals[i].id == jadwalBaru.id) jadwals[i] = data
+                }
+                self.setState({jadwals});
+            }
         })
 
     }
@@ -365,7 +376,6 @@ class Jadwal extends Component {
         });
     }
 
-
     render() {
         return (
           <div>
@@ -393,7 +403,7 @@ class Jadwal extends Component {
                       <div className="col-lg-12">
                           <div className="ibox ">
                               <div className="ibox-title" style={{'backgroundColor': '#1ab394', 'color': 'white'}}>
-                                  <h5><i className="fa fa-list "></i> Jadwal Perkuliahan</h5>
+                                  <h5><i className="fa fa-list "></i> Jadwal</h5>
                               </div>
                               <div className="ibox-content">
                                   <div className="col-lg-12">
@@ -459,7 +469,7 @@ class Jadwal extends Component {
                                                     <th>KELAS</th>
                                                     <th>RUANGAN</th>
                                                     <th>WAKTU</th>
-                                                    <th>DOSEN</th>
+                                                    <th>TRAINER</th>
                                                     <th>AKSI</th>
                                                 </tr>
                                                 </thead>
@@ -630,7 +640,7 @@ class Jadwal extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="form-group row"><label
-                                                  className="col-lg-2 col-form-label">Dosen</label>
+                                                  className="col-lg-2 col-form-label">Trainer</label>
                                                     <div className="col-lg-10">
                                                         <select
                                                           value={this.state.jadwalBaru.dosen}
@@ -638,7 +648,7 @@ class Jadwal extends Component {
                                                           disabled="disabled"
                                                           className="form-control m-b"
                                                           name="account">
-                                                            <option>Pilih Dosen</option>
+                                                            <option>Pilih Trainer</option>
                                                             {
                                                                 this.state.dosens.map((dosen, key) =>
                                                                   <option key={key}

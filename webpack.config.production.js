@@ -5,7 +5,7 @@ var ExtractTextPlugin = require('extract-text-webpack-plugin')
 // const TerserPlugin = require('terser-webpack-plugin')
 
 var config = {
-  devtool: 'source-map',
+  devtool: '',
   entry: {
     app: './app/index',
     vendor: devConfig.entry.vendor
@@ -18,12 +18,12 @@ var config = {
   },
   plugins: [
     new webpack.optimize.OccurenceOrderPlugin(),
-    new webpack.DefinePlugin({
-      'process.env': {
-        'NODE_ENV': JSON.stringify('production')
-      },
-      'require.specified': 'require.resolve'
-    }),
+    // new webpack.DefinePlugin({
+    //   'process.env': {
+    //     'NODE_ENV': JSON.stringify('production')
+    //   },
+    //   'require.specified': 'require.resolve'
+    // }),
     new webpack.optimize.UglifyJsPlugin({
       compress: {
         warnings: false
@@ -38,7 +38,15 @@ var config = {
       'window.$': 'jquery'
 
     }),
-    new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.js', Infinity)
+    new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.js', Infinity),
+    new webpack.DefinePlugin({ // <-- key to reducing React's size
+      'process.env': {
+        'NODE_ENV': JSON.stringify('production')
+      }
+    }),
+    new webpack.optimize.DedupePlugin(), //dedupe similar code
+    new webpack.optimize.UglifyJsPlugin(), //minify everything
+    new webpack.optimize.AggressiveMergingPlugin(),//Merge chunks
   ],
   module: {
     noParse: [],

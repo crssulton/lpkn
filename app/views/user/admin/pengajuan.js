@@ -8,6 +8,7 @@ import logo from "../../../../public/assets/assets 1/img/logo_bw.png";
 import moment from "moment";
 import "react-select/dist/react-select.css";
 import print from "print-js";
+import {Link} from "react-router";
 
 let account = [];
 let account_tujuan = [];
@@ -36,7 +37,8 @@ class Transaksi extends Component {
       add: true,
       addForm: true,
       jurusans: [],
-      edittransaksi: {}
+      edittransaksi: {},
+      sisa: 0,
     };
   }
 
@@ -47,7 +49,7 @@ class Transaksi extends Component {
   componentDidMount() {
     const self = this;
 
-    fetch(BASE_URL + "/api/transaksi/", {
+    fetch(BASE_URL + "/api/transaksi/?anggaran="+this.state.pengajuan.id, {
       method: "get",
       headers: {
         Authorization: "JWT " + window.sessionStorage.getItem("token"),
@@ -60,7 +62,7 @@ class Transaksi extends Component {
       })
       .then(function(data) {
         self.setState({
-          transaksi: data.results,
+          transaksi: data,
           loading: !self.state.loading
         });
       });
@@ -226,7 +228,7 @@ class Transaksi extends Component {
     if (selectedOption) {
       let transaksiBaru = {};
       transaksiBaru = this.state.transaksiBaru;
-      transaksiBaru.account_tujuan = selectedOption.value;
+      transaksiBaru.account = selectedOption.value;
       this.setState({ transaksiBaru });
     }
   };
@@ -248,7 +250,7 @@ class Transaksi extends Component {
     if (selectedOption) {
       let transaksiBaru = {};
       transaksiBaru = this.state.transaksiBaru;
-      transaksiBaru.account_tujuan = selectedOption.value;
+      transaksiBaru.account = selectedOption.value;
       this.setState({ transaksiBaru });
     }
   };
@@ -297,14 +299,24 @@ class Transaksi extends Component {
   addtransaksi = () => {
     const self = this;
     let addButton = document.getElementsByClassName("btn-add");
-    console.log(JSON.stringify(this.state.transaksiBaru));
+
     addButton[0].setAttribute("disabled", "disabled");
 
     let transaksiBaru = { ...this.state.transaksiBaru };
-    transaksiBaru.transaksi_anggaran = true;
-    transaksiBaru.account = this.state.pengajuan.account;
-    transaksiBaru.anggaran = this.state.pengajuan.id;
 
+    if (transaksiBaru.nominal > this.getSisaAnggaran(this.state.pengajuan.harga, this.state.transaksi)) {
+      swal({
+        icon: 'warning',
+        title: 'Nominal transaksi melebihi sisa anggaran'
+      });
+      addButton[0].removeAttribute("disabled");
+      return;
+    }
+
+    transaksiBaru.transaksi_anggaran = true;
+    transaksiBaru.account_tujuan = this.state.pengajuan.account_tujuan;
+    transaksiBaru.anggaran = this.state.pengajuan.id;
+    console.log(JSON.stringify(transaksiBaru))
     fetch(BASE_URL + "/api/transaksi/", {
       method: "post",
       headers: {
@@ -334,6 +346,8 @@ class Transaksi extends Component {
           transaksiBaru.uraian = null;
           transaksiBaru.tanggal = null;
           transaksiBaru.nominal = null;
+
+          console.log(JSON.stringify(data))
 
           self.setState(
             {
@@ -396,6 +410,14 @@ class Transaksi extends Component {
     return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
   };
 
+  getSisaAnggaran = (harga, transaksi) => {
+    transaksi.filter(data => data.anggaran == this.state.pengajuan.id).map((anggaran) => {
+      harga -= anggaran.nominal
+    });
+
+    return harga;
+  }
+
   render() {
     kelompok_account = [...this.state.kelompok_account];
     this.state.kelompok_account.map((data, key) => {
@@ -447,11 +469,14 @@ class Transaksi extends Component {
                     <i className="fa fa-list " /> Daftar Transaksi Anggaran
                   </h5>
                 </div>
+
                 <div className="ibox-content">
+                  <Link to="/anggaran"><button className="btn btn-info btn-sm"><i className="fa fa-arrow-left"></i> Kembali</button></Link>
                   <div className="row">
                     <div className="col-lg-6" />
                   </div>
                   <div className="row">
+                    <br/>
                     <div className="col-md-12">
                       <table style={{ width: "100%" }}>
                         <tr>
@@ -463,6 +488,13 @@ class Transaksi extends Component {
                           <td>
                             : Rp.{" "}
                             {this.formatNumber(this.state.pengajuan.harga)}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Sisa</td>
+                          <td>
+                            : Rp.{" "}
+                            {this.formatNumber(this.getSisaAnggaran(this.state.pengajuan.harga, this.state.transaksi))}
                           </td>
                         </tr>
                       </table>
@@ -485,13 +517,13 @@ class Transaksi extends Component {
                             <th style={{ width: "15%" }}>URAIAN</th>
                             <th style={{ width: "10%" }}>TANGGAL</th>
                             <th style={{ width: "10%" }}>NOMINAL</th>
-                            {
-                            !this.state.pengajuan.verified ?
-                            <th style={{ width: "20%", textAlign: "center" }}>
-                              AKSI
-                            </th>
-                            : null
-                        	}
+                          {/*  {*/}
+                          {/*  !this.state.pengajuan.verified ?*/}
+                          {/*  <th style={{ width: "20%", textAlign: "center" }}>*/}
+                          {/*    AKSI*/}
+                          {/*  </th>*/}
+                          {/*  : null*/}
+                        	{/*}*/}
                           </tr>
                         </thead>
                         <tbody>
@@ -505,38 +537,38 @@ class Transaksi extends Component {
                                 <td>{data.uraian}</td>
                                 <td>{moment(data.tanggal).format("DD/MM/YYYY")}</td>
                                 <td>Rp. {this.formatNumber(data.nominal)}</td>
-                                {
-                                !this.state.pengajuan.verified ?
-                                <td>
-                                  <center>
-                                    <button
-                                      style={{ margin: "0 5px" }}
-                                      className="btn btn-info btn-sm"
-                                      type="button"
-                                      onClick={() => {
-                                        this.setState({
-                                          selected: data.id,
-                                          addForm: false
-                                        });
-                                      }}
-                                    >
-                                      <i className="fa fa-edit" />
-                                    </button>
+                              {/*  {*/}
+                              {/*  !this.state.pengajuan.verified ?*/}
+                              {/*  <td>*/}
+                              {/*    <center>*/}
+                              {/*      <button*/}
+                              {/*        style={{ margin: "0 5px" }}*/}
+                              {/*        className="btn btn-info btn-sm"*/}
+                              {/*        type="button"*/}
+                              {/*        onClick={() => {*/}
+                              {/*          this.setState({*/}
+                              {/*            selected: data.id,*/}
+                              {/*            addForm: false*/}
+                              {/*          });*/}
+                              {/*        }}*/}
+                              {/*      >*/}
+                              {/*        <i className="fa fa-edit" />*/}
+                              {/*      </button>*/}
 
-                                    <button
-                                      onClick={() =>
-                                        this.handleDeleteTransaksi(data.id, key)
-                                      }
-                                      className="btn btn-danger btn-sm"
-                                      type="button"
-                                    >
-                                      <i className="fa fa-trash" />
-                                    </button>
-                                  </center>
-                                </td>
-                                :
-                                null
-                            	}
+                              {/*      <button*/}
+                              {/*        onClick={() =>*/}
+                              {/*          this.handleDeleteTransaksi(data.id, key)*/}
+                              {/*        }*/}
+                              {/*        className="btn btn-danger btn-sm"*/}
+                              {/*        type="button"*/}
+                              {/*      >*/}
+                              {/*        <i className="fa fa-trash" />*/}
+                              {/*      </button>*/}
+                              {/*    </center>*/}
+                              {/*  </td>*/}
+                              {/*  :*/}
+                              {/*  null*/}
+                            	{/*}*/}
                               </tr>
                             ))}
                         </tbody>
@@ -574,19 +606,25 @@ class Transaksi extends Component {
 
                 {this.state.addForm ? (
                   <div className="ibox-content">
+                    {/*<div className="form-group row">*/}
+                    {/*  <label className="col-lg-3 col-form-label">Kode</label>*/}
+                    {/*  <div className="col-lg-9">*/}
+                    {/*    <input*/}
+                    {/*      type="text"*/}
+                    {/*      className="form-control m-b"*/}
+                    {/*      name="transaksi"*/}
+                    {/*      value={this.state.transaksiBaru.kode}*/}
+                    {/*      onChange={this.addtransaksiKode}*/}
+                    {/*    />*/}
+                    {/*  </div>*/}
+                    {/*</div>*/}
                     <div className="form-group row">
-                      <label className="col-lg-3 col-form-label">Kode</label>
+                      <label className="col-lg-3 col-form-label">
+                      </label>
                       <div className="col-lg-9">
-                        <input
-                          type="text"
-                          className="form-control m-b"
-                          name="transaksi"
-                          value={this.state.transaksiBaru.kode}
-                          onChange={this.addtransaksiKode}
-                        />
+                        <small className="mb-0 text-success"><code>Akun untuk jenis pengeluaran.</code></small>
                       </div>
                     </div>
-
                     <div className="form-group row">
                       <label className="col-lg-3 col-form-label">
                         Akun Tujuan
@@ -594,7 +632,7 @@ class Transaksi extends Component {
                       <div className="col-lg-9">
                         <Select
                           name="form-field-name"
-                          value={this.state.transaksiBaru.account_tujuan}
+                          value={this.state.transaksiBaru.account}
                           onChange={this.addtransaksiAkun}
                           options={account}
                         />
@@ -757,7 +795,7 @@ class Transaksi extends Component {
             </div>
             :
             null
-        	}	
+        	}
           </div>
           <div style={{ display: "none" }}>
             <div className="row" id="print_data">
@@ -863,7 +901,7 @@ class Transaksi extends Component {
                     }}
                   >
                     : {this.state.check
-                        ? this.state.account.find(x => x.id == this.state.accountKwitansi).nama
+                        ? this.state.account.find(x => x.id == this.state.kwitansi.account).nama
                         : null}
                   </td>
                 </tr>

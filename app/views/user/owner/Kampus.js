@@ -296,13 +296,13 @@ class Kampus extends Component {
                                             <div className="table-responsive">
                                                 <table className="table table-striped" align="right">
                                                     <thead>
-                                                    <tr>
+                                                    <tr style={{width: '100%'}}>
                                                         <th style={{'width': '5%'}}>KODE</th>
-                                                        <th style={{'width': '15%'}}>NAMA</th>
+                                                        <th style={{'width': '20%'}}>NAMA</th>
                                                         <th style={{'width': '10%'}}>KOTA</th>
-                                                        <th style={{'width': '5%'}}>ALAMAT</th>
-                                                        <th style={{'width': '10%'}}>FACEBOOK</th>
-                                                        <th style={{'width': '10%'}}>EMAIL</th>
+                                                        <th style={{'width': '100%'}}>ALAMAT</th>
+                                                        <th style={{'width': '15%'}}>FACEBOOK</th>
+                                                        <th style={{'width': '15%'}}>EMAIL</th>
                                                         <th style={{'width': '13%', 'textAlign': 'center'}}>AKSI</th>
                                                     </tr>
                                                     </thead>

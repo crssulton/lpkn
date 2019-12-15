@@ -157,6 +157,8 @@ class Tagihan extends Component {
         pembayaran.jurusan = this.state.mahasiswa.find(data => data.id == pembayaran.mahasiswa).jurusan_info.nama
         self.setState({jurusan: pembayaran.jurusan, judul: pembayaran.judul, loadingApprove: true})
 
+        console.log(JSON.stringify(pembayaran))
+
         fetch(BASE_URL + "/api/pembayaran-mahasiswa/", {
             method: "post",
             headers: {
@@ -523,6 +525,14 @@ class Tagihan extends Component {
                                                                         <option value={true}>Ya</option>
                                                                     </select>
                                                                 </div>
+                                                                {
+                                                                    this.state.pembayaran.bayar_kuliah == 'true' ?
+                                                                      <div className="col-lg-5">
+                                                                          <small className="mb-0 text-success"><code>Akun Sumber otomatis adalah Akun Pendapatan Biaya Pendidikan</code></small>
+                                                                      </div>
+                                                                      :
+                                                                      null
+                                                                }
                                                             </div>
                                                             {
                                                                 this.state.pembayaran.bayar_kuliah == "true" ? (
@@ -679,6 +689,9 @@ class Tagihan extends Component {
                                                             options={account}
                                                         />
                                                     </div>
+                                                    <div className="col-lg-5">
+                                                        <small className="mb-0 text-success"><code>Akun Sumber adalah akun jenis pendapatan (Ex. Pendapatan Biaya Seragam)</code></small>
+                                                    </div>
                                                 </div>
                                                 :
                                                 null
@@ -701,6 +714,9 @@ class Tagihan extends Component {
                                                     }}
                                                     options={accountTujuan}
                                                 />
+                                            </div>
+                                            <div className="col-lg-5">
+                                                <small className="mb-0 text-success"><code>Akun Tujuan adalah akun tempat menaruh hasil pembayaran mahasiswa (Ex. Kas, Kas Kampus)</code></small>
                                             </div>
                                         </div>
                                         <div className="hr-line-dashed"/>

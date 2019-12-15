@@ -427,8 +427,8 @@ class Jadwal extends Component {
                                                                                                     kwitansi: transaksi.kwitansi[0],
                                                                                                     id_transaksi: transaksi.id
                                                                                                 }, () => {
-                                                                                                    self.exportData()
-                                                                                                    self.editTransaksi()
+                                                                                                    self.exportData();
+                                                                                                    self.editTransaksi();
                                                                                                 })
                                                                                             })
                                                                                         }

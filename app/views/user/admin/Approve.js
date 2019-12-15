@@ -196,7 +196,7 @@ class Approve extends Component {
 
                         if (response.status == 200) {
                             toastr.success(
-                                "Pembayaran telah di terima",
+                                "Pembayaran telah diterima",
                                 "Sukses ! "
                             );
                             self.setState({
@@ -205,7 +205,7 @@ class Approve extends Component {
                             });
                         } else {
                             toastr.warning(
-                                "Pembayaran gagal di terima",
+                                "Pembayaran gagal diterima",
                                 "Gagal ! "
                             );
                         }
@@ -598,6 +598,13 @@ class Approve extends Component {
                                                     <h4 className="modal-title">Pilih Akun Transaksi</h4>
                                                 </div>
                                                 <div className="modal-body">
+                                                    <div className="form-group row">
+                                                        <div className="col-lg-12">
+                                                            <div className="alert alert-info" role="alert">
+                                                                <p className="mb-0">** Akun Tujuan adalah akun tempat menaruh hasil pembayaran mahasiswa (Ex. Kas, Kas Kampus).</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                     <div className="form-group row">
                                                         <label className="col-lg-2 col-form-label">Akun Tujuan</label>
                                                         <div className="col-lg-10">

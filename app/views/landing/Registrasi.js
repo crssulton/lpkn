@@ -89,10 +89,10 @@ class Registrasi extends Component {
   }
   render() {
     return (
-        <div className="bgImage">
+        <div className="">
             <TopHeader/>
             <div className="bgColor">
-                <div className="passwordBox animated fadeInDown">
+                <div className="passwordBox">
                     <div className="row">
                         <div className="col-md-12">
                             <div className="ibox-content">

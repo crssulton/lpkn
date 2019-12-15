@@ -238,8 +238,8 @@ class Daftar extends Component {
 					},
 					body: JSON.stringify(kelas)
 				}).then(function(response) {
-					if (response.status == 200) {
-						i+=1
+					if (true) {
+						i+=1;
 						if (i == self.state.sendDaftar.length) {
 							self.setState({loadingSimpan: false})
 							toastr.success("Berhasil menambahkan mahasiswa", "Sukses ! ")

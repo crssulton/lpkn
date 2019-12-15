@@ -36,7 +36,7 @@ class Navigation extends Component {
                             <span className="clear"> <span className="block m-t-xs"> <strong className="font-bold">KEUANGAN</strong>
                              </span> <span className="text-muted text-xs block">Setting <b className="caret"></b></span> </span> </a>
                                 <ul className="dropdown-menu animated fadeInLeft m-t-xs">
-                                    <Link to="/akun"><li><a> Akun</a></li></Link>
+                                    <li><Link to="/akun"><a>Akun</a></Link></li>
                                     <li><a onClick={this.handleLogout}> Logout</a></li>
                                 </ul>
                             </div>
@@ -64,6 +64,17 @@ class Navigation extends Component {
                         <li className={this.activeRoute("/jurnal")}>
                             <Link to="/jurnal"><i className="fa fa-calendar"></i> <span className="nav-label">Data Jurnal</span></Link>
                         </li>
+                        <li>
+                            <a><i className="fa fa-book"></i> <span className="nav-label">Aset</span> <span
+                              className="fa arrow"></span></a>
+                            <ul className="nav nav-second-level collapse">
+                                <li className={this.activeRoute("/tambah-aset")}>
+                                    <Link to="/tambah-aset">Tambah Aset</Link>
+                                </li>
+                                <li><Link to="/aset">Daftar Aset</Link></li>
+                            </ul>
+                        </li>
+
                         <li>
                             <a><i className="fa fa-book"></i> <span className="nav-label">Report</span> <span className="fa arrow"></span></a>
                             <ul className="nav nav-second-level collapse">

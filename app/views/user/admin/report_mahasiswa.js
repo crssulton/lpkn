@@ -313,7 +313,7 @@ class List_pendaftar extends Component {
                       </div>
                     </div>
                   ) : (
-                    <div className="table-responsive" id="print_data">
+                    <div className="table bordered" id="print_data">
                       <h3 style={{textAlign: 'center'}}>List Calon Mahasiswa LPKN</h3>
                       <br/>
                       <h5>Jumlah Data : {this.state.pendaftars.length} </h5>
@@ -326,6 +326,7 @@ class List_pendaftar extends Component {
                           <th>NAMA</th>
                           <th>JURUSAN</th>
                           <th>JENIS KELAMIN</th>
+                          <th>NO HP</th>
                           <th>ANGKATAN</th>
                           <th>KAMPUS PILIHAN</th>
                         </tr>
@@ -343,9 +344,10 @@ class List_pendaftar extends Component {
                             <tr key={key}>
                               <td>{key + 1}</td>
                               <td>{pendaftar.nim}</td>
-                              <td>{pendaftar.nama}</td>
+                              <td>{pendaftar.nama.toUpperCase()}</td>
                               <td>{pendaftar.jurusan_info.nama}</td>
                               <td>{pendaftar.jenis_kelamin}</td>
+                              <td>{pendaftar.no_hp}</td>
                               <td>{pendaftar.tahun_angkatan}</td>
                               <td>{pendaftar.kampus_info.nama}</td>
                             </tr>

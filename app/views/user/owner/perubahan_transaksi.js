@@ -287,91 +287,91 @@ class Jadwal extends Component {
                                     </h5>
                                 </div>
                                 <div className="ibox-content">
-                                    <div className="row">
-                                        <div className="col-lg-2">
-                                            <label className="form-label">Kampus : </label>
-                                        </div>
-                                        <div className="col-lg-3">
-                                            <label className="form-label">Akun : </label>
-                                        </div>
-                                        <div className="col-lg-2">
-                                            <label className="form-label">Bulan : </label>
-                                        </div>
-                                        <div className="col-lg-3"/>
-                                    </div>
-                                    <div className="row">
-                                        <div className="col-lg-2">
-                                            <select
-                                                value={this.state.selectedKampus}
-                                                onChange={e => {
-                                                    this.setState({selectedKampus: e.target.value});
-                                                }}
-                                                className="form-control"
-                                            >
-                                                <option value="">Pilih Kampus</option>
-                                                {this.state.kampus.map((kampus, key) => (
-                                                    <option key={key} value={kampus.id}>
-                                                        {kampus.nama}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                        <div className="col-lg-3">
-                                            <Select
-                                                name="form-field-name"
-                                                value={this.state.selectedAccount}
-                                                onChange={(selectedOption) => {
-                                                    this.setState({
-                                                        selectedAccount: selectedOption.value
-                                                    })
-                                                }}
-                                                options={account}
-                                            />
-                                        </div>
-                                        <div className="col-lg-2" style={{marginRight: '40px'}}>
-                                            <button className="btn btn-secondary btn-sm">
-                                                <MonthPickerInput
-                                                    closeOnSelect={true}
-                                                    style={{backgroundColor: "red"}}
-                                                    onChange={(
-                                                        maskedValue,
-                                                        selectedYear,
-                                                        selectedMonth
-                                                    ) => {
-                                                        this.setState({selectedYear, selectedMonth});
-                                                    }}
-                                                />
-                                            </button>
+                                    {/*<div className="row">*/}
+                                    {/*    <div className="col-lg-2">*/}
+                                    {/*        <label className="form-label">Kampus : </label>*/}
+                                    {/*    </div>*/}
+                                    {/*    <div className="col-lg-3">*/}
+                                    {/*        <label className="form-label">Akun : </label>*/}
+                                    {/*    </div>*/}
+                                    {/*    <div className="col-lg-2">*/}
+                                    {/*        <label className="form-label">Bulan : </label>*/}
+                                    {/*    </div>*/}
+                                    {/*    <div className="col-lg-3"/>*/}
+                                    {/*</div>*/}
+                                    {/*<div className="row">*/}
+                                    {/*    <div className="col-lg-2">*/}
+                                    {/*        <select*/}
+                                    {/*            value={this.state.selectedKampus}*/}
+                                    {/*            onChange={e => {*/}
+                                    {/*                this.setState({selectedKampus: e.target.value});*/}
+                                    {/*            }}*/}
+                                    {/*            className="form-control"*/}
+                                    {/*        >*/}
+                                    {/*            <option value="">Pilih Kampus</option>*/}
+                                    {/*            {this.state.kampus.map((kampus, key) => (*/}
+                                    {/*                <option key={key} value={kampus.id}>*/}
+                                    {/*                    {kampus.nama}*/}
+                                    {/*                </option>*/}
+                                    {/*            ))}*/}
+                                    {/*        </select>*/}
+                                    {/*    </div>*/}
+                                    {/*    <div className="col-lg-3">*/}
+                                    {/*        <Select*/}
+                                    {/*            name="form-field-name"*/}
+                                    {/*            value={this.state.selectedAccount}*/}
+                                    {/*            onChange={(selectedOption) => {*/}
+                                    {/*                this.setState({*/}
+                                    {/*                    selectedAccount: selectedOption.value*/}
+                                    {/*                })*/}
+                                    {/*            }}*/}
+                                    {/*            options={account}*/}
+                                    {/*        />*/}
+                                    {/*    </div>*/}
+                                    {/*    <div className="col-lg-2" style={{marginRight: '40px'}}>*/}
+                                    {/*        <button className="btn btn-secondary btn-sm">*/}
+                                    {/*            <MonthPickerInput*/}
+                                    {/*                closeOnSelect={true}*/}
+                                    {/*                style={{backgroundColor: "red"}}*/}
+                                    {/*                onChange={(*/}
+                                    {/*                    maskedValue,*/}
+                                    {/*                    selectedYear,*/}
+                                    {/*                    selectedMonth*/}
+                                    {/*                ) => {*/}
+                                    {/*                    this.setState({selectedYear, selectedMonth});*/}
+                                    {/*                }}*/}
+                                    {/*            />*/}
+                                    {/*        </button>*/}
 
-                                        </div>
-                                        <div className="col-lg-3">
-                                            <button
-                                                onClick={this.onFilterData}
-                                                className="btn btn-info"
-                                                type="button"
-                                            >
-                                                <i className="fa fa-filter"/> Filter
-                                            </button>
+                                    {/*    </div>*/}
+                                    {/*    <div className="col-lg-3">*/}
+                                    {/*        <button*/}
+                                    {/*            onClick={this.onFilterData}*/}
+                                    {/*            className="btn btn-info"*/}
+                                    {/*            type="button"*/}
+                                    {/*        >*/}
+                                    {/*            <i className="fa fa-filter"/> Filter*/}
+                                    {/*        </button>*/}
 
-                                            <button
-                                                onClick={() => {
-                                                    const self = this;
-                                                    this.fetchTransaksi()
-                                                    this.setState({
-                                                        selectedAccount: "",
-                                                        selectedMonth: "",
-                                                        selectedYear: "",
-                                                        selectedKampus: ""
-                                                    });
-                                                }}
-                                                style={{marginLeft: "5px"}}
-                                                className="btn btn-warning"
-                                                type="button"
-                                            >
-                                                <i className="fa fa-close"/> Reset
-                                            </button>
-                                        </div>
-                                    </div>
+                                    {/*        <button*/}
+                                    {/*            onClick={() => {*/}
+                                    {/*                const self = this;*/}
+                                    {/*                this.fetchTransaksi()*/}
+                                    {/*                this.setState({*/}
+                                    {/*                    selectedAccount: "",*/}
+                                    {/*                    selectedMonth: "",*/}
+                                    {/*                    selectedYear: "",*/}
+                                    {/*                    selectedKampus: ""*/}
+                                    {/*                });*/}
+                                    {/*            }}*/}
+                                    {/*            style={{marginLeft: "5px"}}*/}
+                                    {/*            className="btn btn-warning"*/}
+                                    {/*            type="button"*/}
+                                    {/*        >*/}
+                                    {/*            <i className="fa fa-close"/> Reset*/}
+                                    {/*        </button>*/}
+                                    {/*    </div>*/}
+                                    {/*</div>*/}
                                     <br/>
                                     <div className="hr-line-dashed"/>
                                     {this.state.loading ? (

@@ -38,7 +38,7 @@ class Navigation extends Component {
                              </span> <span className="text-muted text-xs block">Setting <b className="caret"></b></span> </span>
                             </a>
                             <ul className="dropdown-menu animated fadeInLeft m-t-xs">
-                                <Link to="/akun"><li><a> Akun</a></li></Link>
+                                <li><Link to="/akun"><a>Akun</a></Link></li>
                                 <li><a onClick={this.handleLogout}> Logout</a></li>
                             </ul>
                         </div>

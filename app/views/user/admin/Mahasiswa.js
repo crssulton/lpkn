@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { BASE_URL } from "../../../config/config.js";
 import swal from "sweetalert";
+import {Link} from "react-router";
 
 class Calon_Mahasiswa extends Component {
     constructor(props) {
@@ -545,7 +546,7 @@ class Calon_Mahasiswa extends Component {
                                             </div>
                                             <div className="ibox-content profile-content">
                                                 <h3 style={{ textAlign: "center" }}>
-                                                    <strong>{this.state.mahasiswa.nama}</strong>
+                                                    <strong>{this.state.mahasiswa.nama.toUpperCase()}</strong>
                                                 </h3>
                                                 <h5 style={{ textAlign: "center" }}>
                                                     <strong>{this.state.mahasiswa.nim}</strong>
@@ -791,6 +792,13 @@ class Calon_Mahasiswa extends Component {
                                                     </div>
                                                 </div>
                                             </div>
+                                            <br/>
+                                            <Link to={{
+                                                pathname: 'edit-mahasiswa',
+                                                state: {staf: this.state.mahasiswa}
+                                            }}>
+                                                <button className="btn btn-info btn-block">Ubah Data</button>
+                                            </Link>
                                         </div>
                                     ) : null}
                                 </div>

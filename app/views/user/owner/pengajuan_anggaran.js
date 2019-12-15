@@ -27,9 +27,61 @@ class Pengajuan extends Component {
       checkbox: false,
       danaSebelumnya: {},
       newPengajuan: {},
-      selectedPengajuan: null
+      selectedPengajuan: null,
+      num_pages: null,
+      next: null,
+      previous: null,
+      count: null,
     };
   }
+
+  getNextData = () => {
+    const self = this;
+    this.setState({ loading: true });
+    fetch(this.state.next, {
+      method: "get",
+      headers: {
+        Authorization: "JWT " + window.sessionStorage.getItem("token")
+      }
+    })
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(data) {
+        self.setState({
+          pengajuan: data.results,
+          num_pages: data.num_pages,
+          next: data.next,
+          previous: data.previous,
+          count: data.count,
+          loading: false
+        });
+      });
+  };
+
+  getPreviousData = () => {
+    const self = this;
+    this.setState({ loading: true });
+    fetch(this.state.previous, {
+      method: "get",
+      headers: {
+        Authorization: "JWT " + window.sessionStorage.getItem("token")
+      }
+    })
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(data) {
+        self.setState({
+          pengajuan: data.results,
+          num_pages: data.num_pages,
+          next: data.next,
+          previous: data.previous,
+          count: data.count,
+          loading: false
+        });
+      });
+  };
 
   componentWillMount() {
     const self = this;
@@ -46,6 +98,9 @@ class Pengajuan extends Component {
       .then(function(data) {
         self.setState({
           pengajuan: data.results,
+          next: data.next,
+          previous: data.previous,
+          count: data.count,
           loading: !self.state.loading
         })
       });
@@ -128,9 +183,23 @@ class Pengajuan extends Component {
     let selectedPengajuan = { ...this.state.selectedPengajuan };
     selectedPengajuan.approved = true;
     if (this.state.checkbox) {
-      selectedPengajuan.transfer = selectedPengajuan.harga - this.state.danaSebelumnya.sisa
+      if (selectedPengajuan.harga >= this.state.danaSebelumnya.sisa) {
+        selectedPengajuan.transfer = selectedPengajuan.harga - this.state.danaSebelumnya.sisa;
+        selectedPengajuan.harga = this.state.danaSebelumnya.sisa + selectedPengajuan.transfer;
+      }
+      else {
+        selectedPengajuan.transfer = 0;
+        selectedPengajuan.harga    = this.state.danaSebelumnya.sisa;
+      }
+
     }else{
-      selectedPengajuan.transfer = selectedPengajuan.harga
+      selectedPengajuan.transfer = selectedPengajuan.harga;
+      let danaSebelumnya = this.state.danaSebelumnya;
+      if (danaSebelumnya != undefined) {
+        selectedPengajuan.harga = this.state.danaSebelumnya.sisa + selectedPengajuan.transfer;
+      } else {
+        selectedPengajuan.harga = 0 + selectedPengajuan.transfer;
+      }
     }
 
     swal({
@@ -155,11 +224,11 @@ class Pengajuan extends Component {
           .then(function(response) {
             if (response.status == 200) {
               toastr.success("Pengajuan berhasil di terima", "Sukses ! ");
-              
+
               if (typeof self.state.danaSebelumnya != 'undefined') {
                 self.verifiedAnggaranSebelumnya()
               }
-              
+
               self.getPengajuanAnggaran()
               let pengajuan = [...self.state.pengajuan];
               pengajuan.find(
@@ -233,6 +302,7 @@ class Pengajuan extends Component {
                           <tr>
                             <th style={{ width: "5%" }}>NO</th>
                             <th style={{ width: "15%" }}>NAMA</th>
+                            <th style={{ width: "10%" }}>TANGGAL</th>
                             <th style={{ width: "10%" }}>NOMINAL</th>
                             <th style={{ width: "10%" }}>SISA</th>
                             <th style={{ width: "10%" }}>DIKIRIMKAN</th>
@@ -249,6 +319,7 @@ class Pengajuan extends Component {
                             <tr key={key}>
                               <td>{key + 1}</td>
                               <td>{data.nama}</td>
+                              <td>{moment(data.created).format("D/M/Y")}</td>
                               <td>{this.formatNumber(data.harga)}</td>
                               <td>{this.formatNumber(data.sisa)}</td>
                               <td>{this.formatNumber(data.transfer)}</td>
@@ -314,6 +385,29 @@ class Pengajuan extends Component {
                       </table>
                     </div>
                   )}
+                  <div className="text-center">
+                    <div className="btn-group">
+                      <button
+                        disabled={
+                          this.state.previous == null ? "disabled" : null
+                        }
+                        onClick={this.getPreviousData}
+                        className="btn btn-white"
+                        type="button"
+                      >
+                        <i className="fa fa-chevron-left" /> Sebelumnya{" "}
+                      </button>
+                      <button
+                        disabled={this.state.next == null ? "disabled" : null}
+                        onClick={this.getNextData}
+                        className="btn btn-white"
+                        type="button"
+                      >
+                        {" "}
+                        Selanjutnya <i className="fa fa-chevron-right" />{" "}
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -439,7 +533,9 @@ class Pengajuan extends Component {
                           value={
                             this.state.selectedPengajuan != null
                               ? this.state.checkbox && typeof this.state.danaSebelumnya != "undefined" ?
-                                this.state.selectedPengajuan.harga - this.state.danaSebelumnya.sisa : this.state.selectedPengajuan.harga
+                                this.state.selectedPengajuan.harga >= this.state.danaSebelumnya.sisa ?
+                                  this.state.selectedPengajuan.harga - this.state.danaSebelumnya.sisa : 0
+                                : this.state.selectedPengajuan.harga
                               : null
                           }
                           onChangeEvent={(e, maskedvalue, floatvalue) => {
@@ -462,20 +558,26 @@ class Pengajuan extends Component {
                           name="form-field-name"
                           value={
                             this.state.selectedPengajuan != null
-                              ? this.state.selectedPengajuan.account
+                              ? this.state.selectedPengajuan.account_tujuan
                               : null
                           }
                           onChange={selectedOption => {
                             let selectedPengajuan = {
                               ...this.state.selectedPengajuan
                             };
-                            selectedPengajuan.account = selectedOption.value;
+                            selectedPengajuan.account_tujuan = selectedOption.value;
                             this.setState({ selectedPengajuan });
                           }}
                           options={account}
                         />
                       </div>
                     </div>
+                    {/*<div className="form-group row">*/}
+                    {/*  <label className="col-lg-3 col-form-label"></label>*/}
+                    {/*  <div className="col-lg-9">*/}
+                    {/*    */}
+                    {/*  </div>*/}
+                    {/*</div>*/}
                   </div>
                   <div className="modal-footer">
                     <button

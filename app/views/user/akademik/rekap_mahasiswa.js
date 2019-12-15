@@ -11,6 +11,7 @@ class RekapMahasiswa extends Component {
 			mahasiswas: [],
 			loading: false,
 			absensi: [],
+			daftar: [],
 			jadwal: [],
 			jurusan: [],
 			kelas: [],
@@ -69,9 +70,10 @@ class RekapMahasiswa extends Component {
 			}).then(function (response) {
 				return response.json();
 			}).then(function (data) {
-				console.log(JSON.stringify(data.results))
 				self.setState({
 					absensi: data.results
+				}, () => {
+					self.getDaftars(data.results[0].id)
 				})
 			});
 
@@ -84,13 +86,29 @@ class RekapMahasiswa extends Component {
 				return response.json();
 			}).then(function (data) {
 				self.setState({
-					jadwal: data.results.filter(x => x.kelas_info.id == kelas),
-					loading: false
+					jadwal: data.results.filter(x => x.kelas_info.id == kelas)
 				})
 			});
 		} else {
 			toastr.warning("Silahkan melengkapi format filter data")
 		}
+	};
+
+	getDaftars = (id) => {
+		const self = this
+		fetch(BASE_URL + '/api/daftar/?absensi=' + id, {
+			method: 'get',
+			headers: {
+				'Authorization': 'JWT ' + window.sessionStorage.getItem('token')
+			}
+		}).then(function (response) {
+			return response.json();
+		}).then(function (data) {
+			self.setState({
+				daftar: data.results,
+				loading: false
+			})
+		});
 	};
 
 	getKelas = () => {
@@ -119,7 +137,6 @@ class RekapMahasiswa extends Component {
 		}).then(function (response) {
 			return response.json();
 		}).then(function (data) {
-			console.log(data)
 			self.setState({
 				matkul: data.results
 			})
@@ -314,8 +331,7 @@ class RekapMahasiswa extends Component {
 																</thead>
 																<tbody>
 																{
-																	this.state.absensi.map((mhs, key) =>
-																		mhs.daftar.map((data, key) =>
+																	this.state.daftar.map((data, key) =>
 																			<tr>
 																				<td>{data.mahasiswa_info.nim}</td>
 																				<td>{data.mahasiswa_info.nama}</td>
@@ -342,7 +358,6 @@ class RekapMahasiswa extends Component {
 																					)
 																				}
 																			</tr>
-																		)
 																	)
 																}
 																</tbody>
